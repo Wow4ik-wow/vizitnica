@@ -1,0 +1,142 @@
+/* Сброс и базовая настройка */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  background: #f0f4f8;
+}
+
+/* Заголовок и кнопки входа */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.page-title {
+  margin: 0;
+}
+
+.auth-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+/* Кнопки */
+.btn {
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+}
+
+.btn:hover {
+  background: #2563eb;
+}
+
+.hidden {
+  display: none;
+}
+
+/* Основной контейнер */
+#mainContainer {
+  max-width: 90vw;
+  margin: 0 auto;
+  padding-left: 5vw;
+  padding-right: 5vw;
+}
+
+/* Контейнер с фильтрами */
+.filters-container {
+  display: grid;
+  gap: 10px;
+  max-width: 700px;
+  margin: 0 auto 30px auto;
+}
+
+/* Ряды фильтров */
+.filter-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+input {
+  padding: 8px;
+  font-size: 14px;
+  flex: 1;
+}
+
+.search-btn {
+  width: 100%;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+/* Количество найденных */
+.search-count {
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+/* Карточки */
+#cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 10px;
+}
+
+.card {
+  background: white;
+  border-radius: 6px;
+  padding: 15px;
+  margin-bottom: 10px;
+  box-shadow: 0 0 5px #ccc;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+}
+
+.card h3 {
+  margin: 0 0 8px 0;
+}
+
+.card p {
+  margin: 4px 0;
+}
+
+.card img {
+  width: calc(100% - 20px);
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  border-radius: 8px;
+}
+
+/* Уведомление */
+.notification {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(240,147,147,0.75);
+  color: rgb(15,12,12);
+  padding: 10px 20px;
+  border-radius: 6px;
+  display: none;
+  z-index: 9999;
+  font-size: 14px;
+}
