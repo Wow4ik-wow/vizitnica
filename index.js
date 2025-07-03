@@ -750,25 +750,41 @@ function logout() {
 }
 
 function saveUserToSheet(user) {
-  return new Promise((resolve, reject) => {
-    fetch("https://script.google.com/macros/s/AKfycbz1DaaDgQjaTLpLB8BwberQbzp3XD_FYUGKxb9tgkW5dnkIR1g0Bxpk6XYElmt-gJ5n/exec", {
+  try {
+    const form = document.createElement("form");
+    form.action = "https://script.google.com/macros/s/AKfycbz1DaaDgQjaTLpLB8BwberQbzp3XD_FYUGKxb9tgkW5dnkIR1g0Bxpk6XYElmt-gJ5n/exec";
+    form.method = "POST";
+    form.target = "invisible_iframe";
+    form.style.display = "none";
 
-      method: "POST",
-      body: JSON.stringify({
-        action: "register_user",
-        email: user.email,
-        name: user.name,
-        picture: user.picture
-      }),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    })
-      .then((res) => res.json())
-      .then((data) => resolve(data))
-      .catch((err) => {
-        console.error("Ошибка при сохранении пользователя:", err);
-        resolve(); // не блокируем авторизацию, даже если не записали
-      });
-  });
+    const data = {
+      action: "register_user",
+      email: user.email,
+      name: user.name,
+      picture: user.picture
+    };
+
+    for (const key in data) {
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = key;
+      input.value = data[key];
+      form.appendChild(input);
+    }
+
+    if (!document.getElementById("invisible_iframe")) {
+      const iframe = document.createElement("iframe");
+      iframe.name = "invisible_iframe";
+      iframe.id = "invisible_iframe";
+      iframe.style.display = "none";
+      document.body.appendChild(iframe);
+    }
+
+    document.body.appendChild(form);
+    form.submit();
+    document.body.removeChild(form);
+  } catch (error) {
+    console.error("Ошибка при сохранении пользователя:", error);
+  }
 }
+
