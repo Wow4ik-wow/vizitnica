@@ -751,41 +751,25 @@ function logout() {
 }
 
 function saveUserToSheet(user) {
-  try {
-    const form = document.createElement("form");
-    form.action = "https://script.google.com/macros/s/AKfycbxnZ7vjzOcqkNtbSFs02_zGbbIulo3PROeNHFK2YzvNbqAG0YEE1DB11VzxAIoklQ8S/exec";
-    form.method = "POST";
-    form.target = "invisible_iframe";
-    form.style.display = "none";
-
-    const data = {
-      action: "register_user",
+  const scriptUrl = "https://script.google.com/macros/s/AKfycbxnZ7vjzOcqkNtbSFs02_zGbbIulo3PROeNHFK2YzvNbqAG0YEE1DB11VzxAIoklQ8S/exec"; // Замените на URL из Apps Script (шаг 2)
+  
+  fetch(scriptUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      uid: user.email, // Используем email как UID
       email: user.email,
       name: user.name,
-      picture: user.picture
-    };
-
-    for (const key in data) {
-      const input = document.createElement("input");
-      input.type = "hidden";
-      input.name = key;
-      input.value = data[key];
-      form.appendChild(input);
-    }
-
-    if (!document.getElementById("invisible_iframe")) {
-      const iframe = document.createElement("iframe");
-      iframe.name = "invisible_iframe";
-      iframe.id = "invisible_iframe";
-      iframe.style.display = "none";
-      document.body.appendChild(iframe);
-    }
-
-    document.body.appendChild(form);
-    form.submit();
-    document.body.removeChild(form);
-  } catch (error) {
-    console.error("Ошибка при сохранении пользователя:", error);
-  }
+      photoURL: user.picture,
+      lastLogin: new Date().toISOString()
+    })
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log("✅ Пользователь сохранён в таблицу:", data);
+  })
+  .catch(error => {
+    console.error("❌ Ошибка при сохранении:", error);
+  });
 }
 
