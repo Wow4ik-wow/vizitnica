@@ -751,7 +751,8 @@ function logout() {
 
 function saveUserToSheet(user) {
   return new Promise((resolve, reject) => {
-    fetch("https://script.google.com/macros/s/AKfycbwNcJOjTowIIsdmVnf8zXl9JZZRch35DjixEEwdWpnfNrSs3nIeahWSpMCRZ_ZE_mvz/exec", {
+    fetch("https://script.google.com/macros/s/AKfycbz1DaaDgQjaTLpLB8BwberQbzp3XD_FYUGKxb9tgkW5dnkIR1g0Bxpk6XYElmt-gJ5n/exec", {
+
       method: "POST",
       body: JSON.stringify({
         action: "register_user",
