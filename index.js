@@ -708,6 +708,7 @@ function updateAuthUI() {
 function logout() {
   currentUser = null;
   google.accounts.id.disableAutoSelect();
+  
   document.getElementById("loginBtn").classList.remove("hidden");
   document.getElementById("logoutBtn").classList.add("hidden");
   document.getElementById("cabinetBtn").classList.add("hidden");
@@ -716,4 +717,8 @@ function logout() {
   document.getElementById("addServiceBtn").onclick = () => {
     showNotification("Авторизуйтесь, чтобы добавить услугу");
   };
+
+  // Добавляем вызов повторного показа окна входа
+  google.accounts.id.prompt();
 }
+
