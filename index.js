@@ -661,17 +661,36 @@ window.onload = () => {
     auto_select: false
   });
 
+  // Восстанавливаем пользователя из localStorage
+  const storedUser = localStorage.getItem("user");
+  if (storedUser) {
+    currentUser = JSON.parse(storedUser);
+    updateAuthUI();
+  }
+
   document.getElementById("loginBtn").addEventListener("click", () => {
-    google.accounts.id.prompt(); // запускаем окно входа
-  });
+  if (!currentUser) {
+    google.accounts.id.prompt();
+  }
+});
+
 
   document.getElementById("logoutBtn").addEventListener("click", logout);
 
-  // По умолчанию заблокировать кнопку "Добавить услугу"
+  // Назначаем обработчик кнопке "Добавить услугу" в зависимости от авторизации
+if (currentUser) {
+  document.getElementById("addServiceBtn").onclick = () => {
+    window.location.href = "add.html";
+  };
+} else {
   document.getElementById("addServiceBtn").onclick = () => {
     showNotification("Авторизуйтесь, чтобы добавить услугу");
   };
+}
+
 };
+
+
 
 function handleCredentialResponse(response) {
   const data = parseJwt(response.credential);
@@ -680,8 +699,11 @@ function handleCredentialResponse(response) {
     name: data.name,
     picture: data.picture
   };
+  localStorage.setItem("user", JSON.stringify(currentUser));
   updateAuthUI();
 }
+
+
 
 function parseJwt(token) {
   const base64Url = token.split('.')[1];
@@ -707,8 +729,8 @@ function updateAuthUI() {
 
 function logout() {
   currentUser = null;
+  localStorage.removeItem("user");
   google.accounts.id.disableAutoSelect();
-  
   document.getElementById("loginBtn").classList.remove("hidden");
   document.getElementById("logoutBtn").classList.add("hidden");
   document.getElementById("cabinetBtn").classList.add("hidden");
@@ -717,8 +739,4 @@ function logout() {
   document.getElementById("addServiceBtn").onclick = () => {
     showNotification("Авторизуйтесь, чтобы добавить услугу");
   };
-
-  // Добавляем вызов повторного показа окна входа
-  google.accounts.id.prompt();
 }
-
