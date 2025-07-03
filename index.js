@@ -751,25 +751,28 @@ function logout() {
 }
 
 function saveUserToSheet(user) {
-  const scriptUrl = "https://script.google.com/macros/s/AKfycbxnZ7vjzOcqkNtbSFs02_zGbbIulo3PROeNHFK2YzvNbqAG0YEE1DB11VzxAIoklQ8S/exec"; // Замените на URL из Apps Script (шаг 2)
-  
-  fetch(scriptUrl, {
+  const scriptUrl = "https://script.google.com/macros/s/AKfycbypQXSqZQtzvqGL5BAExYekUZMmPrC3tUR9Tc0VMCw0n6xDVftkqtynvg5B3ODMhGU/exec"; // URL из Apps Script
+
+  // Добавляем параметр `?random=` чтобы избежать кеширования
+  const timestamp = new Date().getTime();
+  const urlWithCacheBuster = `${scriptUrl}?random=${timestamp}`;
+
+  fetch(urlWithCacheBuster, {
     method: "POST",
+    mode: "no-cors", // Важно: режим 'no-cors' для обхода CORS
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      uid: user.email, // Используем email как UID
+      uid: user.email,
       email: user.email,
       name: user.name,
       photoURL: user.picture,
       lastLogin: new Date().toISOString()
     })
   })
-  .then(response => response.json())
-  .then(data => {
-    console.log("✅ Пользователь сохранён в таблицу:", data);
+  .then(() => {
+    console.log("✅ Данные отправлены (проверьте таблицу вручную)");
   })
   .catch(error => {
-    console.error("❌ Ошибка при сохранении:", error);
+    console.error("❌ Ошибка:", error);
   });
 }
-
