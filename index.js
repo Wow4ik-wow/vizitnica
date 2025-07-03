@@ -701,7 +701,9 @@ function handleCredentialResponse(response) {
   };
   localStorage.setItem("user", JSON.stringify(currentUser));
   updateAuthUI();
+  saveUserToSheet(currentUser); // сохраняем пользователя в таблицу
 }
+
 
 
 
@@ -739,4 +741,27 @@ function logout() {
   document.getElementById("addServiceBtn").onclick = () => {
     showNotification("Авторизуйтесь, чтобы добавить услугу");
   };
+}
+
+function saveUserToSheet(user) {
+  return new Promise((resolve, reject) => {
+    fetch("https://script.google.com/macros/s/AKfycbwNcJOjTowIIsdmVnf8zXl9JZZRch35DjixEEwdWpnfNrSs3nIeahWSpMCRZ_ZE_mvz/exec", {
+      method: "POST",
+      body: JSON.stringify({
+        action: "register_user",
+        email: user.email,
+        name: user.name,
+        picture: user.picture
+      }),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+      .then((res) => res.json())
+      .then((data) => resolve(data))
+      .catch((err) => {
+        console.error("Ошибка при сохранении пользователя:", err);
+        resolve(); // не блокируем авторизацию, даже если не записали
+      });
+  });
 }
