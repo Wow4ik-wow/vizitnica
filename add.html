@@ -18,28 +18,29 @@
           <option value="">-- Выберите область --</option>
         </select>
         <input
-    type="text"
-    id="regionCustom"
-    placeholder="Или введите свою область"
-  />
-</div>
+          type="text"
+          id="regionCustom"
+          placeholder="Или введите свою область"
+        />
+      </div>
 
-<!-- 3. Населённый пункт (множественный, до 10, автоподбор) -->
-        <div class="form-group">
-  <label for="townSelect">Населённые пункты <span class="required">*</span></label>
-  <select id="townSelect" name="townSelect" required>
-    <option value="">-- Выберите город --</option>
-  </select>
-  
-  <div id="selectedTownsContainer" class="selected-items-container"></div>
+      <!-- 3. Населённый пункт (множественный, до 10, автоподбор) -->
+      <div class="form-group">
+        <label for="townSelect"
+          >Населённые пункты <span class="required">*</span></label
+        >
+        <select id="townSelect" name="townSelect" required>
+          <option value="">-- Выберите город --</option>
+        </select>
 
-  <input
-    type="text"
-    id="townCustom"
-    placeholder="Или введите свой населённый пункт"
-  />
-</div>
+        <div id="selectedTownsContainer" class="selected-items-container"></div>
 
+        <input
+          type="text"
+          id="townCustom"
+          placeholder="Или введите свой населённый пункт"
+        />
+      </div>
 
       <!-- 4. Район города -->
       <div class="form-group">
@@ -59,21 +60,20 @@
 
       <!-- 6. Вид деятельности (множественный, до 10, зависит от профиля) -->
       <div class="form-group">
-  <label>Вид деятельности <span class="required">*</span></label>
-  
-  <select id="kindSelect" disabled>
-    <option value="">-- Выберите вид --</option>
-  </select>
-  
-  <div id="selectedKindsContainer"></div>
-  
-  <input
-    type="text"
-    id="kindCustom"
-    placeholder="Или введите свой вид деятельности"
-  />
-</div>
+        <label>Вид деятельности <span class="required">*</span></label>
 
+        <select id="kindSelect" disabled>
+          <option value="">-- Выберите вид --</option>
+        </select>
+
+        <div id="selectedKindsContainer"></div>
+
+        <input
+          type="text"
+          id="kindCustom"
+          placeholder="Или введите свой вид деятельности"
+        />
+      </div>
 
       <!-- 7. Имя -->
       <div class="form-group">

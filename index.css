@@ -1,5 +1,7 @@
 /* Сброс и базовая настройка */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -132,8 +134,8 @@ input {
   top: 20px;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(240,147,147,0.75);
-  color: rgb(15,12,12);
+  background: rgba(240, 147, 147, 0.75);
+  color: rgb(15, 12, 12);
   padding: 10px 20px;
   border-radius: 6px;
   display: none;

@@ -242,10 +242,9 @@ function applyFilters() {
   countElem.innerText = `Найдено совпадений: ${filtered.length}`;
 
   populateList("listProfile", filtered, "Профиль деятельности");
-populateList("listType", filtered, "Вид деятельности");
-populateList("listDistrict", filtered, "Район");
-populateList("listName", filtered, "Имя", true);
-
+  populateList("listType", filtered, "Вид деятельности");
+  populateList("listDistrict", filtered, "Район");
+  populateList("listName", filtered, "Имя", true);
 }
 
 function populateAllLists() {
@@ -262,7 +261,13 @@ function populateAllLists() {
   populateDependentLists(allServices);
 }
 
-function populateList(listId, services, fieldName, useLowerCase = true, filterFields = {}) {
+function populateList(
+  listId,
+  services,
+  fieldName,
+  useLowerCase = true,
+  filterFields = {}
+) {
   const datalist = document.getElementById(listId);
   datalist.innerHTML = "";
   const valuesSet = new Set();
@@ -276,16 +281,18 @@ function populateList(listId, services, fieldName, useLowerCase = true, filterFi
 
   services.forEach((service) => {
     // Для каждого фильтра получаем массив значений (сплитим по запятой, убираем пробелы и нормализуем)
-    const matchesFilters = Object.entries(filterValues).every(([filterField, filterVal]) => {
-      if (!filterVal) return true;
+    const matchesFilters = Object.entries(filterValues).every(
+      ([filterField, filterVal]) => {
+        if (!filterVal) return true;
 
-      const serviceFieldVal = (service[filterField] || "");
-      const serviceFieldArr = serviceFieldVal
-        .split(",")
-        .map((s) => (useLowerCase ? s.trim().toLowerCase() : s.trim()));
+        const serviceFieldVal = service[filterField] || "";
+        const serviceFieldArr = serviceFieldVal
+          .split(",")
+          .map((s) => (useLowerCase ? s.trim().toLowerCase() : s.trim()));
 
-      return serviceFieldArr.includes(filterVal);
-    });
+        return serviceFieldArr.includes(filterVal);
+      }
+    );
 
     if (!matchesFilters) return;
 
@@ -305,7 +312,9 @@ function populateList(listId, services, fieldName, useLowerCase = true, filterFi
       // Но эта функция вызывается отдельно для listName с объединением ниже
       // Здесь игнорируем, чтобы не дублировать
     } else {
-      valuesSet.add(useLowerCase ? valueToAdd.trim().toLowerCase() : valueToAdd.trim());
+      valuesSet.add(
+        useLowerCase ? valueToAdd.trim().toLowerCase() : valueToAdd.trim()
+      );
     }
   });
 
@@ -314,16 +323,18 @@ function populateList(listId, services, fieldName, useLowerCase = true, filterFi
     // Собираем уникальные Имя и Компания по фильтрам отдельно
     services.forEach((service) => {
       // Проверка фильтров повторяется, можно было оптимизировать, но оставим так
-      const matchesFilters = Object.entries(filterValues).every(([filterField, filterVal]) => {
-        if (!filterVal) return true;
+      const matchesFilters = Object.entries(filterValues).every(
+        ([filterField, filterVal]) => {
+          if (!filterVal) return true;
 
-        const serviceFieldVal = (service[filterField] || "");
-        const serviceFieldArr = serviceFieldVal
-          .split(",")
-          .map((s) => (useLowerCase ? s.trim().toLowerCase() : s.trim()));
+          const serviceFieldVal = service[filterField] || "";
+          const serviceFieldArr = serviceFieldVal
+            .split(",")
+            .map((s) => (useLowerCase ? s.trim().toLowerCase() : s.trim()));
 
-        return serviceFieldArr.includes(filterVal);
-      });
+          return serviceFieldArr.includes(filterVal);
+        }
+      );
 
       if (!matchesFilters) return;
 
@@ -336,7 +347,9 @@ function populateList(listId, services, fieldName, useLowerCase = true, filterFi
   }
 
   // Преобразуем в массив и сортируем по-русски, с учетом регистра для читаемости
-  const sortedValues = Array.from(valuesSet).sort((a, b) => a.localeCompare(b, "ru"));
+  const sortedValues = Array.from(valuesSet).sort((a, b) =>
+    a.localeCompare(b, "ru")
+  );
 
   sortedValues.forEach((val) => {
     if (val) {
@@ -346,7 +359,6 @@ function populateList(listId, services, fieldName, useLowerCase = true, filterFi
     }
   });
 }
-
 
 function populateDatalist(listId, values) {
   const datalist = document.getElementById(listId);
@@ -630,11 +642,14 @@ filterFields.forEach((id) => {
         );
       });
 
-      if (id === "filterProfile") populateList("listProfile", filtered, "Профиль деятельности");
-else if (id === "filterType") populateList("listType", filtered, "Вид деятельности");
-else if (id === "filterDistrict") populateList("listDistrict", filtered, "Район");
-else if (id === "filterName") populateList("listName", filtered, "Имя", true);
-
+      if (id === "filterProfile")
+        populateList("listProfile", filtered, "Профиль деятельности");
+      else if (id === "filterType")
+        populateList("listType", filtered, "Вид деятельности");
+      else if (id === "filterDistrict")
+        populateList("listDistrict", filtered, "Район");
+      else if (id === "filterName")
+        populateList("listName", filtered, "Имя", true);
     }
   });
 
@@ -656,9 +671,10 @@ let currentUser = null;
 
 window.onload = () => {
   google.accounts.id.initialize({
-    client_id: "49343525916-dt32rrjpvdpifvasp76int8kerlqnakp.apps.googleusercontent.com",
+    client_id:
+      "49343525916-dt32rrjpvdpifvasp76int8kerlqnakp.apps.googleusercontent.com",
     callback: handleCredentialResponse,
-    auto_select: false
+    auto_select: false,
   });
 
   // Восстанавливаем пользователя из localStorage
@@ -669,58 +685,50 @@ window.onload = () => {
   }
 
   document.getElementById("loginBtn").addEventListener("click", () => {
-  if (!currentUser) {
-    google.accounts.id.prompt();
-  }
-});
-
+    if (!currentUser) {
+      google.accounts.id.prompt();
+    }
+  });
 
   document.getElementById("logoutBtn").addEventListener("click", logout);
 
   // Назначаем обработчик кнопке "Добавить услугу" в зависимости от авторизации
-if (currentUser) {
-  document.getElementById("addServiceBtn").onclick = () => {
-    window.location.href = "add.html";
-  };
-} else {
-  document.getElementById("addServiceBtn").onclick = () => {
-    showNotification("Авторизуйтесь, чтобы добавить услугу");
-  };
-}
-
+  if (currentUser) {
+    document.getElementById("addServiceBtn").onclick = () => {
+      window.location.href = "add.html";
+    };
+  } else {
+    document.getElementById("addServiceBtn").onclick = () => {
+      showNotification("Авторизуйтесь, чтобы добавить услугу");
+    };
+  }
 };
-
-
 
 function handleCredentialResponse(response) {
   const data = parseJwt(response.credential);
   currentUser = {
     email: data.email,
     name: data.name,
-    picture: data.picture
+    picture: data.picture,
   };
   localStorage.setItem("user", JSON.stringify(currentUser));
 
   console.log("➡ Отправка данных пользователя в таблицу...");
   saveUserToSheet(currentUser);
 
-console.log("✅ Пользователь отправлен (или попытка сделана)");
-
+  console.log("✅ Пользователь отправлен (или попытка сделана)");
 
   updateAuthUI();
 }
 
-
-
-
-
 function parseJwt(token) {
-  const base64Url = token.split('.')[1];
-  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  const base64Url = token.split(".")[1];
+  const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
   const jsonPayload = decodeURIComponent(
-    atob(base64).split('').map((c) =>
-      '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
-    ).join('')
+    atob(base64)
+      .split("")
+      .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+      .join("")
   );
   return JSON.parse(jsonPayload);
 }
@@ -751,7 +759,8 @@ function logout() {
 }
 
 function saveUserToSheet(user) {
-  const scriptUrl = "https://script.google.com/macros/s/AKfycbypQXSqZQtzvqGL5BAExYekUZMmPrC3tUR9Tc0VMCw0n6xDVftkqtynvg5B3ODMhGU/exec"; // URL из Apps Script
+  const scriptUrl =
+    "https://script.google.com/macros/s/AKfycbypQXSqZQtzvqGL5BAExYekUZMmPrC3tUR9Tc0VMCw0n6xDVftkqtynvg5B3ODMhGU/exec"; // URL из Apps Script
 
   // Добавляем параметр `?random=` чтобы избежать кеширования
   const timestamp = new Date().getTime();
@@ -766,13 +775,13 @@ function saveUserToSheet(user) {
       email: user.email,
       name: user.name,
       photoURL: user.picture,
-      lastLogin: new Date().toISOString()
+      lastLogin: new Date().toISOString(),
+    }),
+  })
+    .then(() => {
+      console.log("✅ Данные отправлены (проверьте таблицу вручную)");
     })
-  })
-  .then(() => {
-    console.log("✅ Данные отправлены (проверьте таблицу вручную)");
-  })
-  .catch(error => {
-    console.error("❌ Ошибка:", error);
-  });
+    .catch((error) => {
+      console.error("❌ Ошибка:", error);
+    });
 }

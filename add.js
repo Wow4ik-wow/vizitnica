@@ -5,145 +5,138 @@ const sheetsURL = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/
 document.addEventListener("DOMContentLoaded", () => {
   loadRegionList();
   // Взаимоисключение: область из списка и кастомная
-const regionSelect = document.getElementById("regionSelect");
-const regionCustom = document.getElementById("regionCustom");
+  const regionSelect = document.getElementById("regionSelect");
+  const regionCustom = document.getElementById("regionCustom");
 
-regionCustom.addEventListener("input", () => {
-  regionSelect.value = "";
-  clearTownSelection();
-});
+  regionCustom.addEventListener("input", () => {
+    regionSelect.value = "";
+    clearTownSelection();
+  });
 
-
-regionSelect.addEventListener("change", () => {
-  regionCustom.value = "";
-});
-function clearTownSelection() {
-  selectedValues.selectedTownsContainer = [];
-  document.getElementById("selectedTownsContainer").innerHTML = "";
-  document.getElementById("townSelect").innerHTML =
-    '<option value="">-- Выберите город --</option>';
-  document.getElementById("townSelect").disabled = true;
-  document.getElementById("townCustom").value = "";
-}
-
-
-
-  // При выборе области - загрузить города в селект (без multiple)
-document
-  .getElementById("regionSelect")
-  .addEventListener("change", async () => {
-    const region = document.getElementById("regionSelect").value;
-    const select = document.getElementById("townSelect");
-    select.innerHTML = '<option value="">-- Выберите город --</option>';
-
-    // Очистить выбранные города
+  regionSelect.addEventListener("change", () => {
+    regionCustom.value = "";
+  });
+  function clearTownSelection() {
     selectedValues.selectedTownsContainer = [];
     document.getElementById("selectedTownsContainer").innerHTML = "";
-
-clearTownSelection();
-
-
-    if (!region) {
-      select.disabled = true;
-      return;
-    }
-
-    const rows = await fetchSheetData("Населённые пункты");
-    const towns = rows
-      .filter((row) => {
-        const areas = (row[1] || "").split(",").map((s) => cleanText(s));
-        return areas.includes(region);
-      })
-      .map((r) => (r[0] || "").split(","))
-      .flat()
-      .map(cleanText)
-      .filter(Boolean);
-
-    const uniqueTowns = [...new Set(towns)].sort();
-
-    uniqueTowns.forEach((town) => {
-      const opt = document.createElement("option");
-      opt.value = town;
-      opt.textContent = town;
-      select.appendChild(opt);
-    });
-
-    select.disabled = false;
-  });
-
-// Обработчик выбора города из селекта (один за раз)
-document.getElementById("townSelect").addEventListener("change", (e) => {
-  const val = e.target.value;
-  if (!val) return;
-
-  const containerId = "selectedTownsContainer";
-
-  if (selectedValues[containerId].includes(val)) {
-    // Удаляем из выбранных
-    selectedValues[containerId] = selectedValues[containerId].filter(
-      (v) => v !== val
-    );
-  } else {
-    if (selectedValues[containerId].length >= 10) {
-  showMessage("Нельзя выбрать более 10 населённых пунктов");
-  e.target.value = ""; // Сброс выбора
-  return;
-}
-
-    selectedValues[containerId].push(val);
+    document.getElementById("townSelect").innerHTML =
+      '<option value="">-- Выберите город --</option>';
+    document.getElementById("townSelect").disabled = true;
+    document.getElementById("townCustom").value = "";
   }
-  updateSelectedTownsUI();
 
-  e.target.value = ""; // Сбросить выбор, чтобы можно было выбрать следующий
-});
+  // При выборе области - загрузить города в селект (без multiple)
+  document
+    .getElementById("regionSelect")
+    .addEventListener("change", async () => {
+      const region = document.getElementById("regionSelect").value;
+      const select = document.getElementById("townSelect");
+      select.innerHTML = '<option value="">-- Выберите город --</option>';
 
-function updateSelectedTownsUI() {
-  const container = document.getElementById("selectedTownsContainer");
-  container.innerHTML = "";
-  selectedValues.selectedTownsContainer.forEach((val) => {
-    const span = document.createElement("span");
-    span.textContent = val;
-    span.className = "selected-item";
-    span.title = "Клик для удаления";
-    span.style.cursor = "pointer";
-    span.addEventListener("click", () => {
-      selectedValues.selectedTownsContainer =
-        selectedValues.selectedTownsContainer.filter((v) => v !== val);
-      updateSelectedTownsUI();
+      // Очистить выбранные города
+      selectedValues.selectedTownsContainer = [];
+      document.getElementById("selectedTownsContainer").innerHTML = "";
+
+      clearTownSelection();
+
+      if (!region) {
+        select.disabled = true;
+        return;
+      }
+
+      const rows = await fetchSheetData("Населённые пункты");
+      const towns = rows
+        .filter((row) => {
+          const areas = (row[1] || "").split(",").map((s) => cleanText(s));
+          return areas.includes(region);
+        })
+        .map((r) => (r[0] || "").split(","))
+        .flat()
+        .map(cleanText)
+        .filter(Boolean);
+
+      const uniqueTowns = [...new Set(towns)].sort();
+
+      uniqueTowns.forEach((town) => {
+        const opt = document.createElement("option");
+        opt.value = town;
+        opt.textContent = town;
+        select.appendChild(opt);
+      });
+
+      select.disabled = false;
     });
-    container.appendChild(span);
+
+  // Обработчик выбора города из селекта (один за раз)
+  document.getElementById("townSelect").addEventListener("change", (e) => {
+    const val = e.target.value;
+    if (!val) return;
+
+    const containerId = "selectedTownsContainer";
+
+    if (selectedValues[containerId].includes(val)) {
+      // Удаляем из выбранных
+      selectedValues[containerId] = selectedValues[containerId].filter(
+        (v) => v !== val
+      );
+    } else {
+      if (selectedValues[containerId].length >= 10) {
+        showMessage("Нельзя выбрать более 10 населённых пунктов");
+        e.target.value = ""; // Сброс выбора
+        return;
+      }
+
+      selectedValues[containerId].push(val);
+    }
+    updateSelectedTownsUI();
+
+    e.target.value = ""; // Сбросить выбор, чтобы можно было выбрать следующий
   });
-}
 
-
+  function updateSelectedTownsUI() {
+    const container = document.getElementById("selectedTownsContainer");
+    container.innerHTML = "";
+    selectedValues.selectedTownsContainer.forEach((val) => {
+      const span = document.createElement("span");
+      span.textContent = val;
+      span.className = "selected-item";
+      span.title = "Клик для удаления";
+      span.style.cursor = "pointer";
+      span.addEventListener("click", () => {
+        selectedValues.selectedTownsContainer =
+          selectedValues.selectedTownsContainer.filter((v) => v !== val);
+        updateSelectedTownsUI();
+      });
+      container.appendChild(span);
+    });
+  }
 
   loadProfileList();
   setupMultiInput("townCustom", "selectedTownsContainer", 10);
   setupMultiInput("kindCustom", "selectedKindsContainer", 10);
   setupProfileWatcher();
   document.getElementById("kindSelect").addEventListener("change", () => {
-  const select = document.getElementById("kindSelect");
-  const val = select.value;
+    const select = document.getElementById("kindSelect");
+    const val = select.value;
 
-  if (!val) return;
+    if (!val) return;
 
-  const containerId = "selectedKindsContainer";
+    const containerId = "selectedKindsContainer";
 
-  if (selectedValues[containerId].includes(val)) {
+    if (selectedValues[containerId].includes(val)) {
+      select.value = "";
+      return;
+    }
+
+    if (selectedValues[containerId].length >= 10) {
+      showMessage("Нельзя выбрать более 10 видов деятельности");
+      select.value = "";
+      return;
+    }
+
+    addSelectedValue(val, containerId, 10);
     select.value = "";
-    return;
-  }
-
-  if (selectedValues[containerId].length >= 10) {
-    showMessage("Нельзя выбрать более 10 видов деятельности");
-    select.value = "";
-    return;
-  }
-
-  addSelectedValue(val, containerId, 10);
-  select.value = "";
-});
-
+  });
 
   setupPhoneAdd();
   setupLinks();
@@ -280,7 +273,6 @@ function setupMultiInput(inputId, containerId, limit) {
   });
 }
 
-
 function addSelectedValue(val, containerId, limit) {
   if (selectedValues[containerId].includes(val)) return;
   selectedValues[containerId].push(val);
@@ -312,15 +304,14 @@ function setupAutocomplete(inputId, sourceArray, containerId, limit) {
         li.addEventListener("click", () => {
           if (selectedValues[containerId].includes(match)) return;
 
-if (selectedValues[containerId].length >= limit) {
-  showMessage(`Нельзя выбрать более ${limit} значений`);
-  return;
-}
+          if (selectedValues[containerId].length >= limit) {
+            showMessage(`Нельзя выбрать более ${limit} значений`);
+            return;
+          }
 
-addSelectedValue(match, containerId, limit);
-input.value = "";
-suggestions.innerHTML = "";
-
+          addSelectedValue(match, containerId, limit);
+          input.value = "";
+          suggestions.innerHTML = "";
         });
         suggestions.appendChild(li);
       });
@@ -344,9 +335,9 @@ function setupPhoneAdd() {
       return;
     }
 
-    const existingPhones = Array.from(container.querySelectorAll(".phone-item")).map(
-      (el) => el.textContent
-    );
+    const existingPhones = Array.from(
+      container.querySelectorAll(".phone-item")
+    ).map((el) => el.textContent);
 
     if (existingPhones.includes(val)) {
       showMessage("Такой номер уже добавлен");
@@ -367,7 +358,6 @@ function setupPhoneAdd() {
     input.value = "";
   });
 }
-
 
 function setupLinks() {
   document.querySelectorAll(".link-checkbox").forEach((checkbox) => {
@@ -462,8 +452,9 @@ async function handleSubmit(e) {
   };
 
   console.log("Данные для отправки:", payload);
-  showMessage("Форма заполнена корректно. Отправка в таблицу будет реализована позже.");
-
+  showMessage(
+    "Форма заполнена корректно. Отправка в таблицу будет реализована позже."
+  );
 
   await submitToSheet(payload);
 }
@@ -487,12 +478,10 @@ async function submitToSheet(data) {
       location.reload();
     } else {
       showMessage("Ошибка при отправке. Попробуйте позже.");
-
     }
   } catch (err) {
     console.error("Ошибка отправки:", err);
     showMessage("Ошибка соединения. Проверьте интернет.");
-
   }
 }
 function showMessage(text) {
