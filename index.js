@@ -651,3 +651,69 @@ function showNotification(message) {
     el.style.display = "none";
   }, 5000);
 }
+
+let currentUser = null;
+
+window.onload = () => {
+  google.accounts.id.initialize({
+    client_id: "49343525916-dt32rrjpvdpifvasp76int8kerlqnakp.apps.googleusercontent.com",
+    callback: handleCredentialResponse,
+    auto_select: false
+  });
+
+  document.getElementById("loginBtn").addEventListener("click", () => {
+    google.accounts.id.prompt(); // запускаем окно входа
+  });
+
+  document.getElementById("logoutBtn").addEventListener("click", logout);
+
+  // По умолчанию заблокировать кнопку "Добавить услугу"
+  document.getElementById("addServiceBtn").onclick = () => {
+    showNotification("Авторизуйтесь, чтобы добавить услугу");
+  };
+};
+
+function handleCredentialResponse(response) {
+  const data = parseJwt(response.credential);
+  currentUser = {
+    email: data.email,
+    name: data.name,
+    picture: data.picture
+  };
+  updateAuthUI();
+}
+
+function parseJwt(token) {
+  const base64Url = token.split('.')[1];
+  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  const jsonPayload = decodeURIComponent(
+    atob(base64).split('').map((c) =>
+      '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+    ).join('')
+  );
+  return JSON.parse(jsonPayload);
+}
+
+function updateAuthUI() {
+  document.getElementById("loginBtn").classList.add("hidden");
+  document.getElementById("logoutBtn").classList.remove("hidden");
+  document.getElementById("cabinetBtn").classList.remove("hidden");
+  document.getElementById("adminBtn").classList.remove("hidden");
+
+  document.getElementById("addServiceBtn").onclick = () => {
+    window.location.href = "add.html";
+  };
+}
+
+function logout() {
+  currentUser = null;
+  google.accounts.id.disableAutoSelect();
+  document.getElementById("loginBtn").classList.remove("hidden");
+  document.getElementById("logoutBtn").classList.add("hidden");
+  document.getElementById("cabinetBtn").classList.add("hidden");
+  document.getElementById("adminBtn").classList.add("hidden");
+
+  document.getElementById("addServiceBtn").onclick = () => {
+    showNotification("Авторизуйтесь, чтобы добавить услугу");
+  };
+}
