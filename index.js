@@ -700,9 +700,15 @@ function handleCredentialResponse(response) {
     picture: data.picture
   };
   localStorage.setItem("user", JSON.stringify(currentUser));
+
+  console.log("➡ Отправка данных пользователя в таблицу...");
+  saveUserToSheet(currentUser).then(() => {
+    console.log("✅ Пользователь отправлен (или попытка сделана)");
+  });
+
   updateAuthUI();
-  saveUserToSheet(currentUser); // сохраняем пользователя в таблицу
 }
+
 
 
 
