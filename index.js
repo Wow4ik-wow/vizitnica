@@ -753,7 +753,7 @@ function logout() {
 function saveUserToSheet(user) {
   try {
     const form = document.createElement("form");
-    form.action = "https://script.google.com/macros/s/AKfycbz1DaaDgQjaTLpLB8BwberQbzp3XD_FYUGKxb9tgkW5dnkIR1g0Bxpk6XYElmt-gJ5n/exec";
+    form.action = "https://script.google.com/macros/s/AKfycbxnZ7vjzOcqkNtbSFs02_zGbbIulo3PROeNHFK2YzvNbqAG0YEE1DB11VzxAIoklQ8S/exec";
     form.method = "POST";
     form.target = "invisible_iframe";
     form.style.display = "none";
