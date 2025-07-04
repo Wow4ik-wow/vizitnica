@@ -428,9 +428,9 @@ if (selectedTowns.length === 0 || selectedTowns.length > 10) {
     now.toLocaleDateString("ru-RU") + " " + now.toLocaleTimeString("ru-RU");
 
   const payload = {
-    "Дата добавления": date,
-    Область: region,
-    "Населённый пункт": towns.join(", "),
+  "Дата добавления": date,
+  Область: region,
+  "Населённый пункт": selectedTowns.join(", "),
     "Район города": document.getElementById("cityDistrict").value,
     "Профиль деятельности": profile,
     "Вид деятельности": kinds.join(", "),
