@@ -30,7 +30,7 @@
           >Населённые пункты <span class="required">*</span></label
         >
         <select id="townSelect" name="townSelect" required>
-          <option value="">-- Выберите город --</option>
+          <option value="">-- Выберите из списка --</option>
         </select>
 
         <div id="selectedTownsContainer" class="selected-items-container"></div>
@@ -38,14 +38,14 @@
         <input
           type="text"
           id="townCustom"
-          placeholder="Или введите свой населённый пункт"
+          placeholder="Или введите свой, если нет нужного в списке"
         />
       </div>
 
       <!-- 4. Район города -->
       <div class="form-group">
         <label for="cityDistrict">Район города</label>
-        <input type="text" id="cityDistrict" maxlength="200" />
+        <input type="text" id="cityDistrict" maxlength="200" placeholder="Можете указать при желании" />
       </div>
 
       <!-- 5. Профиль деятельности -->
@@ -78,9 +78,9 @@
       <!-- 7. Имя -->
       <div class="form-group">
         <label for="nameInput"
-          >Имя (или Компания) <span class="required">*</span></label
+          >Имя <span class="required">*</span></label
         >
-        <input type="text" id="nameInput" maxlength="100" />
+        <input type="text" id="nameInput" maxlength="100" placeholder="Заполнить обязательно хотя бы одно из полей ИМЯ/КОМПАНИЯ (можно оба)" />
       </div>
 
       <!-- 8. Компания -->
@@ -88,7 +88,7 @@
         <label for="companyInput"
           >Компания (или Имя) <span class="required">*</span></label
         >
-        <input type="text" id="companyInput" maxlength="100" />
+        <input type="text" id="companyInput" maxlength="100" placeholder="Заполнить обязательно хотя бы одно из полей ИМЯ/КОМПАНИЯ (можно оба)" />
       </div>
 
       <!-- 9. Описание (до 75 символов) -->
@@ -96,7 +96,7 @@
         <label for="descShort"
           >Описание (до 75 символов) <span class="required">*</span></label
         >
-        <input type="text" id="descShort" maxlength="75" required />
+        <input type="text" id="descShort" maxlength="75" placeholder="Краткое описание для карточки" required />
       </div>
 
       <!-- 10. Описание (до 700 символов) -->
@@ -104,7 +104,7 @@
         <label for="descLong"
           >Описание (до 700 символов) <span class="required">*</span></label
         >
-        <textarea id="descLong" maxlength="700" required></textarea>
+        <textarea id="descLong" maxlength="700" placeholder="Полное описание" required></textarea>
       </div>
 
       <!-- 11. Адрес -->
@@ -113,11 +113,11 @@
         <input type="text" id="addressInput" maxlength="200" />
       </div>
 
-      <!-- 12. Телефоны (до 10, формат +380xxxxxxxxx) -->
+      <!-- 12. Телефоны (до 10, формат 380xxxxxxxxx) -->
       <div class="form-group">
         <label>Телефоны <span class="required">*</span></label>
         <div id="phonesContainer"></div>
-        <input type="text" id="phoneInput" placeholder="+380xxxxxxxxx" />
+        <input type="text" id="phoneInput" placeholder="380xxxxxxxxx" />
         <button type="button" id="addPhoneBtn">Добавить телефон</button>
       </div>
 
