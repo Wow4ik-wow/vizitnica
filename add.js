@@ -452,9 +452,9 @@ async function handleSubmit(e) {
   };
 
   console.log("Данные для отправки:", payload);
-  showMessage(
-    "Форма заполнена корректно. Отправка в таблицу будет реализована позже."
-  );
+  showMessage("Отправка данных...");
+await submitToSheet(payload);
+
 
   await submitToSheet(payload);
 }
