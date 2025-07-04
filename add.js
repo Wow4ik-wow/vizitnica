@@ -387,18 +387,14 @@ async function handleSubmit(e) {
     document.getElementById("regionCustom").value;
   if (!region) errors.push("Область обязательна");
 
-  const townSelect = document.getElementById("townSelect");
-  const selectedTowns = Array.from(townSelect.selectedOptions).map(
-    (opt) => opt.value
-  );
-  const customTown = document.getElementById("townCustom").value.trim();
+  const selectedTowns = selectedValues["selectedTownsContainer"]
+  .concat(document.getElementById("townCustom").value.trim())
+  .filter(Boolean);
 
-  const towns = customTown ? selectedTowns.concat(customTown) : selectedTowns;
-  if (towns.length === 0 || towns.length > 10)
-    errors.push("Укажите до 10 населённых пунктов");
+if (selectedTowns.length === 0 || selectedTowns.length > 10) {
+  errors.push("Укажите до 10 населённых пунктов");
+}
 
-  if (towns.length === 0 || towns.length > 10)
-    errors.push("Укажите до 10 населённых пунктов");
 
   const kinds = selectedValues["selectedKindsContainer"]
     .concat(document.getElementById("kindCustom").value)
