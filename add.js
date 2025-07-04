@@ -458,7 +458,7 @@ async function handleSubmit(e) {
 
 async function submitToSheet(data) {
   const formUrl =
-    "https://script.google.com/macros/s/AKfycbz3pAD46nQKYxKfP77xbos34tEsmYrye8eD-sNx63pTfJ53BXRw-Tlh7geCED8TGHPu5g/exec";
+    "https://script.google.com/macros/s/AKfycbykBEgnGtL1EbENMs1SFcXL38vb60EPrsOjQcuBcn6XdVbJZylldRZfh9qBcuOimR-sdw/exec";
 
   const formData = new FormData();
   Object.keys(data).forEach((key) => formData.append(key, data[key]));
