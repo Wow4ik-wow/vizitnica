@@ -330,8 +330,8 @@ function setupPhoneAdd() {
   btn.addEventListener("click", () => {
     const val = input.value.trim();
 
-    if (!/^\+380\d{9}$/.test(val)) {
-      showMessage("Неверный формат телефона. Пример: +380671112233");
+    if (!/^380\d{9}$/.test(val)) {
+      showMessage("Неверный формат телефона. Пример: 380671112233");
       return;
     }
 
