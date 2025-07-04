@@ -388,13 +388,12 @@ async function handleSubmit(e) {
   if (!region) errors.push("Область обязательна");
 
   const selectedTowns = selectedValues["selectedTownsContainer"]
-  .concat(document.getElementById("townCustom").value.trim())
-  .filter(Boolean);
+    .concat(document.getElementById("townCustom").value.trim())
+    .filter(Boolean);
 
-if (selectedTowns.length === 0 || selectedTowns.length > 10) {
-  errors.push("Укажите до 10 населённых пунктов");
-}
-
+  if (selectedTowns.length === 0 || selectedTowns.length > 10) {
+    errors.push("Укажите до 10 населённых пунктов");
+  }
 
   const kinds = selectedValues["selectedKindsContainer"]
     .concat(document.getElementById("kindCustom").value)
@@ -413,10 +412,12 @@ if (selectedTowns.length === 0 || selectedTowns.length > 10) {
   const company = document.getElementById("companyInput").value;
   if (!name && !company) errors.push("Укажите Имя или Компанию");
 
-  const phones = Array.from(document.querySelectorAll(".phone-item")).map(
-    (d) => d.textContent
-  );
+  const phoneElements = document.querySelectorAll(".phone-item");
+  const phones = Array.from(phoneElements)
+    .map((d) => d.textContent)
+    .filter(Boolean);
   if (phones.length === 0) errors.push("Укажите хотя бы один телефон");
+  const phonesString = phones.join(", ");
 
   if (errors.length > 0) {
     showMessage("Ошибки:<br>" + errors.join("<br>"));
@@ -428,9 +429,9 @@ if (selectedTowns.length === 0 || selectedTowns.length > 10) {
     now.toLocaleDateString("ru-RU") + " " + now.toLocaleTimeString("ru-RU");
 
   const payload = {
-  "Дата добавления": date,
-  Область: region,
-  "Населённый пункт": selectedTowns.join(", "),
+    "Дата добавления": date,
+    Область: region,
+    "Населённый пункт": selectedTowns.join(", "),
     "Район города": document.getElementById("cityDistrict").value,
     "Профиль деятельности": profile,
     "Вид деятельности": kinds.join(", "),
@@ -439,7 +440,8 @@ if (selectedTowns.length === 0 || selectedTowns.length > 10) {
     "Описание (до 75 симв)": descShort,
     "Описание (до 700 симв)": descLong,
     Адрес: document.getElementById("addressInput").value,
-    Телефоны: phones.join(", "),
+    Телефоны: phonesString,
+
     Ссылки: Array.from(document.querySelectorAll("#linksInputsContainer input"))
       .map((i) => `${i.dataset.type}:${i.value}`)
       .join(", "),
@@ -449,8 +451,7 @@ if (selectedTowns.length === 0 || selectedTowns.length > 10) {
 
   console.log("Данные для отправки:", payload);
   showMessage("Отправка данных...");
-await submitToSheet(payload);
-
+  await submitToSheet(payload);
 
   await submitToSheet(payload);
 }
