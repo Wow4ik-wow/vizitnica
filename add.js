@@ -452,8 +452,6 @@ async function handleSubmit(e) {
   console.log("Данные для отправки:", payload);
   showMessage("Отправка данных...");
   await submitToSheet(payload);
-
-  await submitToSheet(payload);
 }
 
 async function submitToSheet(data) {
