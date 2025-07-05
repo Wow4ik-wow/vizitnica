@@ -121,7 +121,17 @@ function renderCards(services) {
       contentHTML += `<hr style="margin: 8px 0;" />`;
     }
 
-    if (phones) contentHTML += `<div><strong>Телефон:</strong> ${phones}</div>`;
+    if (phones) {
+  const phoneLinks = phones
+    .split(",")
+    .map((phone) => {
+      const clean = phone.trim();
+      return `<a href="tel:${clean}" style="color: #2563eb;">${clean}</a>`;
+    })
+    .join(", ");
+  contentHTML += `<div><strong>Телефон:</strong> ${phoneLinks}</div>`;
+}
+
     if (city)
       contentHTML += `<div><strong>Населённый пункт:</strong> ${city}</div>`;
     if (district)
