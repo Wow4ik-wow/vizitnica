@@ -122,15 +122,15 @@ function renderCards(services) {
     }
 
     if (phones) {
-  const phoneLinks = phones
-    .split(",")
-    .map((phone) => {
-      const clean = phone.trim();
-      return `<a href="tel:${clean}" style="color: #2563eb;">${clean}</a>`;
-    })
-    .join(", ");
-  contentHTML += `<div><strong>Телефон:</strong> ${phoneLinks}</div>`;
-}
+      const phoneLinks = phones
+        .split(",")
+        .map((phone) => {
+          const clean = phone.trim();
+          return `<a href="tel:${clean}" style="color: #2563eb;">${clean}</a>`;
+        })
+        .join(", ");
+      contentHTML += `<div><strong>Телефон:</strong> ${phoneLinks}</div>`;
+    }
 
     if (city)
       contentHTML += `<div><strong>Населённый пункт:</strong> ${city}</div>`;
