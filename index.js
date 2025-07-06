@@ -719,16 +719,21 @@ function handleCredentialResponse(response) {
   currentUser = {
     email: data.email,
     name: data.name,
-    picture: data.picture,
+    picture: data.picture
   };
-  localStorage.setItem("user", JSON.stringify(currentUser));
 
-  console.log("➡ Отправка данных пользователя в таблицу...");
-  saveUserToSheet(currentUser);
-
-  console.log("✅ Пользователь отправлен (или попытка сделана)");
-
-  updateAuthUI();
+  saveUserToSheet(currentUser)
+    .then(() => {
+      console.log("✅ Пользователь сохранён в таблицу");
+      localStorage.setItem("user", JSON.stringify(currentUser));
+      updateAuthUI();
+    })
+    .catch((error) => {
+      console.error("❌ Ошибка сохранения:", error);
+      // Всё равно сохраняем пользователя в localStorage, даже если таблица не обновилась
+      localStorage.setItem("user", JSON.stringify(currentUser));
+      updateAuthUI();
+    });
 }
 
 function parseJwt(token) {
