@@ -1,11 +1,12 @@
-const apiUrl =
-  "https://script.google.com/macros/s/AKfycbw27eyw53gPs8tgLexDkiYmjMJ70HpB0fkDFuCu6gRK0Hz997jDzw3TAMh-rQD_mqoTDA/exec";
+const cardsApiUrl = "https://script.google.com/macros/s/AKfycbxwzZChCBrrgV-I9NJItR2KITwyA9Xi23aQt9CZblsvXKEnkFE5xJBSnWXcceOzYxnjyg/exec";
+const usersApiUrl = "https://script.google.com/macros/s/AKfycbxcUzfPgU4DEooISEACOymeWEG4-fN9aP000qU1L2UY1ficalLWiaIlM6XiI9LbAP7c/exec";
+
 let allServices = [];
 
 async function loadServices() {
   document.getElementById("cards").innerText = "Сайт загружается...";
   try {
-    const response = await fetch(apiUrl);
+    const response = await fetch(cardsApiUrl);
     allServices = await response.json();
     populateAllLists();
     document.getElementById("cards").innerText =
@@ -713,7 +714,8 @@ function handleCredentialResponse(response) {
     photoURL: data.picture,
   };
 
-  fetch(apiUrl, {
+  fetch(usersApiUrl, {
+
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(user),
@@ -738,7 +740,7 @@ function handleCredentialResponse(response) {
 function checkUserRole() {
   if (!currentUser) return;
 
-  fetch(`${apiUrl}?uid=${currentUser.uid}`)
+  fetch(`${usersApiUrl}?uid=${currentUser.uid}`)
     .then((response) => response.json())
     .then((data) => {
       if (data.role === "admin") {
@@ -751,6 +753,7 @@ function checkUserRole() {
       console.error("Ошибка при получении роли пользователя:", error);
     });
 }
+
 
 
 function parseJwt(token) {
