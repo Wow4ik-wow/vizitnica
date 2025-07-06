@@ -56,7 +56,7 @@ function renderCards(services) {
     const company = (service["Компания"] || "").trim();
     const profile = (service["Профиль деятельности"] || "").trim();
     const description = (service["Описание (до 700 симв)"] || "").trim();
-    const phones = ("" + (service["Телефоны"] ?? "")).trim();
+    const phones = String(service["Телефоны"] || "").trim();
     const city = (service["Населённый пункт"] || "").trim();
     const district = (service["Район города"] || "").trim();
     const type = (service["Вид деятельности"] || "").trim();
@@ -122,15 +122,15 @@ function renderCards(services) {
     }
 
     if (phones) {
-      const phoneLinks = phones
-        .split(",")
-        .map((phone) => {
-          const clean = phone.trim();
-          return `<a href="tel:${clean}" style="color: #2563eb;">${clean}</a>`;
-        })
-        .join(", ");
-      contentHTML += `<div><strong>Телефон:</strong> ${phoneLinks}</div>`;
-    }
+  const phoneLinks = phones
+    .split(",")
+    .map((phone) => {
+      const clean = phone.trim();
+      return `<a href="tel:${clean}" style="color: #2563eb;">${clean}</a>`;
+    })
+    .join(", ");
+  contentHTML += `<div><strong>Телефон:</strong> ${phoneLinks}</div>`;
+}
 
     if (city)
       contentHTML += `<div><strong>Населённый пункт:</strong> ${city}</div>`;
@@ -719,16 +719,21 @@ function handleCredentialResponse(response) {
   currentUser = {
     email: data.email,
     name: data.name,
-    picture: data.picture,
+    picture: data.picture
   };
-  localStorage.setItem("user", JSON.stringify(currentUser));
 
-  console.log("➡ Отправка данных пользователя в таблицу...");
-  saveUserToSheet(currentUser);
-
-  console.log("✅ Пользователь отправлен (или попытка сделана)");
-
-  updateAuthUI();
+  saveUserToSheet(currentUser)
+    .then(() => {
+      console.log("✅ Пользователь сохранён в таблицу");
+      localStorage.setItem("user", JSON.stringify(currentUser));
+      updateAuthUI();
+    })
+    .catch((error) => {
+      console.error("❌ Ошибка сохранения:", error);
+      // Всё равно сохраняем пользователя в localStorage, даже если таблица не обновилась
+      localStorage.setItem("user", JSON.stringify(currentUser));
+      updateAuthUI();
+    });
 }
 
 function parseJwt(token) {
