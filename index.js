@@ -722,7 +722,11 @@ function handleCredentialResponse(response) {
     picture: data.picture,
   };
 
-  fetch(`https://script.google.com/macros/s/AKfycbypQXSqZQtzvqGL5BAExYekUZMmPrC3tUR9Tc0VMCw0n6xDVftkqtynvg5B3ODMhGU/exec?email=${encodeURIComponent(basicUser.email)}`)
+  fetch(
+    `https://script.google.com/macros/s/AKfycbypQXSqZQtzvqGL5BAExYekUZMmPrC3tUR9Tc0VMCw0n6xDVftkqtynvg5B3ODMhGU/exec?email=${encodeURIComponent(
+      basicUser.email
+    )}`
+  )
     .then((res) => res.json())
     .then((info) => {
       currentUser = {
@@ -744,7 +748,6 @@ function handleCredentialResponse(response) {
   saveUserToSheet(basicUser);
 }
 
-
 function parseJwt(token) {
   const base64Url = token.split(".")[1];
   const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
@@ -762,18 +765,16 @@ function updateAuthUI() {
   document.getElementById("logoutBtn").classList.remove("hidden");
   document.getElementById("cabinetBtn").classList.remove("hidden");
   if (currentUser.role === "admin") {
-  document.getElementById("adminBtn").classList.remove("hidden");
-  document.getElementById("adminBtn").onclick = () => {
-    window.location.href = "admin.html";
-  };
-} else {
-  document.getElementById("adminBtn").classList.add("hidden");
-  document.getElementById("adminBtn").onclick = () => {
-    showNotification("У вас нет прав администратора");
-  };
-}
-
-
+    document.getElementById("adminBtn").classList.remove("hidden");
+    document.getElementById("adminBtn").onclick = () => {
+      window.location.href = "admin.html";
+    };
+  } else {
+    document.getElementById("adminBtn").classList.add("hidden");
+    document.getElementById("adminBtn").onclick = () => {
+      showNotification("У вас нет прав администратора");
+    };
+  }
 
   document.getElementById("addServiceBtn").onclick = () => {
     window.location.href = "add.html";
