@@ -769,29 +769,33 @@ function logout() {
 }
 
 function saveUserToSheet(user) {
-  const scriptUrl =
-    "https://script.google.com/macros/s/AKfycbypQXSqZQtzvqGL5BAExYekUZMmPrC3tUR9Tc0VMCw0n6xDVftkqtynvg5B3ODMhGU/exec"; // URL из Apps Script
+  return new Promise((resolve, reject) => {
+    const scriptUrl = "https://script.google.com/macros/s/AKfycbypQXSqZQtzvqGL5BAExYekUZMmPrC3tUR9Tc0VMCw0n6xDVftkqtynvg5B3ODMhGU/exec";
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', scriptUrl, true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
 
-  // Добавляем параметр `?random=` чтобы избежать кеширования
-  const timestamp = new Date().getTime();
-  const urlWithCacheBuster = `${scriptUrl}?random=${timestamp}`;
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        console.log("✅ Данные пользователя сохранены в таблицу");
+        resolve(JSON.parse(xhr.responseText));
+      } else {
+        console.error("❌ Ошибка:", xhr.statusText);
+        reject(xhr.statusText);
+      }
+    };
 
-  fetch(urlWithCacheBuster, {
-    method: "POST",
-    mode: "no-cors", // Важно: режим 'no-cors' для обхода CORS
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
+    xhr.onerror = function() {
+      console.error("❌ Ошибка сети");
+      reject("Network Error");
+    };
+
+    xhr.send(JSON.stringify({
       uid: user.email,
       email: user.email,
       name: user.name,
       photoURL: user.picture,
-      lastLogin: new Date().toISOString(),
-    }),
-  })
-    .then(() => {
-      console.log("✅ Данные отправлены (проверьте таблицу вручную)");
-    })
-    .catch((error) => {
-      console.error("❌ Ошибка:", error);
-    });
+      lastLogin: new Date().toISOString()
+    }));
+  });
 }
