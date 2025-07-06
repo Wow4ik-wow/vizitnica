@@ -1,5 +1,5 @@
 const cardsApiUrl = "https://script.google.com/macros/s/AKfycbxwzZChCBrrgV-I9NJItR2KITwyA9Xi23aQt9CZblsvXKEnkFE5xJBSnWXcceOzYxnjyg/exec";
-const usersApiUrl = "https://script.google.com/macros/s/AKfycbxcUzfPgU4DEooISEACOymeWEG4-fN9aP000qU1L2UY1ficalLWiaIlM6XiI9LbAP7c/exec";
+const usersApiUrl = "https://script.google.com/macros/s/AKfycbz8SXYyTQNTBS8SfoEM0PPWC7Q3VvH42wRvxKAfJr8whFIZC59QyAkRA7FPnDuu9yvs/exec";
 
 let allServices = [];
 
