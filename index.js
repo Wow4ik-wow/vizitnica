@@ -720,6 +720,7 @@ function handleCredentialResponse(response) {
     email: data.email,
     name: data.name,
     picture: data.picture,
+    token: response.credential  // добавляем сюда токен
   };
   localStorage.setItem("user", JSON.stringify(currentUser));
 
@@ -730,6 +731,7 @@ function handleCredentialResponse(response) {
 
   updateAuthUI();
 }
+
 
 function parseJwt(token) {
   const base64Url = token.split(".")[1];
@@ -769,29 +771,19 @@ function logout() {
 }
 
 function saveUserToSheet(user) {
-  const scriptUrl =
-    "https://script.google.com/macros/s/AKfycbz6r5kLhZVSdOKypTxcDDQGjwA_DDPpI1WHuyss0frSDSNC6PUZNp1-7TaJKt4_WWBn/exec"; // URL из Apps Script
+  const scriptUrl = "https://script.google.com/macros/s/AKfycbz6r5kLhZVSdOKypTxcDDQGjwA_DDPpI1WHuyss0frSDSNC6PUZNp1-7TaJKt4_WWBn/exec";
 
-  // Добавляем параметр `?random=` чтобы избежать кеширования
-  const timestamp = new Date().getTime();
-  const urlWithCacheBuster = `${scriptUrl}?random=${timestamp}`;
-
-  fetch(urlWithCacheBuster, {
+  fetch(scriptUrl, {
     method: "POST",
-    mode: "no-cors", // Важно: режим 'no-cors' для обхода CORS
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      uid: user.email,
-      email: user.email,
-      name: user.name,
-      photoURL: user.picture,
-      lastLogin: new Date().toISOString(),
-    }),
+    body: JSON.stringify({ token: user.token }),
   })
-    .then(() => {
-      console.log("✅ Данные отправлены (проверьте таблицу вручную)");
+    .then((res) => res.json())
+    .then((data) => {
+      console.log("✅ Ответ от сервера:", data);
     })
     .catch((error) => {
-      console.error("❌ Ошибка:", error);
+      console.error("❌ Ошибка при отправке данных:", error);
     });
 }
+
