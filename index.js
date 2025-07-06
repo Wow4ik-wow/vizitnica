@@ -722,19 +722,22 @@ function handleCredentialResponse(response) {
     name: data.name,
     photoURL: data.picture
   };
+  
+  currentUser = user;
   localStorage.setItem("user", JSON.stringify(user));
 
-  fetch("https://script.google.com/macros/s/ВАШ_СКРИПТ/exec", {
+  // Отправка данных пользователя в Google Sheets
+  fetch("https://script.google.com/macros/s/AKfycbz6r5kLhZVSdOKypTxcDDQGjwA_DDPpI1WHuyss0frSDSNC6PUZNp1-7TaJKt4_WWBn/exec", {
     method: "POST",
-    mode: "no-cors",  // Важно!
+    mode: "no-cors",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(user),
-  }).catch(() => {
-    // no-cors не позволяет читать ответ, ошибки ловим здесь
-    console.log("Данные пользователя отправлены (неожидаемый ответ игнорируется)");
+    body: JSON.stringify(user)
+  }).then(() => {
+    updateAuthUI();
+  }).catch(error => {
+    console.error("Ошибка при отправке данных:", error);
+    updateAuthUI(); // Все равно обновляем UI, даже если запрос не удался
   });
-
-  updateAuthUI();
 }
 
 
@@ -751,14 +754,34 @@ function parseJwt(token) {
 }
 
 function updateAuthUI() {
-  document.getElementById("loginBtn").classList.add("hidden");
-  document.getElementById("logoutBtn").classList.remove("hidden");
-  document.getElementById("cabinetBtn").classList.remove("hidden");
-  document.getElementById("adminBtn").classList.remove("hidden");
+  const loginBtn = document.getElementById("loginBtn");
+  const logoutBtn = document.getElementById("logoutBtn");
+  const cabinetBtn = document.getElementById("cabinetBtn");
+  const adminBtn = document.getElementById("adminBtn");
+  const addServiceBtn = document.getElementById("addServiceBtn");
 
-  document.getElementById("addServiceBtn").onclick = () => {
-    window.location.href = "add.html";
-  };
+  if (currentUser) {
+    loginBtn.classList.add("hidden");
+    logoutBtn.classList.remove("hidden");
+    cabinetBtn.classList.remove("hidden");
+    
+    // Показываем кнопку админки только если пользователь admin
+    // Здесь нужно добавить проверку роли из таблицы
+    // adminBtn.classList.remove("hidden");
+    
+    addServiceBtn.onclick = () => {
+      window.location.href = "add.html";
+    };
+  } else {
+    loginBtn.classList.remove("hidden");
+    logoutBtn.classList.add("hidden");
+    cabinetBtn.classList.add("hidden");
+    adminBtn.classList.add("hidden");
+    
+    addServiceBtn.onclick = () => {
+      showNotification("Авторизуйтесь, чтобы добавить услугу");
+    };
+  }
 }
 
 function logout() {
