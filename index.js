@@ -716,22 +716,47 @@ window.onload = () => {
 
 function handleCredentialResponse(response) {
   const data = parseJwt(response.credential);
-  console.log("Google auth data:", data); // Проверьте в консоли, что данные приходят
-  
-  currentUser = {
+  const user = {
     uid: data.sub,
     email: data.email,
     name: data.name,
-    photoURL: data.picture
+    photoURL: data.picture,
+    role: "user" // Добавляем роль по умолчанию
   };
   
-  localStorage.setItem("user", JSON.stringify(currentUser));
-  updateAuthUI();
-  
-  // Пока не отправляем на сервер - только локальная авторизация
-  showNotification(`Добро пожаловать, ${data.name}!`);
+  currentUser = user;
+  localStorage.setItem("user", JSON.stringify(user));
+
+  // Отправка данных в Google Sheets
+  fetch("https://script.google.com/macros/s/AKfycbzTO5l8uAXewXcaAEOuYEBZgeyQ-mQz49wp8HeX1xBE2Dtwdt3DecCpMKL6VrT3rOBd/exec", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(user),
+    mode: 'no-cors'
+  })
+  .then(() => {
+    console.log("Данные отправлены в таблицу");
+    updateAuthUI();
+    checkUserRole(); // Проверяем роль пользователя
+  })
+  .catch(error => {
+    console.error("Ошибка отправки:", error);
+    updateAuthUI(); // Все равно обновляем интерфейс
+  });
 }
 
+function checkUserRole() {
+  if (!currentUser) return;
+  
+  fetch(`https://script.google.com/macros/s/AKfycbzTO5l8uAXewXcaAEOuYEBZgeyQ-mQz49wp8HeX1xBE2Dtwdt3DecCpMKL6VrT3rOBd/exec?action=getRole&uid=${currentUser.uid}`)
+  .then(response => response.json())
+  .then(data => {
+    if (data.role === "admin") {
+      document.getElementById("adminBtn").classList.remove("hidden");
+    }
+  })
+  .catch(console.error);
+}
 
 function parseJwt(token) {
   const base64Url = token.split(".")[1];
@@ -746,34 +771,16 @@ function parseJwt(token) {
 }
 
 function updateAuthUI() {
-  const loginBtn = document.getElementById("loginBtn");
-  const logoutBtn = document.getElementById("logoutBtn");
-  const cabinetBtn = document.getElementById("cabinetBtn");
-  const adminBtn = document.getElementById("adminBtn");
-  const addServiceBtn = document.getElementById("addServiceBtn");
-
-  if (currentUser) {
-    loginBtn.classList.add("hidden");
-    logoutBtn.classList.remove("hidden");
-    cabinetBtn.classList.remove("hidden");
-    
-    // Показываем кнопку админки только если пользователь admin
-    // Здесь нужно добавить проверку роли из таблицы
-    // adminBtn.classList.remove("hidden");
-    
-    addServiceBtn.onclick = () => {
-      window.location.href = "add.html";
-    };
-  } else {
-    loginBtn.classList.remove("hidden");
-    logoutBtn.classList.add("hidden");
-    cabinetBtn.classList.add("hidden");
-    adminBtn.classList.add("hidden");
-    
-    addServiceBtn.onclick = () => {
-      showNotification("Авторизуйтесь, чтобы добавить услугу");
-    };
-  }
+  const isLoggedIn = !!currentUser;
+  
+  document.getElementById("loginBtn").classList.toggle("hidden", isLoggedIn);
+  document.getElementById("logoutBtn").classList.toggle("hidden", !isLoggedIn);
+  document.getElementById("cabinetBtn").classList.toggle("hidden", !isLoggedIn);
+  
+  // Кнопка админа скрыта по умолчанию, показывается только после checkUserRole
+  document.getElementById("addServiceBtn").onclick = isLoggedIn 
+    ? () => window.location.href = "add.html"
+    : () => showNotification("Авторизуйтесь для добавления услуги");
 }
 
 function logout() {
@@ -792,7 +799,7 @@ function logout() {
 
 function saveUserToSheet(user) {
   const scriptUrl =
-    "https://script.google.com/macros/s/AKfycbxcUzfPgU4DEooISEACOymeWEG4-fN9aP000qU1L2UY1ficalLWiaIlM6XiI9LbAP7c/exec";
+    "https://script.google.com/macros/s/AKfycbxwzZChCBrrgV-I9NJItR2KITwyA9Xi23aQt9CZblsvXKEnkFE5xJBSnWXcceOzYxnjyg/exec";
 
   fetch(scriptUrl, {
     method: "POST",
