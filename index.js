@@ -716,28 +716,20 @@ window.onload = () => {
 
 function handleCredentialResponse(response) {
   const data = parseJwt(response.credential);
-  const user = {
+  console.log("Google auth data:", data); // Проверьте в консоли, что данные приходят
+  
+  currentUser = {
     uid: data.sub,
     email: data.email,
     name: data.name,
     photoURL: data.picture
   };
   
-  currentUser = user;
-  localStorage.setItem("user", JSON.stringify(user));
-
-  // Отправка данных пользователя в Google Sheets
-  fetch("https://script.google.com/macros/s/AKfycbz6r5kLhZVSdOKypTxcDDQGjwA_DDPpI1WHuyss0frSDSNC6PUZNp1-7TaJKt4_WWBn/exec", {
-    method: "POST",
-    mode: "no-cors",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(user)
-  }).then(() => {
-    updateAuthUI();
-  }).catch(error => {
-    console.error("Ошибка при отправке данных:", error);
-    updateAuthUI(); // Все равно обновляем UI, даже если запрос не удался
-  });
+  localStorage.setItem("user", JSON.stringify(currentUser));
+  updateAuthUI();
+  
+  // Пока не отправляем на сервер - только локальная авторизация
+  showNotification(`Добро пожаловать, ${data.name}!`);
 }
 
 
