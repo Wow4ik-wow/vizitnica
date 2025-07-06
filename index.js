@@ -716,21 +716,27 @@ window.onload = () => {
 
 function handleCredentialResponse(response) {
   const data = parseJwt(response.credential);
-  currentUser = {
+  const user = {
+    uid: data.sub,
     email: data.email,
     name: data.name,
-    picture: data.picture,
-    token: response.credential, // добавляем сюда токен
+    photoURL: data.picture
   };
-  localStorage.setItem("user", JSON.stringify(currentUser));
+  localStorage.setItem("user", JSON.stringify(user));
 
-  console.log("➡ Отправка данных пользователя в таблицу...");
-  saveUserToSheet(currentUser);
-
-  console.log("✅ Пользователь отправлен (или попытка сделана)");
+  fetch("https://script.google.com/macros/s/ВАШ_СКРИПТ/exec", {
+    method: "POST",
+    mode: "no-cors",  // Важно!
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(user),
+  }).catch(() => {
+    // no-cors не позволяет читать ответ, ошибки ловим здесь
+    console.log("Данные пользователя отправлены (неожидаемый ответ игнорируется)");
+  });
 
   updateAuthUI();
 }
+
 
 function parseJwt(token) {
   const base64Url = token.split(".")[1];
