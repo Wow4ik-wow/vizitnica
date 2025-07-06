@@ -16,7 +16,7 @@ if (!user) {
 function loadUserCards(userEmail) {
   cardsContainer.innerHTML = "Загрузка ваших карточек...";
 
-  fetch("https://script.google.com/macros/s/AKfycbwWJ_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx/exec?action=get_user_cards&email=" + encodeURIComponent(userEmail))
+  fetch("https://script.google.com/macros/s/AKfycbxcUzfPgU4DEooISEACOymeWEG4-fN9aP000qU1L2UY1ficalLWiaIlM6XiI9LbAP7c/exec?action=get_user_cards&email=" + encodeURIComponent(userEmail))
     .then((res) => res.json())
     .then((data) => {
       if (!data || data.length === 0) {
@@ -62,7 +62,7 @@ function loadUserCards(userEmail) {
 }
 
 function deleteUserCard(cardId, userEmail) {
-  fetch(`https://script.google.com/macros/s/AKfycbwWJ_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx/exec?action=delete_user_card&email=${encodeURIComponent(userEmail)}&cardId=${encodeURIComponent(cardId)}`, {
+  fetch(`https://script.google.com/macros/s/AKfycbxcUzfPgU4DEooISEACOymeWEG4-fN9aP000qU1L2UY1ficalLWiaIlM6XiI9LbAP7c/exec?action=delete_user_card&email=${encodeURIComponent(userEmail)}&cardId=${encodeURIComponent(cardId)}`, {
     method: "POST"
   })
   .then(res => res.json())

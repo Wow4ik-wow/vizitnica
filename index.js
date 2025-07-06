@@ -682,7 +682,7 @@ let currentUser = null;
 window.onload = () => {
   google.accounts.id.initialize({
     client_id:
-      "49343525916-dt32rrjpvdpifvasp76int8kerlqnakp.apps.googleusercontent.com",
+      "1060687932793-sk24egn7c7r0h6t6i1dedk4u6hrgdotc.apps.googleusercontent.com",
     callback: handleCredentialResponse,
     auto_select: false,
   });
@@ -792,7 +792,7 @@ function logout() {
 
 function saveUserToSheet(user) {
   const scriptUrl =
-    "https://script.google.com/macros/s/AKfycbz6r5kLhZVSdOKypTxcDDQGjwA_DDPpI1WHuyss0frSDSNC6PUZNp1-7TaJKt4_WWBn/exec";
+    "https://script.google.com/macros/s/AKfycbxcUzfPgU4DEooISEACOymeWEG4-fN9aP000qU1L2UY1ficalLWiaIlM6XiI9LbAP7c/exec";
 
   fetch(scriptUrl, {
     method: "POST",
