@@ -687,11 +687,11 @@ window.onload = () => {
     auto_select: false,
   });
 
-  // Восстанавливаем пользователя из localStorage
   const storedUser = localStorage.getItem("user");
   if (storedUser) {
     currentUser = JSON.parse(storedUser);
     updateAuthUI();
+    checkUserRole();
   }
 
   document.getElementById("loginBtn").addEventListener("click", () => {
@@ -701,18 +701,8 @@ window.onload = () => {
   });
 
   document.getElementById("logoutBtn").addEventListener("click", logout);
-
-  // Назначаем обработчик кнопке "Добавить услугу" в зависимости от авторизации
-  if (currentUser) {
-    document.getElementById("addServiceBtn").onclick = () => {
-      window.location.href = "add.html";
-    };
-  } else {
-    document.getElementById("addServiceBtn").onclick = () => {
-      showNotification("Авторизуйтесь, чтобы добавить услугу");
-    };
-  }
 };
+
 
 function handleCredentialResponse(response) {
   const data = parseJwt(response.credential);
@@ -721,42 +711,47 @@ function handleCredentialResponse(response) {
     email: data.email,
     name: data.name,
     photoURL: data.picture,
-    role: "user" // Добавляем роль по умолчанию
   };
-  
-  currentUser = user;
-  localStorage.setItem("user", JSON.stringify(user));
 
-  // Отправка данных в Google Sheets
-  fetch("https://script.google.com/macros/s/AKfycbzTO5l8uAXewXcaAEOuYEBZgeyQ-mQz49wp8HeX1xBE2Dtwdt3DecCpMKL6VrT3rOBd/exec", {
+  fetch(apiUrl, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(user),
-    mode: 'no-cors'
   })
-  .then(() => {
-    console.log("Данные отправлены в таблицу");
-    updateAuthUI();
-    checkUserRole(); // Проверяем роль пользователя
-  })
-  .catch(error => {
-    console.error("Ошибка отправки:", error);
-    updateAuthUI(); // Все равно обновляем интерфейс
-  });
+    .then((res) => res.json())
+    .then((resp) => {
+      if (resp.status === "success" && resp.user) {
+        currentUser = resp.user;
+        localStorage.setItem("user", JSON.stringify(currentUser));
+        updateAuthUI();
+      } else {
+        showNotification("Ошибка при получении данных пользователя.");
+      }
+    })
+    .catch((err) => {
+      console.error("Ошибка при запросе пользователя:", err);
+      showNotification("Ошибка при получении данных пользователя.");
+    });
 }
+
 
 function checkUserRole() {
   if (!currentUser) return;
-  
-  fetch(`https://script.google.com/macros/s/AKfycbzTO5l8uAXewXcaAEOuYEBZgeyQ-mQz49wp8HeX1xBE2Dtwdt3DecCpMKL6VrT3rOBd/exec?action=getRole&uid=${currentUser.uid}`)
-  .then(response => response.json())
-  .then(data => {
-    if (data.role === "admin") {
-      document.getElementById("adminBtn").classList.remove("hidden");
-    }
-  })
-  .catch(console.error);
+
+  fetch(`${apiUrl}?uid=${currentUser.uid}`)
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.role === "admin") {
+        document.getElementById("adminBtn").classList.remove("hidden");
+      } else {
+        document.getElementById("adminBtn").classList.add("hidden");
+      }
+    })
+    .catch((error) => {
+      console.error("Ошибка при получении роли пользователя:", error);
+    });
 }
+
 
 function parseJwt(token) {
   const base64Url = token.split(".")[1];
@@ -772,16 +767,17 @@ function parseJwt(token) {
 
 function updateAuthUI() {
   const isLoggedIn = !!currentUser;
-  
+
   document.getElementById("loginBtn").classList.toggle("hidden", isLoggedIn);
   document.getElementById("logoutBtn").classList.toggle("hidden", !isLoggedIn);
   document.getElementById("cabinetBtn").classList.toggle("hidden", !isLoggedIn);
-  
-  // Кнопка админа скрыта по умолчанию, показывается только после checkUserRole
-  document.getElementById("addServiceBtn").onclick = isLoggedIn 
+  document.getElementById("adminBtn").classList.add("hidden"); // по умолчанию скрыта
+
+  document.getElementById("addServiceBtn").onclick = isLoggedIn
     ? () => window.location.href = "add.html"
-    : () => showNotification("Авторизуйтесь для добавления услуги");
+    : () => showNotification("Авторизуйтесь, чтобы добавить услугу");
 }
+
 
 function logout() {
   currentUser = null;
@@ -795,22 +791,4 @@ function logout() {
   document.getElementById("addServiceBtn").onclick = () => {
     showNotification("Авторизуйтесь, чтобы добавить услугу");
   };
-}
-
-function saveUserToSheet(user) {
-  const scriptUrl =
-    "https://script.google.com/macros/s/AKfycbxwzZChCBrrgV-I9NJItR2KITwyA9Xi23aQt9CZblsvXKEnkFE5xJBSnWXcceOzYxnjyg/exec";
-
-  fetch(scriptUrl, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ token: user.token }),
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      console.log("✅ Ответ от сервера:", data);
-    })
-    .catch((error) => {
-      console.error("❌ Ошибка при отправке данных:", error);
-    });
 }
