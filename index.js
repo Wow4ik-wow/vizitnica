@@ -56,7 +56,7 @@ function renderCards(services) {
     const company = (service["Компания"] || "").trim();
     const profile = (service["Профиль деятельности"] || "").trim();
     const description = (service["Описание (до 700 симв)"] || "").trim();
-    const phones = ("" + (service["Телефоны"] ?? "")).trim();
+    const phones = String(service["Телефоны"] || "").trim();
     const city = (service["Населённый пункт"] || "").trim();
     const district = (service["Район города"] || "").trim();
     const type = (service["Вид деятельности"] || "").trim();
@@ -122,15 +122,15 @@ function renderCards(services) {
     }
 
     if (phones) {
-      const phoneLinks = phones
-        .split(",")
-        .map((phone) => {
-          const clean = phone.trim();
-          return `<a href="tel:${clean}" style="color: #2563eb;">${clean}</a>`;
-        })
-        .join(", ");
-      contentHTML += `<div><strong>Телефон:</strong> ${phoneLinks}</div>`;
-    }
+  const phoneLinks = phones
+    .split(",")
+    .map((phone) => {
+      const clean = phone.trim();
+      return `<a href="tel:${clean}" style="color: #2563eb;">${clean}</a>`;
+    })
+    .join(", ");
+  contentHTML += `<div><strong>Телефон:</strong> ${phoneLinks}</div>`;
+}
 
     if (city)
       contentHTML += `<div><strong>Населённый пункт:</strong> ${city}</div>`;
@@ -769,33 +769,29 @@ function logout() {
 }
 
 function saveUserToSheet(user) {
-  return new Promise((resolve, reject) => {
-    const scriptUrl = "https://script.google.com/macros/s/AKfycbypQXSqZQtzvqGL5BAExYekUZMmPrC3tUR9Tc0VMCw0n6xDVftkqtynvg5B3ODMhGU/exec";
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', scriptUrl, true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
+  const scriptUrl =
+    "https://script.google.com/macros/s/AKfycbypQXSqZQtzvqGL5BAExYekUZMmPrC3tUR9Tc0VMCw0n6xDVftkqtynvg5B3ODMhGU/exec"; // URL из Apps Script
 
-    xhr.onload = function() {
-      if (xhr.status === 200) {
-        console.log("✅ Данные пользователя сохранены в таблицу");
-        resolve(JSON.parse(xhr.responseText));
-      } else {
-        console.error("❌ Ошибка:", xhr.statusText);
-        reject(xhr.statusText);
-      }
-    };
+  // Добавляем параметр `?random=` чтобы избежать кеширования
+  const timestamp = new Date().getTime();
+  const urlWithCacheBuster = `${scriptUrl}?random=${timestamp}`;
 
-    xhr.onerror = function() {
-      console.error("❌ Ошибка сети");
-      reject("Network Error");
-    };
-
-    xhr.send(JSON.stringify({
+  fetch(urlWithCacheBuster, {
+    method: "POST",
+    mode: "no-cors", // Важно: режим 'no-cors' для обхода CORS
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
       uid: user.email,
       email: user.email,
       name: user.name,
       photoURL: user.picture,
-      lastLogin: new Date().toISOString()
-    }));
-  });
+      lastLogin: new Date().toISOString(),
+    }),
+  })
+    .then(() => {
+      console.log("✅ Данные отправлены (проверьте таблицу вручную)");
+    })
+    .catch((error) => {
+      console.error("❌ Ошибка:", error);
+    });
 }
