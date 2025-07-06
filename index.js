@@ -770,7 +770,7 @@ function logout() {
 
 function saveUserToSheet(user) {
   const scriptUrl =
-    "https://script.google.com/macros/s/AKfycbypQXSqZQtzvqGL5BAExYekUZMmPrC3tUR9Tc0VMCw0n6xDVftkqtynvg5B3ODMhGU/exec"; // URL из Apps Script
+    "https://script.google.com/macros/s/AKfycbz6r5kLhZVSdOKypTxcDDQGjwA_DDPpI1WHuyss0frSDSNC6PUZNp1-7TaJKt4_WWBn/exec"; // URL из Apps Script
 
   // Добавляем параметр `?random=` чтобы избежать кеширования
   const timestamp = new Date().getTime();
