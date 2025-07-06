@@ -716,20 +716,34 @@ window.onload = () => {
 
 function handleCredentialResponse(response) {
   const data = parseJwt(response.credential);
-  currentUser = {
+  const basicUser = {
     email: data.email,
     name: data.name,
     picture: data.picture,
   };
-  localStorage.setItem("user", JSON.stringify(currentUser));
 
-  console.log("➡ Отправка данных пользователя в таблицу...");
-  saveUserToSheet(currentUser);
+  fetch(`https://script.google.com/macros/s/AKfycbypQXSqZQtzvqGL5BAExYekUZMmPrC3tUR9Tc0VMCw0n6xDVftkqtynvg5B3ODMhGU/exec?email=${encodeURIComponent(basicUser.email)}`)
+    .then((res) => res.json())
+    .then((info) => {
+      currentUser = {
+        ...basicUser,
+        role: info.role || "user", // если роль не указана, назначаем user
+      };
 
-  console.log("✅ Пользователь отправлен (или попытка сделана)");
+      localStorage.setItem("user", JSON.stringify(currentUser));
+      updateAuthUI();
+    })
+    .catch((err) => {
+      console.error("Ошибка при получении роли:", err);
+      currentUser = { ...basicUser, role: "user" }; // fallback
+      localStorage.setItem("user", JSON.stringify(currentUser));
+      updateAuthUI();
+    });
 
-  updateAuthUI();
+  // Отправка в таблицу остаётся
+  saveUserToSheet(basicUser);
 }
+
 
 function parseJwt(token) {
   const base64Url = token.split(".")[1];
@@ -747,7 +761,19 @@ function updateAuthUI() {
   document.getElementById("loginBtn").classList.add("hidden");
   document.getElementById("logoutBtn").classList.remove("hidden");
   document.getElementById("cabinetBtn").classList.remove("hidden");
+  if (currentUser.role === "admin") {
   document.getElementById("adminBtn").classList.remove("hidden");
+  document.getElementById("adminBtn").onclick = () => {
+    window.location.href = "admin.html";
+  };
+} else {
+  document.getElementById("adminBtn").classList.add("hidden");
+  document.getElementById("adminBtn").onclick = () => {
+    showNotification("У вас нет прав администратора");
+  };
+}
+
+
 
   document.getElementById("addServiceBtn").onclick = () => {
     window.location.href = "add.html";
