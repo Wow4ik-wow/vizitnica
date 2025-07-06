@@ -720,7 +720,7 @@ function handleCredentialResponse(response) {
     email: data.email,
     name: data.name,
     picture: data.picture,
-    token: response.credential  // добавляем сюда токен
+    token: response.credential, // добавляем сюда токен
   };
   localStorage.setItem("user", JSON.stringify(currentUser));
 
@@ -731,7 +731,6 @@ function handleCredentialResponse(response) {
 
   updateAuthUI();
 }
-
 
 function parseJwt(token) {
   const base64Url = token.split(".")[1];
@@ -771,7 +770,8 @@ function logout() {
 }
 
 function saveUserToSheet(user) {
-  const scriptUrl = "https://script.google.com/macros/s/AKfycbz6r5kLhZVSdOKypTxcDDQGjwA_DDPpI1WHuyss0frSDSNC6PUZNp1-7TaJKt4_WWBn/exec";
+  const scriptUrl =
+    "https://script.google.com/macros/s/AKfycbz6r5kLhZVSdOKypTxcDDQGjwA_DDPpI1WHuyss0frSDSNC6PUZNp1-7TaJKt4_WWBn/exec";
 
   fetch(scriptUrl, {
     method: "POST",
@@ -786,4 +786,3 @@ function saveUserToSheet(user) {
       console.error("❌ Ошибка при отправке данных:", error);
     });
 }
-
