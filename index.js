@@ -33,30 +33,25 @@ window.onload = () => {
 
 // Обработка успешного входа Google
 function handleCredentialResponse(response) {
-  // Получаем JWT токен и расшифровываем (упрощённо)
-  // Можно использовать сторонние библиотеки, но здесь упростим
   const base64Url = response.credential.split('.')[1];
   const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
   const jsonPayload = decodeURIComponent(
-    atob(base64)
-      .split('')
-      .map(function (c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-      })
-      .join('')
+    atob(base64).split('').map(c =>
+      '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+    ).join('')
   );
 
   const userData = JSON.parse(jsonPayload);
 
-  currentUser = {
+  const user = {
     name: userData.name,
     email: userData.email,
     picture: userData.picture,
   };
 
-  localStorage.setItem("user", JSON.stringify(currentUser));
-  updateAuthUI();
+  checkOrCreateUser(user);
 }
+
 
 // Обновление интерфейса после входа/выхода
 function updateAuthUI() {
@@ -92,4 +87,45 @@ function logout() {
   currentUser = null;
   localStorage.removeItem("user");
   updateAuthUI();
+}
+
+const usersApiUrl = "https://script.google.com/macros/s/AKfycbz8SXYyTQNTBS8SfoEM0PPWC7Q3VvH42wRvxKAfJr8whFIZC59QyAkRA7FPnDuu9yvs/exec";
+
+function checkOrCreateUser(user) {
+  fetch(`${usersApiUrl}?action=check&email=${encodeURIComponent(user.email)}`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.found) {
+        user.role = data.role || "user";
+        currentUser = user;
+        localStorage.setItem("user", JSON.stringify(currentUser));
+        updateAuthUI();
+      } else {
+        fetch(usersApiUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            action: "add",
+            name: user.name,
+            email: user.email,
+            picture: user.picture,
+            role: "user"
+          })
+        })
+        .then(() => {
+          user.role = "user";
+          currentUser = user;
+          localStorage.setItem("user", JSON.stringify(currentUser));
+          updateAuthUI();
+        })
+        .catch(err => {
+          alert("Ошибка при добавлении пользователя.");
+          console.error(err);
+        });
+      }
+    })
+    .catch(err => {
+      alert("Ошибка при проверке пользователя.");
+      console.error(err);
+    });
 }
