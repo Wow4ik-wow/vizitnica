@@ -1,100 +1,25 @@
-версия 038
+ВЕРСИЯ 039
 <!DOCTYPE html>
 <html lang="ru">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Визитница — Главная</title>
-    <link rel="stylesheet" href="index.css" />
-  </head>
-  <body>
-    <div id="mainContainer">
-      <div class="header">
-        <h1 class="page-title">Список услуг</h1>
-        <!-- Google Вход — ВНЕ блока authButtons -->
+<head>
+  <meta charset="UTF-8" />
+  <title>Визитница — Главная</title>
+  <link rel="stylesheet" href="index.css" />
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+  <div id="mainContainer">
+    <h1 class="welcome-text">Добро пожаловать на сайт Визитница!</h1>
 
-
-<!-- Остальные кнопки -->
-<div id="authButtons" class="auth-buttons">
-  <button id="addServiceBtn" class="btn">Добавить услугу</button>
-  <button id="cabinetBtn" class="btn hidden">Личный кабинет</button>
-  <button id="adminBtn" class="btn hidden">Админка</button>
-</div>
-
-        </div>
-      </div>
-
-      <div class="filters-container">
-        <div class="filter-row">
-          <input
-            type="text"
-            id="filterRegion"
-            list="listRegion"
-            placeholder="Область"
-            autocomplete="off"
-          />
-          <datalist id="listRegion"></datalist>
-
-          <input
-            type="text"
-            id="filterCity"
-            list="listCity"
-            placeholder="Населённый пункт"
-            autocomplete="off"
-          />
-          <datalist id="listCity"></datalist>
-        </div>
-
-        <div class="filter-row">
-          <input
-            type="text"
-            id="filterProfile"
-            list="listProfile"
-            placeholder="Профиль"
-            autocomplete="off"
-          />
-          <datalist id="listProfile"></datalist>
-
-          <input
-            type="text"
-            id="filterType"
-            list="listType"
-            placeholder="Вид деятельности"
-            autocomplete="off"
-          />
-          <datalist id="listType"></datalist>
-        </div>
-
-        <div class="filter-row">
-          <input
-            type="text"
-            id="filterDistrict"
-            list="listDistrict"
-            placeholder="Район"
-            autocomplete="off"
-          />
-          <datalist id="listDistrict"></datalist>
-
-          <input
-            type="text"
-            id="filterName"
-            list="listName"
-            placeholder="Имя или Компания"
-            autocomplete="off"
-          />
-          <datalist id="listName"></datalist>
-        </div>
-
-        <button onclick="applyFilters()" class="btn search-btn">Поиск</button>
-      </div>
-
-      <p id="searchCount" class="search-count"></p>
-
-      <div id="cards"></div>
+    <div id="authButtons" class="auth-buttons">
+      <button id="googleSignInBtn"></button>
+      <button id="addServiceBtn" class="btn">Добавить услугу</button>
+      <button id="searchBtn" class="btn hidden">Искать услуги</button>
     </div>
 
-    <div id="notification" class="notification"></div>
+    <p id="userGreeting" class="user-greeting"></p>
+  </div>
 
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <script src="index.js"></script>
-  </body>
+  <script src="index.js"></script>
+</body>
 </html>
