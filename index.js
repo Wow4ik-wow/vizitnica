@@ -3,7 +3,7 @@ const scriptUrl = "https://script.google.com/macros/s/AKfycbzpraBNAzlF_oqYIDLYVj
 
 window.onload = () => {
   google.accounts.id.initialize({
-    client_id: '1060687932793-sk24egn7c7r0h6t6i1dedk4hrgdotc.apps.googleusercontent.com',
+    client_id: 'AIzaSyA275-quBvg09zkelyOyoHfpqxv_iyDkoU',
     callback: handleCredentialResponse,
   });
 
@@ -54,7 +54,7 @@ function checkOrCreateUser(user) {
     email: user.email,
   });
 
-  fetch("https://corsproxy.io/?" + encodeURIComponent(scriptUrl), {
+  fetch(scriptUrl, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: params,
@@ -81,7 +81,7 @@ function addNewUser(user) {
     role: "user",
   });
 
-  fetch("https://corsproxy.io/?" + encodeURIComponent(scriptUrl), {
+  fetch(scriptUrl, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: params,
