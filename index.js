@@ -1,59 +1,100 @@
 let currentUser = null;
+const scriptUrl = "https://script.google.com/macros/s/AKfycbzpraBNAzlF_oqYIDLYVjczKdY6Ui32qJNwY37HGSj6vtPs9pXseJYqG3oLAr28iZ0c/exec";
 
-// Инициализация Google Identity Services
 window.onload = () => {
   google.accounts.id.initialize({
     client_id: '1060687932793-sk24egn7c7r0h6t6i1dedk4u6hrgdotc.apps.googleusercontent.com',
     callback: handleCredentialResponse,
   });
 
-  // Рендерим кнопку Вход (Google Sign In)
   google.accounts.id.renderButton(
     document.getElementById("googleSignInBtn"),
     { theme: "outline", size: "large", text: "signin_with" }
   );
 
-  // Если пользователь в localStorage — восстанавливаем
   const storedUser = localStorage.getItem("user");
   if (storedUser) {
     currentUser = JSON.parse(storedUser);
     updateAuthUI();
   }
 
-  // Кнопка "Добавить услугу" всегда ведёт на add.html
   document.getElementById("addServiceBtn").onclick = () => {
     window.location.href = "add.html";
   };
 
-  // Кнопка "Искать услуги" — только авторизованным
   document.getElementById("searchBtn").onclick = () => {
     window.location.href = "index2.html";
   };
 };
 
-// Обработка успешного входа Google
 function handleCredentialResponse(response) {
   const base64Url = response.credential.split('.')[1];
   const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
   const jsonPayload = decodeURIComponent(
-    atob(base64).split('').map(c =>
-      '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
-    ).join('')
+    atob(base64)
+      .split('')
+      .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+      .join('')
   );
-
   const userData = JSON.parse(jsonPayload);
 
-  const user = {
+  currentUser = {
     name: userData.name,
     email: userData.email,
     picture: userData.picture,
   };
 
-  checkOrCreateUser(user);
+  localStorage.setItem("user", JSON.stringify(currentUser));
+  checkOrCreateUser(currentUser);
 }
 
+function checkOrCreateUser(user) {
+  const params = new URLSearchParams({
+    action: "check",
+    email: user.email,
+  });
 
-// Обновление интерфейса после входа/выхода
+  fetch(scriptUrl, {
+    method: "POST",
+    body: params,
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.found) {
+        console.log("Пользователь найден, роль:", data.role);
+        updateAuthUI();
+      } else {
+        addNewUser(user);
+      }
+    })
+    .catch(err => {
+      console.error("Ошибка при check:", err);
+    });
+}
+
+function addNewUser(user) {
+  const params = new URLSearchParams({
+    action: "add",
+    email: user.email,
+    name: user.name,
+    picture: user.picture,
+    role: "user",
+  });
+
+  fetch(scriptUrl, {
+    method: "POST",
+    body: params,
+  })
+    .then(res => res.json())
+    .then(data => {
+      console.log("Пользователь добавлен:", data);
+      updateAuthUI();
+    })
+    .catch(err => {
+      console.error("Ошибка при add:", err);
+    });
+}
+
 function updateAuthUI() {
   const signInBtn = document.getElementById("googleSignInBtn");
   const searchBtn = document.getElementById("searchBtn");
@@ -64,66 +105,24 @@ function updateAuthUI() {
     searchBtn.classList.remove("hidden");
     greeting.textContent = `Здравствуйте, ${currentUser.name}!`;
 
-    signInBtn.onclick = () => {
-      logout();
-    };
+    signInBtn.onclick = () => logout();
   } else {
     signInBtn.textContent = "";
     searchBtn.classList.add("hidden");
     greeting.textContent = "";
 
-    // Показываем кнопку Google Sign In заново (через renderButton)
-    google.accounts.id.renderButton(
-      signInBtn,
-      { theme: "outline", size: "large", text: "signin_with" }
-    );
+    google.accounts.id.renderButton(signInBtn, {
+      theme: "outline",
+      size: "large",
+      text: "signin_with"
+    });
 
     signInBtn.onclick = null;
   }
 }
 
-// Выход (очистка localStorage)
 function logout() {
   currentUser = null;
   localStorage.removeItem("user");
   updateAuthUI();
-}
-
-const usersApiUrl = "https://script.google.com/macros/s/AKfycbz8SXYyTQNTBS8SfoEM0PPWC7Q3VvH42wRvxKAfJr8whFIZC59QyAkRA7FPnDuu9yvs/exec";
-
-function checkOrCreateUser(user) {
-  const email = encodeURIComponent(user.email);
-  fetch(`${usersApiUrl}?action=check&email=${email}`)
-    .then(res => res.json())
-    .then(data => {
-      if (data.found) {
-        user.role = data.role || "user";
-        currentUser = user;
-        localStorage.setItem("user", JSON.stringify(currentUser));
-        updateAuthUI();
-      } else {
-        const name = encodeURIComponent(user.name || "");
-        const picture = encodeURIComponent(user.picture || "");
-        const role = "user";
-
-        const url = `${usersApiUrl}?action=add&email=${email}&name=${name}&picture=${picture}&role=${role}`;
-        fetch(url)
-          .then(res => res.text())
-          .then(result => {
-            console.log("Добавление пользователя:", result);
-            user.role = role;
-            currentUser = user;
-            localStorage.setItem("user", JSON.stringify(currentUser));
-            updateAuthUI();
-          })
-          .catch(err => {
-            alert("Ошибка при добавлении пользователя.");
-            console.error(err);
-          });
-      }
-    })
-    .catch(err => {
-      alert("Ошибка при проверке пользователя.");
-      console.error(err);
-    });
 }
