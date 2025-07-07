@@ -54,10 +54,14 @@ function checkOrCreateUser(user) {
     email: user.email,
   });
 
-  fetch(scriptUrl, {
-    method: "POST",
-    body: params,
-  })
+  fetch("https://corsproxy.io/?" + encodeURIComponent(scriptUrl), {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/x-www-form-urlencoded",
+  },
+  body: params,
+})
+
     .then(res => res.json())
     .then(data => {
       if (data.found) {
@@ -81,10 +85,14 @@ function addNewUser(user) {
     role: "user",
   });
 
-  fetch(scriptUrl, {
-    method: "POST",
-    body: params,
-  })
+  fetch("https://corsproxy.io/?" + encodeURIComponent(scriptUrl), {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/x-www-form-urlencoded",
+  },
+  body: params,
+})
+
     .then(res => res.json())
     .then(data => {
       console.log("Пользователь добавлен:", data);
