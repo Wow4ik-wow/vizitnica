@@ -257,14 +257,15 @@ function applyFilters() {
   populateList("listName", filtered, "Имя", true);
 }
 
-populateList("listProfile", allServices, "Профиль деятельности");
-populateDatalist("listRegion", getUniqueValues(allServices, "Область"));
-
-populateDatalist("listType", getUniqueValues(allServices, "Вид деятельности"));
-populateDatalist("listDistrict", getUniqueValues(allServices, "Район"));
-populateList("listName", allServices, "Имя", true);
-
-populateDependentLists(allServices);
+function populateAllLists() {
+  populateList("listProfile", allServices, "Профиль деятельности");
+  populateDatalist("listRegion", getUniqueValues(allServices, "Область"));
+  populateDatalist("listType", getUniqueValues(allServices, "Вид деятельности"));
+  populateDatalist("listDistrict", getUniqueValues(allServices, "Район"));
+  populateList("listName", allServices, "Имя", true);
+  populateDependentLists(allServices);
+}
+populateAllLists();
 
 function populateList(
   listId,
