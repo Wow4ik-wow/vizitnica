@@ -3,7 +3,7 @@ const scriptUrl = "https://script.google.com/macros/s/AKfycbzpraBNAzlF_oqYIDLYVj
 
 window.onload = () => {
   google.accounts.id.initialize({
-    client_id: '1060687932793-sk24egn7c7r0h6t6i1dedk4u6hrgdotc.apps.googleusercontent.com',
+    client_id: '1060687932793-sk24egn7c7r0h6t6i1dedk4hrgdotc.apps.googleusercontent.com',
     callback: handleCredentialResponse,
   });
 
@@ -55,17 +55,13 @@ function checkOrCreateUser(user) {
   });
 
   fetch("https://corsproxy.io/?" + encodeURIComponent(scriptUrl), {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/x-www-form-urlencoded",
-  },
-  body: params,
-})
-
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: params,
+  })
     .then(res => res.json())
     .then(data => {
       if (data.found) {
-        console.log("Пользователь найден, роль:", data.role);
         updateAuthUI();
       } else {
         addNewUser(user);
@@ -81,21 +77,17 @@ function addNewUser(user) {
     action: "add",
     email: user.email,
     name: user.name,
-    picture: user.picture,
+    photoURL: user.picture,
     role: "user",
   });
 
   fetch("https://corsproxy.io/?" + encodeURIComponent(scriptUrl), {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/x-www-form-urlencoded",
-  },
-  body: params,
-})
-
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: params,
+  })
     .then(res => res.json())
     .then(data => {
-      console.log("Пользователь добавлен:", data);
       updateAuthUI();
     })
     .catch(err => {
@@ -122,7 +114,7 @@ function updateAuthUI() {
     google.accounts.id.renderButton(signInBtn, {
       theme: "outline",
       size: "large",
-      text: "signin_with"
+      text: "signin_with",
     });
 
     signInBtn.onclick = null;
