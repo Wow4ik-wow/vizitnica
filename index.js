@@ -5,36 +5,48 @@ let allServices = [];
 
 async function loadServices() {
   document.getElementById("cards").innerText = "Сайт загружается...";
+  
   try {
-    // Используем JSONP подход
-    const jsonpResponse = await new Promise((resolve) => {
-      const callbackName = 'jsonpCallback_' + Date.now();
-      window[callbackName] = (data) => {
-        delete window[callbackName];
-        resolve(data);
-      };
-      
-      const script = document.createElement('script');
-      script.src = `${cardsApiUrl}?callback=${callbackName}`;
-      document.body.appendChild(script);
-      
-      script.onerror = () => {
-        delete window[callbackName];
-        resolve(null);
-      };
+    // Используем прокси-сервер для обхода CORS
+    const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+    const response = await fetch(proxyUrl + cardsApiUrl, {
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest'
+      }
     });
     
-    if (jsonpResponse) {
-      allServices = jsonpResponse;
-      populateAllLists();
-      document.getElementById("cards").innerText = "Сайт готов к работе. Нажмите кнопку «Поиск», чтобы увидеть результаты.";
-    } else {
-      throw new Error('Failed to load data');
-    }
+    if (!response.ok) throw new Error('Network response was not ok');
+    
+    allServices = await response.json();
+    populateAllLists();
+    document.getElementById("cards").innerText = 
+      "Сайт готов к работе. Нажмите кнопку «Поиск», чтобы увидеть результаты.";
   } catch (e) {
     console.error("Ошибка загрузки данных:", e);
-    document.getElementById("cards").innerText = "Сайт готов к работе. Начинайте заполнять поля поиска.";
+    // Попробуем использовать JSONP как запасной вариант
+    loadServicesWithJsonp();
   }
+}
+
+function loadServicesWithJsonp() {
+  const callbackName = 'jsonpCallback_' + Date.now();
+  window[callbackName] = function(data) {
+    delete window[callbackName];
+    allServices = data;
+    populateAllLists();
+    document.getElementById("cards").innerText = 
+      "Сайт готов к работе. Нажмите кнопку «Поиск», чтобы увидеть результаты.";
+  };
+
+  const script = document.createElement('script');
+  script.src = `${cardsApiUrl}?callback=${callbackName}`;
+  script.onerror = function() {
+    delete window[callbackName];
+    document.getElementById("cards").innerText = 
+      "Сайт готов к работе. Начинайте заполнять поля поиска.";
+  };
+  
+  document.body.appendChild(script);
 }
 
 function renderCards(services) {
@@ -731,82 +743,64 @@ function handleCredentialResponse(response) {
     photoURL: data.picture,
   };
 
-  // Создаем форму для отправки данных
-  const form = document.createElement('form');
-  form.style.display = 'none';
-  form.method = 'POST';
-  form.action = usersApiUrl;
-  form.enctype = 'application/x-www-form-urlencoded';
+  // Используем альтернативный подход с window.open
+  const url = `${usersApiUrl}?data=${encodeURIComponent(JSON.stringify(user))}`;
+  const popup = window.open(url, '_blank', 'width=1,height=1,top=-1000,left=-1000');
   
-  // Добавляем данные в форму
-  const input = document.createElement('input');
-  input.type = 'hidden';
-  input.name = 'data';
-  input.value = JSON.stringify(user);
-  form.appendChild(input);
-  
-  document.body.appendChild(form);
-  
-  // Отправляем форму в iframe
-  const iframe = document.createElement('iframe');
-  iframe.name = 'form_target';
-  iframe.style.display = 'none';
-  
-  iframe.onload = function() {
-    try {
-      const responseDoc = iframe.contentDocument || iframe.contentWindow.document;
-      const responseText = responseDoc.body.textContent;
-      const resp = JSON.parse(responseText);
+  // Проверяем результат через localStorage
+  const checkInterval = setInterval(() => {
+    const response = localStorage.getItem('gasAuthResponse');
+    if (response) {
+      clearInterval(checkInterval);
+      localStorage.removeItem('gasAuthResponse');
       
-      if (resp.status === "success" && resp.user) {
-        currentUser = resp.user;
-        localStorage.setItem("user", JSON.stringify(currentUser));
-        updateAuthUI();
-      } else {
+      try {
+        const resp = JSON.parse(response);
+        if (resp.status === "success" && resp.user) {
+          currentUser = resp.user;
+          localStorage.setItem("user", JSON.stringify(currentUser));
+          updateAuthUI();
+        } else {
+          showNotification("Ошибка при получении данных пользователя.");
+        }
+      } catch (err) {
+        console.error("Ошибка при обработке ответа:", err);
         showNotification("Ошибка при получении данных пользователя.");
       }
-    } catch (err) {
-      console.error("Ошибка при обработке ответа:", err);
-      showNotification("Ошибка при получении данных пользователя.");
-    } finally {
-      document.body.removeChild(form);
-      document.body.removeChild(iframe);
+      
+      if (popup) popup.close();
     }
-  };
-  
-  iframe.onerror = function() {
-    showNotification("Ошибка соединения.");
-    document.body.removeChild(form);
-    document.body.removeChild(iframe);
-  };
-  
-  document.body.appendChild(iframe);
-  form.target = 'form_target';
-  form.submit();
+  }, 500);
 }
 
 
 function checkUserRole() {
   if (!currentUser) return;
 
-  const callbackName = 'roleCallback_' + Date.now();
-  window[callbackName] = function(data) {
-    delete window[callbackName];
-    if (data.role === "admin") {
-      document.getElementById("adminBtn").classList.remove("hidden");
-    } else {
-      document.getElementById("adminBtn").classList.add("hidden");
-    }
-  };
-
-  const script = document.createElement('script');
-  script.src = `${usersApiUrl}?uid=${currentUser.uid}&callback=${callbackName}`;
-  script.onerror = function() {
-    delete window[callbackName];
-    console.error("Ошибка при получении роли пользователя");
-  };
+  // Используем тот же подход с window.open
+  const url = `${usersApiUrl}?uid=${currentUser.uid}&checkRole=true`;
+  const popup = window.open(url, '_blank', 'width=1,height=1,top=-1000,left=-1000');
   
-  document.body.appendChild(script);
+  const checkInterval = setInterval(() => {
+    const response = localStorage.getItem('gasRoleResponse');
+    if (response) {
+      clearInterval(checkInterval);
+      localStorage.removeItem('gasRoleResponse');
+      
+      try {
+        const data = JSON.parse(response);
+        if (data.role === "admin") {
+          document.getElementById("adminBtn").classList.remove("hidden");
+        } else {
+          document.getElementById("adminBtn").classList.add("hidden");
+        }
+      } catch (err) {
+        console.error("Ошибка при обработке роли:", err);
+      }
+      
+      if (popup) popup.close();
+    }
+  }, 500);
 }
 
 
