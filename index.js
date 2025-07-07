@@ -6,17 +6,34 @@ let allServices = [];
 async function loadServices() {
   document.getElementById("cards").innerText = "Сайт загружается...";
   try {
-    const response = await fetch(cardsApiUrl);
-    allServices = await response.json();
-    populateAllLists();
-    document.getElementById("cards").innerText =
-      "Сайт готов к работе. Нажмите кнопку «Поиск», чтобы увидеть результаты.";
+    // Используем JSONP подход
+    const jsonpResponse = await new Promise((resolve) => {
+      const callbackName = 'jsonpCallback_' + Date.now();
+      window[callbackName] = (data) => {
+        delete window[callbackName];
+        resolve(data);
+      };
+      
+      const script = document.createElement('script');
+      script.src = `${cardsApiUrl}?callback=${callbackName}`;
+      document.body.appendChild(script);
+      
+      script.onerror = () => {
+        delete window[callbackName];
+        resolve(null);
+      };
+    });
+    
+    if (jsonpResponse) {
+      allServices = jsonpResponse;
+      populateAllLists();
+      document.getElementById("cards").innerText = "Сайт готов к работе. Нажмите кнопку «Поиск», чтобы увидеть результаты.";
+    } else {
+      throw new Error('Failed to load data');
+    }
   } catch (e) {
     console.error("Ошибка загрузки данных:", e);
-    // Ошибку показывать не будем, чтобы не пугать пользователя
-    // Можно просто оставить надпись "Сайт готов к работе"
-    document.getElementById("cards").innerText =
-      "Сайт готов к работе. Начинайте заполнять поля поиска.";
+    document.getElementById("cards").innerText = "Сайт готов к работе. Начинайте заполнять поля поиска.";
   }
 }
 
@@ -714,14 +731,33 @@ function handleCredentialResponse(response) {
     photoURL: data.picture,
   };
 
-  fetch(usersApiUrl, {
-
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(user),
-  })
-    .then((res) => res.json())
-    .then((resp) => {
+  // Создаем форму для отправки данных
+  const form = document.createElement('form');
+  form.style.display = 'none';
+  form.method = 'POST';
+  form.action = usersApiUrl;
+  form.enctype = 'application/x-www-form-urlencoded';
+  
+  // Добавляем данные в форму
+  const input = document.createElement('input');
+  input.type = 'hidden';
+  input.name = 'data';
+  input.value = JSON.stringify(user);
+  form.appendChild(input);
+  
+  document.body.appendChild(form);
+  
+  // Отправляем форму в iframe
+  const iframe = document.createElement('iframe');
+  iframe.name = 'form_target';
+  iframe.style.display = 'none';
+  
+  iframe.onload = function() {
+    try {
+      const responseDoc = iframe.contentDocument || iframe.contentWindow.document;
+      const responseText = responseDoc.body.textContent;
+      const resp = JSON.parse(responseText);
+      
       if (resp.status === "success" && resp.user) {
         currentUser = resp.user;
         localStorage.setItem("user", JSON.stringify(currentUser));
@@ -729,29 +765,48 @@ function handleCredentialResponse(response) {
       } else {
         showNotification("Ошибка при получении данных пользователя.");
       }
-    })
-    .catch((err) => {
-      console.error("Ошибка при запросе пользователя:", err);
+    } catch (err) {
+      console.error("Ошибка при обработке ответа:", err);
       showNotification("Ошибка при получении данных пользователя.");
-    });
+    } finally {
+      document.body.removeChild(form);
+      document.body.removeChild(iframe);
+    }
+  };
+  
+  iframe.onerror = function() {
+    showNotification("Ошибка соединения.");
+    document.body.removeChild(form);
+    document.body.removeChild(iframe);
+  };
+  
+  document.body.appendChild(iframe);
+  form.target = 'form_target';
+  form.submit();
 }
 
 
 function checkUserRole() {
   if (!currentUser) return;
 
-  fetch(`${usersApiUrl}?uid=${currentUser.uid}`)
-    .then((response) => response.json())
-    .then((data) => {
-      if (data.role === "admin") {
-        document.getElementById("adminBtn").classList.remove("hidden");
-      } else {
-        document.getElementById("adminBtn").classList.add("hidden");
-      }
-    })
-    .catch((error) => {
-      console.error("Ошибка при получении роли пользователя:", error);
-    });
+  const callbackName = 'roleCallback_' + Date.now();
+  window[callbackName] = function(data) {
+    delete window[callbackName];
+    if (data.role === "admin") {
+      document.getElementById("adminBtn").classList.remove("hidden");
+    } else {
+      document.getElementById("adminBtn").classList.add("hidden");
+    }
+  };
+
+  const script = document.createElement('script');
+  script.src = `${usersApiUrl}?uid=${currentUser.uid}&callback=${callbackName}`;
+  script.onerror = function() {
+    delete window[callbackName];
+    console.error("Ошибка при получении роли пользователя");
+  };
+  
+  document.body.appendChild(script);
 }
 
 
