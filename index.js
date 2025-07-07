@@ -1,12 +1,12 @@
 let currentUser = null;
 const API_URL = 'https://script.google.com/macros/s/AKfycbzpraBNAzlF_oqYIDLYVjczKdY6Ui32qJNwY37HGSj6vtPs9pXseJYqG3oLAr28iZ0c/exec';
 
-// Инициализация
+// Инициализация при загрузке страницы
 window.onload = () => {
   initGoogleAuth();
   checkAuth();
   
-  // Назначаем обработчики кнопок
+  // Назначение обработчиков кнопок
   document.getElementById("addServiceBtn").onclick = () => {
     window.location.href = "add.html";
   };
@@ -16,6 +16,7 @@ window.onload = () => {
   };
 };
 
+// Инициализация Google Auth
 function initGoogleAuth() {
   google.accounts.id.initialize({
     client_id: '1060687932793-sk24egn7c7r0h6t6i1dedk4u6hrgdotc.apps.googleusercontent.com',
@@ -23,27 +24,27 @@ function initGoogleAuth() {
     auto_select: false
   });
   
-  // Рендерим кнопку сразу
+  renderGoogleButton();
+}
+
+// Рендер кнопки Google
+function renderGoogleButton() {
   google.accounts.id.renderButton(
     document.getElementById("googleSignInBtn"),
     { 
-      type: "standard",
-      theme: "filled_blue", 
+      theme: "filled_blue",
       size: "large",
       text: "signin_with",
       shape: "rectangular"
     }
   );
-  
-  // Показываем One Tap только если нет сохранённого пользователя
-  if (!localStorage.getItem('user')) {
-    google.accounts.id.prompt();
-  }
 }
 
+// Обработка ответа от Google Auth
 async function handleCredentialResponse(response) {
   try {
     const payload = parseJWT(response.credential);
+    console.log('Google Auth payload:', payload);
     
     currentUser = {
       uid: '',
@@ -53,50 +54,90 @@ async function handleCredentialResponse(response) {
       role: 'user'
     };
     
-    const { uid } = await saveUserToBackend(currentUser);
-    currentUser.uid = uid;
+    // Сохраняем пользователя в таблицу
+    const result = await saveUserToBackend(currentUser);
+    console.log('Backend response:', result);
+    
+    if (!result || !result.success) {
+      throw new Error(result?.error || 'Не удалось сохранить пользователя');
+    }
+    
+    currentUser.uid = result.uid || Utilities.getUuid();
     localStorage.setItem('user', JSON.stringify(currentUser));
     updateAuthUI();
     
   } catch (error) {
     console.error('Auth error:', error);
-    alert('Ошибка авторизации. Попробуйте ещё раз.');
+    alert('Ошибка авторизации: ' + error.message);
     logout();
   }
 }
 
+// Отправка данных в Google Sheets
 async function saveUserToBackend(user) {
-  const response = await fetch(API_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ user })
-  });
-  
-  if (!response.ok) throw new Error('Ошибка сервера');
-  return await response.json();
-}
+  try {
+    const response = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ user })
+    });
 
-function parseJWT(token) {
-  const base64Url = token.split('.')[1];
-  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-  return JSON.parse(atob(base64));
-}
-
-function checkAuth() {
-  const storedUser = localStorage.getItem('user');
-  if (storedUser) {
-    currentUser = JSON.parse(storedUser);
-    updateAuthUI();
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText || 'Ошибка сервера');
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.error('Backend error:', error);
+    return { 
+      success: false, 
+      error: error.message 
+    };
   }
 }
 
+// Парсинг JWT токена
+function parseJWT(token) {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    
+    return JSON.parse(jsonPayload);
+  } catch (e) {
+    console.error('JWT parse error:', e);
+    throw new Error('Неверный форток токена');
+  }
+}
+
+// Проверка авторизации при загрузке
+function checkAuth() {
+  const storedUser = localStorage.getItem('user');
+  if (storedUser) {
+    try {
+      currentUser = JSON.parse(storedUser);
+      updateAuthUI();
+    } catch (e) {
+      console.error('Failed to parse user:', e);
+      logout();
+    }
+  }
+}
+
+// Обновление интерфейса
 function updateAuthUI() {
   const signInBtn = document.getElementById("googleSignInBtn");
   const searchBtn = document.getElementById("searchBtn");
   const greeting = document.getElementById("userGreeting");
 
   if (currentUser) {
-    signInBtn.innerHTML = ''; // Очищаем перед рендером
+    // Для авторизованного пользователя
+    signInBtn.innerHTML = '';
     google.accounts.id.renderButton(
       signInBtn,
       { 
@@ -109,11 +150,14 @@ function updateAuthUI() {
     signInBtn.onclick = logout;
     
     searchBtn.classList.remove("hidden");
-    greeting.textContent = `Добро пожаловать, ${currentUser.name}!`;
-    greeting.innerHTML += `<br><img src="${currentUser.picture}" style="border-radius:50%; width:40px; margin-top:10px;">`;
-    
+    greeting.innerHTML = `
+      Добро пожаловать, ${currentUser.name}!<br>
+      <img src="${currentUser.picture}" 
+           style="border-radius:50%; width:40px; margin-top:10px;">
+    `;
   } else {
-    signInBtn.innerHTML = ''; // Очищаем перед рендером
+    // Для неавторизованного
+    signInBtn.innerHTML = '';
     google.accounts.id.renderButton(
       signInBtn,
       { 
@@ -125,22 +169,26 @@ function updateAuthUI() {
       }
     );
     signInBtn.onclick = null;
-    
     searchBtn.classList.add("hidden");
     greeting.textContent = '';
   }
 }
 
+// Выход из системы
 function logout() {
-  google.accounts.id.disableAutoSelect();
-  google.accounts.id.revoke(currentUser.email, () => {
-    console.log('Доступ отозван');
-  });
+  try {
+    google.accounts.id.disableAutoSelect();
+    if (currentUser?.email) {
+      google.accounts.id.revoke(currentUser.email, () => {
+        console.log('Доступ отозван');
+      });
+    }
+  } catch (e) {
+    console.error('Revoke error:', e);
+  }
   
   currentUser = null;
   localStorage.removeItem('user');
   updateAuthUI();
-  
-  // Перезагружаем страницу для чистого состояния
-  setTimeout(() => location.reload(), 500);
+  location.reload();
 }
