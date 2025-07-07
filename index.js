@@ -4,6 +4,14 @@ const usersApiUrl = "https://script.google.com/macros/s/AKfycbz8SXYyTQNTBS8SfoEM
 let allServices = [];
 
 async function loadServices() {
+  // Добавьте в начало loadServices()
+try {
+  await fetch('https://cors-anywhere.herokuapp.com/corsdemo', {
+    method: 'POST'
+  });
+} catch (e) {
+  console.log("CORS Anywhere demo access requested");
+}
   document.getElementById("cards").innerText = "Сайт загружается...";
   
   try {
@@ -743,64 +751,69 @@ function handleCredentialResponse(response) {
     photoURL: data.picture,
   };
 
-  // Используем альтернативный подход с window.open
-  const url = `${usersApiUrl}?data=${encodeURIComponent(JSON.stringify(user))}`;
-  const popup = window.open(url, '_blank', 'width=1,height=1,top=-1000,left=-1000');
-  
-  // Проверяем результат через localStorage
-  const checkInterval = setInterval(() => {
-    const response = localStorage.getItem('gasAuthResponse');
-    if (response) {
-      clearInterval(checkInterval);
-      localStorage.removeItem('gasAuthResponse');
-      
-      try {
-        const resp = JSON.parse(response);
-        if (resp.status === "success" && resp.user) {
-          currentUser = resp.user;
-          localStorage.setItem("user", JSON.stringify(currentUser));
-          updateAuthUI();
-        } else {
-          showNotification("Ошибка при получении данных пользователя.");
-        }
-      } catch (err) {
-        console.error("Ошибка при обработке ответа:", err);
-        showNotification("Ошибка при получении данных пользователя.");
-      }
-      
-      if (popup) popup.close();
+  // Вариант 1: Используем fetch с cors-anywhere
+  fetch(`https://cors-anywhere.herokuapp.com/${usersApiUrl}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Requested-With': 'XMLHttpRequest'
+    },
+    body: JSON.stringify(user)
+  })
+  .then(response => response.json())
+  .then(resp => {
+    if (resp.status === "success") {
+      currentUser = resp.user;
+      localStorage.setItem("user", JSON.stringify(currentUser));
+      updateAuthUI();
+    } else {
+      showNotification("Ошибка авторизации");
     }
-  }, 500);
+  })
+  .catch(() => {
+    // Вариант 2: Если cors-anywhere не работает, используем JSONP
+    handleCredentialResponseJsonp(user);
+  });
 }
 
+function handleCredentialResponseJsonp(user) {
+  const callbackName = 'authCallback_' + Date.now();
+  window[callbackName] = function(data) {
+    delete window[callbackName];
+    if (data.status === "success") {
+      currentUser = data.user;
+      localStorage.setItem("user", JSON.stringify(currentUser));
+      updateAuthUI();
+    }
+  };
+
+  const script = document.createElement('script');
+  script.src = `${usersApiUrl}?data=${encodeURIComponent(JSON.stringify(user))}&callback=${callbackName}`;
+  script.onerror = () => {
+    delete window[callbackName];
+    showNotification("Ошибка соединения");
+  };
+  document.body.appendChild(script);
+}
 
 function checkUserRole() {
   if (!currentUser) return;
 
-  // Используем тот же подход с window.open
-  const url = `${usersApiUrl}?uid=${currentUser.uid}&checkRole=true`;
-  const popup = window.open(url, '_blank', 'width=1,height=1,top=-1000,left=-1000');
-  
-  const checkInterval = setInterval(() => {
-    const response = localStorage.getItem('gasRoleResponse');
-    if (response) {
-      clearInterval(checkInterval);
-      localStorage.removeItem('gasRoleResponse');
-      
-      try {
-        const data = JSON.parse(response);
-        if (data.role === "admin") {
-          document.getElementById("adminBtn").classList.remove("hidden");
-        } else {
-          document.getElementById("adminBtn").classList.add("hidden");
-        }
-      } catch (err) {
-        console.error("Ошибка при обработке роли:", err);
-      }
-      
-      if (popup) popup.close();
+  const callbackName = 'roleCallback_' + Date.now();
+  window[callbackName] = function(data) {
+    delete window[callbackName];
+    if (data.role === "admin") {
+      document.getElementById("adminBtn").classList.remove("hidden");
     }
-  }, 500);
+  };
+
+  const script = document.createElement('script');
+  script.src = `${usersApiUrl}?uid=${currentUser.uid}&callback=${callbackName}`;
+  script.onerror = () => {
+    delete window[callbackName];
+    console.error("Ошибка проверки роли");
+  };
+  document.body.appendChild(script);
 }
 
 
