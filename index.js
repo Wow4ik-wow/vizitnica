@@ -66,25 +66,34 @@ async function handleCredentialResponse(response) {
 
 async function saveUserToBackend(user) {
   try {
-    // Используем прокси для обхода CORS
-    const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-    const response = await fetch(proxyUrl + API_URL, {
+    // Формируем URL с добавлением параметра для Google Apps Script
+    const url = `${API_URL}?action=saveUser`;
+    
+    const response = await fetch(url, {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',
-        'X-Requested-With': 'XMLHttpRequest'
       },
-      body: JSON.stringify({ user })
+      body: JSON.stringify({ user }),
+      credentials: 'omit'
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(errorText || 'Ошибка сервера');
+    // Проверяем Content-Type ответа
+    const contentType = response.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      const text = await response.text();
+      throw new Error(`Invalid content type. Response: ${text.substring(0, 100)}`);
+    }
+
+    const data = await response.json();
+    
+    if (!response.ok || !data.success) {
+      throw new Error(data.error || 'Unknown error');
     }
     
-    return await response.json();
+    return data;
   } catch (error) {
-    console.error('Backend error:', error);
+    console.error('Backend request failed:', error);
     return { 
       success: false, 
       error: error.message 
