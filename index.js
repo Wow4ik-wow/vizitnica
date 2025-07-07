@@ -1,12 +1,11 @@
 let currentUser = null;
 const API_URL = 'https://script.google.com/macros/s/AKfycbzpraBNAzlF_oqYIDLYVjczKdY6Ui32qJNwY37HGSj6vtPs9pXseJYqG3oLAr28iZ0c/exec';
 
-// Инициализация при загрузке страницы
+// Инициализация
 window.onload = () => {
   initGoogleAuth();
   checkAuth();
   
-  // Назначение обработчиков кнопок
   document.getElementById("addServiceBtn").onclick = () => {
     window.location.href = "add.html";
   };
@@ -16,7 +15,6 @@ window.onload = () => {
   };
 };
 
-// Инициализация Google Auth
 function initGoogleAuth() {
   google.accounts.id.initialize({
     client_id: '1060687932793-sk24egn7c7r0h6t6i1dedk4u6hrgdotc.apps.googleusercontent.com',
@@ -27,7 +25,6 @@ function initGoogleAuth() {
   renderGoogleButton();
 }
 
-// Рендер кнопки Google
 function renderGoogleButton() {
   google.accounts.id.renderButton(
     document.getElementById("googleSignInBtn"),
@@ -40,12 +37,9 @@ function renderGoogleButton() {
   );
 }
 
-// Обработка ответа от Google Auth
 async function handleCredentialResponse(response) {
   try {
     const payload = parseJWT(response.credential);
-    console.log('Google Auth payload:', payload);
-    
     currentUser = {
       uid: '',
       name: payload.name,
@@ -54,15 +48,12 @@ async function handleCredentialResponse(response) {
       role: 'user'
     };
     
-    // Сохраняем пользователя в таблицу
     const result = await saveUserToBackend(currentUser);
     console.log('Backend response:', result);
     
-    if (!result || !result.success) {
-      throw new Error(result?.error || 'Не удалось сохранить пользователя');
-    }
+    if (!result.success) throw new Error(result.error || 'Ошибка сервера');
     
-    currentUser.uid = result.uid || Utilities.getUuid();
+    currentUser.uid = result.uid;
     localStorage.setItem('user', JSON.stringify(currentUser));
     updateAuthUI();
     
@@ -73,13 +64,15 @@ async function handleCredentialResponse(response) {
   }
 }
 
-// Отправка данных в Google Sheets
 async function saveUserToBackend(user) {
   try {
-    const response = await fetch(API_URL, {
+    // Используем прокси для обхода CORS
+    const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+    const response = await fetch(proxyUrl + API_URL, {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest'
       },
       body: JSON.stringify({ user })
     });
