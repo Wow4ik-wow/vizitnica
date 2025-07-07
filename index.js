@@ -1,60 +1,22 @@
-const cardsApiUrl = "https://script.google.com/macros/s/AKfycbxwzZChCBrrgV-I9NJItR2KITwyA9Xi23aQt9CZblsvXKEnkFE5xJBSnWXcceOzYxnjyg/exec";
-const usersApiUrl = "https://script.google.com/macros/s/AKfycbz8SXYyTQNTBS8SfoEM0PPWC7Q3VvH42wRvxKAfJr8whFIZC59QyAkRA7FPnDuu9yvs/exec";
-
+const apiUrl =
+  "https://script.google.com/macros/s/AKfycbw27eyw53gPs8tgLexDkiYmjMJ70HpB0fkDFuCu6gRK0Hz997jDzw3TAMh-rQD_mqoTDA/exec";
 let allServices = [];
 
 async function loadServices() {
-  // Добавьте в начало loadServices()
-try {
-  await fetch('https://cors-anywhere.herokuapp.com/corsdemo', {
-    method: 'POST'
-  });
-} catch (e) {
-  console.log("CORS Anywhere demo access requested");
-}
   document.getElementById("cards").innerText = "Сайт загружается...";
-  
   try {
-    // Используем прокси-сервер для обхода CORS
-    const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-    const response = await fetch(proxyUrl + cardsApiUrl, {
-      headers: {
-        'X-Requested-With': 'XMLHttpRequest'
-      }
-    });
-    
-    if (!response.ok) throw new Error('Network response was not ok');
-    
+    const response = await fetch(apiUrl);
     allServices = await response.json();
     populateAllLists();
-    document.getElementById("cards").innerText = 
+    document.getElementById("cards").innerText =
       "Сайт готов к работе. Нажмите кнопку «Поиск», чтобы увидеть результаты.";
   } catch (e) {
     console.error("Ошибка загрузки данных:", e);
-    // Попробуем использовать JSONP как запасной вариант
-    loadServicesWithJsonp();
-  }
-}
-
-function loadServicesWithJsonp() {
-  const callbackName = 'jsonpCallback_' + Date.now();
-  window[callbackName] = function(data) {
-    delete window[callbackName];
-    allServices = data;
-    populateAllLists();
-    document.getElementById("cards").innerText = 
-      "Сайт готов к работе. Нажмите кнопку «Поиск», чтобы увидеть результаты.";
-  };
-
-  const script = document.createElement('script');
-  script.src = `${cardsApiUrl}?callback=${callbackName}`;
-  script.onerror = function() {
-    delete window[callbackName];
-    document.getElementById("cards").innerText = 
+    // Ошибку показывать не будем, чтобы не пугать пользователя
+    // Можно просто оставить надпись "Сайт готов к работе"
+    document.getElementById("cards").innerText =
       "Сайт готов к работе. Начинайте заполнять поля поиска.";
-  };
-  
-  document.body.appendChild(script);
+  }
 }
 
 function renderCards(services) {
@@ -715,145 +677,15 @@ function showNotification(message) {
   }, 5000);
 }
 
-let currentUser = null;
-
 window.onload = () => {
-  google.accounts.id.initialize({
-    client_id:
-      "1060687932793-sk24egn7c7r0h6t6i1dedk4u6hrgdotc.apps.googleusercontent.com",
-    callback: handleCredentialResponse,
-    auto_select: false,
-  });
-
+  // Восстанавливаем пользователя из localStorage
   const storedUser = localStorage.getItem("user");
   if (storedUser) {
     currentUser = JSON.parse(storedUser);
     updateAuthUI();
-    checkUserRole();
   }
 
-  document.getElementById("loginBtn").addEventListener("click", () => {
-    if (!currentUser) {
-      google.accounts.id.prompt();
-    }
-  });
-
-  document.getElementById("logoutBtn").addEventListener("click", logout);
-};
-
-
-function handleCredentialResponse(response) {
-  const data = parseJwt(response.credential);
-  const user = {
-    uid: data.sub,
-    email: data.email,
-    name: data.name,
-    photoURL: data.picture,
-  };
-
-  // Вариант 1: Используем fetch с cors-anywhere
-  fetch(`https://cors-anywhere.herokuapp.com/${usersApiUrl}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Requested-With': 'XMLHttpRequest'
-    },
-    body: JSON.stringify(user)
-  })
-  .then(response => response.json())
-  .then(resp => {
-    if (resp.status === "success") {
-      currentUser = resp.user;
-      localStorage.setItem("user", JSON.stringify(currentUser));
-      updateAuthUI();
-    } else {
-      showNotification("Ошибка авторизации");
-    }
-  })
-  .catch(() => {
-    // Вариант 2: Если cors-anywhere не работает, используем JSONP
-    handleCredentialResponseJsonp(user);
-  });
-}
-
-function handleCredentialResponseJsonp(user) {
-  const callbackName = 'authCallback_' + Date.now();
-  window[callbackName] = function(data) {
-    delete window[callbackName];
-    if (data.status === "success") {
-      currentUser = data.user;
-      localStorage.setItem("user", JSON.stringify(currentUser));
-      updateAuthUI();
-    }
-  };
-
-  const script = document.createElement('script');
-  script.src = `${usersApiUrl}?data=${encodeURIComponent(JSON.stringify(user))}&callback=${callbackName}`;
-  script.onerror = () => {
-    delete window[callbackName];
-    showNotification("Ошибка соединения");
-  };
-  document.body.appendChild(script);
-}
-
-function checkUserRole() {
-  if (!currentUser) return;
-
-  const callbackName = 'roleCallback_' + Date.now();
-  window[callbackName] = function(data) {
-    delete window[callbackName];
-    if (data.role === "admin") {
-      document.getElementById("adminBtn").classList.remove("hidden");
-    }
-  };
-
-  const script = document.createElement('script');
-  script.src = `${usersApiUrl}?uid=${currentUser.uid}&callback=${callbackName}`;
-  script.onerror = () => {
-    delete window[callbackName];
-    console.error("Ошибка проверки роли");
-  };
-  document.body.appendChild(script);
-}
-
-
-
-function parseJwt(token) {
-  const base64Url = token.split(".")[1];
-  const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-  const jsonPayload = decodeURIComponent(
-    atob(base64)
-      .split("")
-      .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
-      .join("")
-  );
-  return JSON.parse(jsonPayload);
-}
-
-function updateAuthUI() {
-  const isLoggedIn = !!currentUser;
-
-  document.getElementById("loginBtn").classList.toggle("hidden", isLoggedIn);
-  document.getElementById("logoutBtn").classList.toggle("hidden", !isLoggedIn);
-  document.getElementById("cabinetBtn").classList.toggle("hidden", !isLoggedIn);
-  document.getElementById("adminBtn").classList.add("hidden"); // по умолчанию скрыта
-
-  document.getElementById("addServiceBtn").onclick = isLoggedIn
-    ? () => window.location.href = "add.html"
-    : () => showNotification("Авторизуйтесь, чтобы добавить услугу");
-}
-
-
-function logout() {
-  currentUser = null;
-  localStorage.removeItem("user");
-  google.accounts.id.disableAutoSelect();
-  document.getElementById("loginBtn").classList.remove("hidden");
-  document.getElementById("logoutBtn").classList.add("hidden");
-  document.getElementById("cabinetBtn").classList.add("hidden");
-  document.getElementById("adminBtn").classList.add("hidden");
-
   document.getElementById("addServiceBtn").onclick = () => {
-    showNotification("Авторизуйтесь, чтобы добавить услугу");
+    window.location.href = "add.html";
   };
-}
+};
