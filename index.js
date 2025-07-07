@@ -257,19 +257,14 @@ function applyFilters() {
   populateList("listName", filtered, "Имя", true);
 }
 
-function populateAllLists() {
-  populateDatalist("listRegion", getUniqueValues(allServices, "Область"));
-  populateProfileList(allServices);
+populateList("listProfile", allServices, "Профиль деятельности");
+populateDatalist("listRegion", getUniqueValues(allServices, "Область"));
 
-  populateDatalist(
-    "listType",
-    getUniqueValues(allServices, "Вид деятельности")
-  );
-  populateDatalist("listDistrict", getUniqueValues(allServices, "Район"));
-  populateList("listName", allServices, "Имя", true);
+populateDatalist("listType", getUniqueValues(allServices, "Вид деятельности"));
+populateDatalist("listDistrict", getUniqueValues(allServices, "Район"));
+populateList("listName", allServices, "Имя", true);
 
-  populateDependentLists(allServices);
-}
+populateDependentLists(allServices);
 
 function populateList(
   listId,
@@ -474,7 +469,7 @@ function setupInputAutobehavior(id, onFocusCallback) {
 
 // Поведение поля ОБЛАСТЬ
 setupInputAutobehavior("filterRegion", () => {
-  populateDependentLists(filtered);
+  populateDependentLists(allServices);
 });
 
 // Поведение поля ГОРОД
