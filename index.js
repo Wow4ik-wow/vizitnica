@@ -65,6 +65,10 @@ async function handleCredentialResponse(response) {
 }
 
 async function saveUserToBackend(user) {
+  // Создаем временный iframe для отправки данных
+  const iframe = document.createElement('iframe');
+  iframe.style.display = 'none';
+  
   // Формируем URL с параметрами
   const params = new URLSearchParams({
     email: user.email,
@@ -72,15 +76,14 @@ async function saveUserToBackend(user) {
     picture: user.picture || ''
   });
   
-  const url = `https://script.google.com/macros/s/AKfycbzpraBNAzlF_oqYIDLYVjczKdY6Ui32qJNwY37HGSj6vtPs9pXseJYqG3oLAr28iZ0c/exec?${params}`;
+  iframe.src = `https://script.google.com/macros/s/AKfycbzpraBNAzlF_oqYIDLYVjczKdY6Ui32qJNwY37HGSj6vtPs9pXseJYqG3oLAr28iZ0c/exec?${params}`;
   
-  // Используем скрытый iframe для обхода CORS
-  const iframe = document.createElement('iframe');
-  iframe.style.display = 'none';
-  iframe.src = url;
   document.body.appendChild(iframe);
   
-  return { success: true }; // Предполагаем успех
+  // Ждем 3 секунды для завершения запроса
+  await new Promise(resolve => setTimeout(resolve, 3000));
+  
+  return { success: true };
 }
 
 // Парсинг JWT токена
