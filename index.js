@@ -65,24 +65,22 @@ async function handleCredentialResponse(response) {
 }
 
 async function saveUserToBackend(user) {
-  // Используем CORS proxy
-  const proxyUrl = 'https://corsproxy.io/?';
-  const targetUrl = 'https://script.google.com/macros/s/AKfycbzpraBNAzlF_oqYIDLYVjczKdY6Ui32qJNwY37HGSj6vtPs9pXseJYqG3oLAr28iZ0c/exec';
+  // Формируем URL с параметрами
+  const params = new URLSearchParams({
+    email: user.email,
+    name: user.name,
+    picture: user.picture || ''
+  });
   
-  try {
-    const response = await fetch(proxyUrl + encodeURIComponent(targetUrl), {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ user })
-    });
-    
-    return await response.json();
-  } catch (error) {
-    console.error('Using fallback method:', error);
-    // Fallback: открываем в новом окне если fetch не работает
-    window.open(`https://script.google.com/macros/s/AKfycbzpraBNAzlF_oqYIDLYVjczKdY6Ui32qJNwY37HGSj6vtPs9pXseJYqG3oLAr28iZ0c/exec?email=${encodeURIComponent(user.email)}&name=${encodeURIComponent(user.name)}`, '_blank');
-    return { success: true }; // Предполагаем успех
-  }
+  const url = `https://script.google.com/macros/s/AKfycbzpraBNAzlF_oqYIDLYVjczKdY6Ui32qJNwY37HGSj6vtPs9pXseJYqG3oLAr28iZ0c/exec?${params}`;
+  
+  // Используем скрытый iframe для обхода CORS
+  const iframe = document.createElement('iframe');
+  iframe.style.display = 'none';
+  iframe.src = url;
+  document.body.appendChild(iframe);
+  
+  return { success: true }; // Предполагаем успех
 }
 
 // Парсинг JWT токена
