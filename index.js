@@ -102,12 +102,16 @@ function checkOrCreateUser(user) {
         localStorage.setItem("user", JSON.stringify(currentUser));
         updateAuthUI();
       } else {
-        // Добавляем пользователя через GET-запрос
-        const name = encodeURIComponent(user.name);
-        const picture = encodeURIComponent(user.picture);
-        fetch(`${usersApiUrl}?action=add&email=${email}&name=${name}&picture=${picture}&role=user`)
-          .then(() => {
-            user.role = "user";
+        const name = encodeURIComponent(user.name || "");
+        const picture = encodeURIComponent(user.picture || "");
+        const role = "user";
+
+        const url = `${usersApiUrl}?action=add&email=${email}&name=${name}&picture=${picture}&role=${role}`;
+        fetch(url)
+          .then(res => res.text())
+          .then(result => {
+            console.log("Добавление пользователя:", result);
+            user.role = role;
             currentUser = user;
             localStorage.setItem("user", JSON.stringify(currentUser));
             updateAuthUI();
@@ -123,4 +127,3 @@ function checkOrCreateUser(user) {
       console.error(err);
     });
 }
-
