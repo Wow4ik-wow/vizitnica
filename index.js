@@ -92,7 +92,8 @@ function logout() {
 const usersApiUrl = "https://script.google.com/macros/s/AKfycbz8SXYyTQNTBS8SfoEM0PPWC7Q3VvH42wRvxKAfJr8whFIZC59QyAkRA7FPnDuu9yvs/exec";
 
 function checkOrCreateUser(user) {
-  fetch(`${usersApiUrl}?action=check&email=${encodeURIComponent(user.email)}`)
+  const email = encodeURIComponent(user.email);
+  fetch(`${usersApiUrl}?action=check&email=${email}`)
     .then(res => res.json())
     .then(data => {
       if (data.found) {
@@ -101,27 +102,20 @@ function checkOrCreateUser(user) {
         localStorage.setItem("user", JSON.stringify(currentUser));
         updateAuthUI();
       } else {
-        fetch(usersApiUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            action: "add",
-            name: user.name,
-            email: user.email,
-            picture: user.picture,
-            role: "user"
+        // Добавляем пользователя через GET-запрос
+        const name = encodeURIComponent(user.name);
+        const picture = encodeURIComponent(user.picture);
+        fetch(`${usersApiUrl}?action=add&email=${email}&name=${name}&picture=${picture}&role=user`)
+          .then(() => {
+            user.role = "user";
+            currentUser = user;
+            localStorage.setItem("user", JSON.stringify(currentUser));
+            updateAuthUI();
           })
-        })
-        .then(() => {
-          user.role = "user";
-          currentUser = user;
-          localStorage.setItem("user", JSON.stringify(currentUser));
-          updateAuthUI();
-        })
-        .catch(err => {
-          alert("Ошибка при добавлении пользователя.");
-          console.error(err);
-        });
+          .catch(err => {
+            alert("Ошибка при добавлении пользователя.");
+            console.error(err);
+          });
       }
     })
     .catch(err => {
@@ -129,3 +123,4 @@ function checkOrCreateUser(user) {
       console.error(err);
     });
 }
+
