@@ -39,6 +39,22 @@ body {
   border-radius: 6px;
 }
 
+.card-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.card-buttons .btn {
+  flex: 0 0 auto;
+  width: auto;
+  max-width: 140px;
+  white-space: nowrap;
+}
+
+
 .btn:hover {
   background: #2563eb;
 }
