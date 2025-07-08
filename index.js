@@ -55,7 +55,7 @@ function renderCards(services) {
     const card = document.createElement("div");
     card.className = "card";
 
-    const id = service["id номер"] || "";
+    const id = service["ID"] || "";
 
     const name = (service["Имя"] || "").trim();
     const company = (service["Компания"] || "").trim();
@@ -103,7 +103,8 @@ function renderCards(services) {
     let contentHTML = `
       <img src="${imageUrl}" alt="Превью" style="width: 95%; margin: 8px auto; display: block; cursor: pointer; border-radius: 6px; object-fit: contain;" />
 
-      <div class="card-text" style="display:none; font-size: 14px;">`;
+      <div class="card-text" style="display:none; font-size: 14px; text-align: left; padding: 0 12px; margin: 0 auto; width: 100%; box-sizing: border-box;">
+`;
 
     if (type) {
       contentHTML += `<div style="font-weight: bold; font-size: 18px; margin-bottom: 6px;">${type}</div>`;
@@ -120,7 +121,8 @@ function renderCards(services) {
     if (profile)
       contentHTML += `<div><strong>Профиль деятельности:</strong> ${profile}</div>`;
     if (description)
-      contentHTML += `<div><strong>Описание:</strong> ${description}</div>`;
+  contentHTML += `<div><strong>Описание:</strong><br>${description.replace(/\n/g, "<br>")}</div>`;
+
 
     if (profile || description) {
       contentHTML += `<hr style="margin: 8px 0;" />`;
@@ -151,17 +153,10 @@ function renderCards(services) {
           <button onclick="window.scrollTo({ top: 0, behavior: 'smooth' })" style="padding: 6px 10px;">НАЗАД К ПОИСКУ</button>
           <button onclick="addToFavorites('${id}')" style="padding: 6px 10px;">В ИЗБРАННОЕ</button>
         </div>
-        <div style="font-size: 12px; color: #555;">${id}</div>
       </div>
-
-
-      ${
-        id
-          ? `<div style="text-align: right; font-size: 10px; margin-top: 10px; color: #888;">${id}</div>`
-          : ""
-      }
-
+      <div style="text-align: right; font-size: 11px; color: red; margin-top: 4px;">ID: ${id}</div>
     </div>`;
+
 
     card.innerHTML = contentHTML;
 

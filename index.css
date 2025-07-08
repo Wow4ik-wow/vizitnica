@@ -91,42 +91,49 @@ input {
 /* Карточки */
 #cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   gap: 16px;
-  max-width: 1600px;
+  max-width: 1800px;
   margin: 0 auto;
   padding: 10px;
 }
 
+/* Каждая карточка */
 .card {
   background: white;
   border-radius: 6px;
   padding: 15px;
-  margin-bottom: 10px;
   box-shadow: 0 0 5px #ccc;
-  width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   overflow: hidden;
+  font-size: 16px;
+  width: 100%;
+  max-width: 450px;
+  min-width: 400px;
+  margin: 0 auto;
 }
 
+/* Заголовки карточек */
 .card h3 {
   margin: 0 0 8px 0;
 }
 
+/* Текст карточки */
 .card p {
   margin: 4px 0;
 }
 
+/* Картинка */
 .card img {
-  width: calc(100% - 20px);
-  max-width: 100%;
+  width: 100%;
   height: auto;
   display: block;
   margin: 0 auto;
   border-radius: 8px;
 }
+
 
 /* Уведомление */
 .notification {
