@@ -65,25 +65,39 @@ async function handleCredentialResponse(response) {
 }
 
 async function saveUserToBackend(user) {
-  // Создаем временный iframe для отправки данных
-  const iframe = document.createElement('iframe');
-  iframe.style.display = 'none';
-  
-  // Формируем URL с параметрами
-  const params = new URLSearchParams({
-    email: user.email,
-    name: user.name,
-    picture: user.picture || ''
+  return new Promise((resolve) => {
+    // Создаем iframe
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    
+    // Обработчик сообщений от iframe
+    const messageHandler = (event) => {
+      if (event.data === 'authComplete') {
+        window.removeEventListener('message', messageHandler);
+        document.body.removeChild(iframe);
+        resolve({ success: true });
+      }
+    };
+    
+    window.addEventListener('message', messageHandler);
+    
+    // Формируем URL
+    const params = new URLSearchParams({
+      email: user.email,
+      name: user.name,
+      picture: user.picture || ''
+    });
+    
+    iframe.src = `${API_URL}?${params}`;
+    document.body.appendChild(iframe);
+    
+    // Таймаут на случай ошибки
+    setTimeout(() => {
+      window.removeEventListener('message', messageHandler);
+      document.body.removeChild(iframe);
+      resolve({ success: false, error: 'Timeout' });
+    }, 5000);
   });
-  
-  iframe.src = `https://script.google.com/macros/s/AKfycbzpraBNAzlF_oqYIDLYVjczKdY6Ui32qJNwY37HGSj6vtPs9pXseJYqG3oLAr28iZ0c/exec?${params}`;
-  
-  document.body.appendChild(iframe);
-  
-  // Ждем 3 секунды для завершения запроса
-  await new Promise(resolve => setTimeout(resolve, 3000));
-  
-  return { success: true };
 }
 
 // Парсинг JWT токена
