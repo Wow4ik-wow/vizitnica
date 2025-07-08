@@ -18,8 +18,12 @@ window.onload = () => {
   document.getElementById("logoutBtn").onclick = logout;
 
   document.getElementById("googleSignInBtn").onclick = () => {
-  google.accounts.id.prompt(); // показывает окно входа вручную
+  // Имитация клика по скрытой системной кнопке Google
+  const hiddenGoogleButton = document.querySelector('#googleBtnContainer div div');
+  if (hiddenGoogleButton) hiddenGoogleButton.click();
+  else alert("Google кнопка не готова");
 };
+
 
 };
 
@@ -29,8 +33,17 @@ function initGoogleAuth() {
     callback: handleCredentialResponse,
     auto_select: false
   });
-  
+
+  // Рендерим скрытую кнопку
+  google.accounts.id.renderButton(
+    document.getElementById("googleBtnContainer"),
+    {
+      theme: "outline",
+      size: "large"
+    }
+  );
 }
+
 
 
 

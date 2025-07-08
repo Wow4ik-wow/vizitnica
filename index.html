@@ -1,4 +1,4 @@
-ВЕРСИЯ 063
+ВЕРСИЯ 064
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -15,7 +15,12 @@
     <h1 class="welcome-text">Добро пожаловать на сайт Визитница!</h1>
 
     <div id="authButtons" class="auth-buttons">
-  <button id="googleSignInBtn" class="btn">Войти через Google</button>
+  <!-- Красиво оформленная кнопка -->
+<button id="googleSignInBtn" class="btn">Войти через Google</button>
+
+<!-- Скрытая системная кнопка Google -->
+<div id="googleBtnContainer" style="display: none;"></div>
+
   <button id="logoutBtn" class="btn hidden">Выйти</button>
   <button id="addServiceBtn" class="btn">Добавить услугу</button>
   <button id="searchBtn" class="btn hidden">Искать услуги</button>
