@@ -161,7 +161,7 @@ function renderCards(services) {
         ОЦЕНИ &nbsp;
         <span style="font-size: 20px; cursor: default;">☆ ☆ ☆ ☆ ☆</span>
       </div>
-      <button class="btn small" style="background-color:rgb(149, 191, 238); color:rgb(5, 29, 68); cursor: default; border: none;">ОТЗЫВЫ</button>
+      <button class="btn small" style="background-color:rgb(176, 204, 236); color:rgb(5, 29, 68); cursor: default; border: none;">ОТЗЫВЫ</button>
     </div>
   ` : ''}
 
@@ -758,7 +758,7 @@ async function handleCredentialResponse(response) {
 
     await saveUserToBackend(user);
     currentUser = user;
-    currentUser?.role = user.role || "user";
+    currentUser.role = user.role || "user";
     localStorage.setItem("user", JSON.stringify(currentUser));
     updateAuthUI();
   } catch (error) {
