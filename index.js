@@ -146,10 +146,14 @@ function renderCards(services) {
     contentHTML += geoHTML;
 
     contentHTML += `
-      <div style="margin-top: 12px; display: flex; gap: 10px; flex-wrap: wrap;">
-        <button onclick="window.scrollTo({ top: 0, behavior: 'smooth' })" style="padding: 6px 10px;">НАЗАД К ПОИСКУ</button>
-        <button onclick="addToFavorites('${id}')" style="padding: 6px 10px;">В ИЗБРАННОЕ</button>
+            <div style="margin-top: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+        <div>
+          <button onclick="window.scrollTo({ top: 0, behavior: 'smooth' })" style="padding: 6px 10px;">НАЗАД К ПОИСКУ</button>
+          <button onclick="addToFavorites('${id}')" style="padding: 6px 10px;">В ИЗБРАННОЕ</button>
+        </div>
+        <div style="font-size: 12px; color: #555;">${id}</div>
       </div>
+
 
       ${
         id
