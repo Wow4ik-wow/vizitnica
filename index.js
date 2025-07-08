@@ -130,8 +130,9 @@ function updateAuthUI() {
 
   if (currentUser) {
   // Показываем кнопку "Выйти", прячем "Войти"
-  document.getElementById("googleSignInBtn").classList.add("hidden");
-  document.getElementById("logoutBtn").classList.remove("hidden");
+  document.getElementById("googleSignInBtn").style.display = "none";
+document.getElementById("logoutBtn").style.display = "inline-block";
+
 
   searchBtn.classList.remove("hidden");
   greeting.innerHTML = `
@@ -141,8 +142,9 @@ function updateAuthUI() {
   `;
 } else {
   // Показываем "Войти", прячем "Выйти"
-  document.getElementById("googleSignInBtn").classList.remove("hidden");
-  document.getElementById("logoutBtn").classList.add("hidden");
+  document.getElementById("googleSignInBtn").style.display = "inline-block";
+document.getElementById("logoutBtn").style.display = "none";
+
 
   searchBtn.classList.add("hidden");
   greeting.textContent = '';
