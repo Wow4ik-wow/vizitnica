@@ -57,17 +57,3 @@ body {
   border: 2px solid #fff;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
-
-/* Стили для кнопки Google */
-#googleSignInBtn {
-  margin: 0 auto;
-  display: flex;
-  justify-content: center;
-}
-
-/* Иконка пользователя */
-#userGreeting img {
-  vertical-align: middle;
-  border: 2px solid #fff;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
