@@ -680,6 +680,10 @@ function showNotification(message) {
 window.onload = () => {
   restoreRegionCity();
   loadServices();
+  document.getElementById("logoutBtn").onclick = () => {
+  logout();
+};
+
 
   const storedUser = localStorage.getItem("user");
   if (storedUser) {
@@ -712,13 +716,14 @@ function initGoogleAuth() {
   });
 
   google.accounts.id.renderButton(
-    document.getElementById("authButtons"),
-    {
-      theme: "outline",
-      size: "large",
-      type: "standard"
-    }
-  );
+  document.getElementById("googleAuthBtn"),
+  {
+    theme: "outline",
+    size: "large",
+    type: "standard"
+  }
+);
+
 }
 
 async function handleCredentialResponse(response) {
@@ -810,17 +815,34 @@ function logout() {
 }
 
 function updateAuthUI() {
-  const roleInfoEl = document.getElementById("roleInfo");
+  const googleAuthBtn = document.getElementById("googleAuthBtn");
+  const logoutBtn = document.getElementById("logoutBtn");
+  const cabinetBtn = document.getElementById("cabinetBtn");
+  const adminBtn = document.getElementById("adminBtn");
+  const roleInfo = document.getElementById("roleInfo");
 
   if (currentUser && currentUser.role) {
+    // Пользователь авторизован
+    googleAuthBtn.style.display = "none";
+    logoutBtn.classList.remove("hidden");
+    cabinetBtn.classList.remove("hidden");
+    adminBtn.classList.remove("hidden");
+
     if (currentUser.role === "admin") {
-      roleInfoEl.innerText = "Вы сейчас админ";
+      roleInfo.innerText = "Вы сейчас админ";
     } else if (currentUser.role === "user") {
-      roleInfoEl.innerText = "Вы сейчас юзер";
+      roleInfo.innerText = "Вы сейчас юзер";
     } else {
-      roleInfoEl.innerText = "Вы вошли с неопределённой ролью";
+      roleInfo.innerText = "Вы вошли с неопределённой ролью";
     }
   } else {
-    roleInfoEl.innerText = "Вы не авторизованы";
+    // Пользователь не авторизован
+    googleAuthBtn.style.display = "block";
+    logoutBtn.classList.add("hidden");
+    cabinetBtn.classList.add("hidden");
+    adminBtn.classList.add("hidden");
+
+    roleInfo.innerText = "Вы не авторизованы";
   }
 }
+

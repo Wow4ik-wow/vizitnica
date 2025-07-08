@@ -1,4 +1,4 @@
-версия 072
+версия 073
 <!DOCTYPE html>
 <html lang="ru">
   <head>
@@ -14,11 +14,17 @@
 
 
 <!-- Остальные кнопки -->
-<div id="authButtons" class="auth-buttons">
+<div class="auth-container">
+  <div id="googleAuthBtn"></div>
+  <button id="logoutBtn" class="btn hidden">ВЫХОД</button>
+</div>
+
+<div id="actionButtons" class="auth-buttons">
   <button id="addServiceBtn" class="btn">Добавить услугу</button>
   <button id="cabinetBtn" class="btn hidden">Личный кабинет</button>
   <button id="adminBtn" class="btn hidden">Админка</button>
 </div>
+
 <div id="roleInfo" style="margin-top: 10px; font-weight: bold; color: #2c3e50;"></div>
 
         </div>
