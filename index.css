@@ -37,7 +37,11 @@ body {
   color: white;
   border: none;
   border-radius: 6px;
+  width: auto;
+  max-width: 100%;
+  white-space: nowrap;
 }
+
 
 .card-buttons {
   display: flex;
