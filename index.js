@@ -823,29 +823,31 @@ function updateAuthUI() {
   const logoutBtn = document.getElementById("logoutBtn");
   const cabinetBtn = document.getElementById("cabinetBtn");
   const adminBtn = document.getElementById("adminBtn");
+  const addServiceBtn = document.getElementById("addServiceBtn");
   const roleInfo = document.getElementById("roleInfo");
 
   if (currentUser && currentUser.role) {
-    // Пользователь авторизован
     googleAuthBtn.style.display = "none";
     logoutBtn.classList.remove("hidden");
-    cabinetBtn.classList.remove("hidden");
-    adminBtn.classList.remove("hidden");
 
     if (currentUser.role === "admin") {
+      cabinetBtn.classList.remove("hidden");
+      adminBtn.classList.remove("hidden");
+      addServiceBtn.classList.remove("hidden");
       roleInfo.innerText = "Вы сейчас админ";
-    } else if (currentUser.role === "user") {
-      roleInfo.innerText = "Вы сейчас юзер";
     } else {
-      roleInfo.innerText = "Вы вошли с неопределённой ролью";
+      cabinetBtn.classList.add("hidden");
+      adminBtn.classList.add("hidden");
+      addServiceBtn.classList.add("hidden");
+      roleInfo.innerText = "Вы сейчас юзер";
     }
   } else {
-    // Пользователь не авторизован
     googleAuthBtn.style.display = "block";
     logoutBtn.classList.add("hidden");
     cabinetBtn.classList.add("hidden");
     adminBtn.classList.add("hidden");
-
+    addServiceBtn.classList.add("hidden");
     roleInfo.innerText = "Вы не авторизованы";
   }
 }
+
