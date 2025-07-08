@@ -65,39 +65,28 @@ async function handleCredentialResponse(response) {
 }
 
 async function saveUserToBackend(user) {
-  return new Promise((resolve) => {
-    // Создаем iframe
-    const iframe = document.createElement('iframe');
-    iframe.style.display = 'none';
-    
-    // Обработчик сообщений от iframe
-    const messageHandler = (event) => {
-      if (event.data === 'authComplete') {
-        window.removeEventListener('message', messageHandler);
-        document.body.removeChild(iframe);
-        resolve({ success: true });
-      }
-    };
-    
-    window.addEventListener('message', messageHandler);
-    
-    // Формируем URL
+  try {
+    // Формируем URL с параметрами
     const params = new URLSearchParams({
-      email: user.email,
-      name: user.name,
+      email: user.email || '',
+      name: user.name || '',
       picture: user.picture || ''
     });
     
-    iframe.src = `${API_URL}?${params}`;
-    document.body.appendChild(iframe);
+    // Отправляем через fetch с обработкой CORS
+    const response = await fetch(`${API_URL}?${params}`, {
+      method: 'GET',
+      mode: 'no-cors',
+      cache: 'no-cache'
+    });
     
-    // Таймаут на случай ошибки
-    setTimeout(() => {
-      window.removeEventListener('message', messageHandler);
-      document.body.removeChild(iframe);
-      resolve({ success: false, error: 'Timeout' });
-    }, 5000);
-  });
+    // В режиме no-cors мы не можем читать ответ, но запрос уйдет
+    return { success: true };
+    
+  } catch (error) {
+    console.error('Ошибка отправки:', error);
+    return { success: false, error: error.message };
+  }
 }
 
 // Парсинг JWT токена
