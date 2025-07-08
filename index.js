@@ -19,7 +19,8 @@ window.onload = () => {
 
   document.getElementById("googleSignInBtn").onclick = () => {
   // Имитация клика по скрытой системной кнопке Google
-  const hiddenGoogleButton = document.querySelector('#googleBtnContainer div div');
+  const hiddenGoogleButton = document.querySelector('#googleBtnContainer button');
+
   if (hiddenGoogleButton) hiddenGoogleButton.click();
   else alert("Google кнопка не готова");
 };
