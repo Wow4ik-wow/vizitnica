@@ -4,6 +4,8 @@ const apiUrl =
 const API_USER_URL =
   "https://script.google.com/macros/s/AKfycbzpraBNAzlF_oqYIDLYVjczKdY6Ui32qJNwY37HGSj6vtPs9pXseJYqG3oLAr28iZ0c/exec";
 let currentUser = null;
+let userRole = "user"; // по умолчанию
+
 
 let allServices = [];
 
@@ -745,6 +747,7 @@ async function handleCredentialResponse(response) {
 
     await saveUserToBackend(user);
     currentUser = user;
+    userRole = user.role || "user";
     localStorage.setItem("user", JSON.stringify(currentUser));
     updateAuthUI();
   } catch (error) {
