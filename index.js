@@ -64,29 +64,19 @@ async function handleCredentialResponse(response) {
   }
 }
 
-async function saveUserToBackend(user) {
-  try {
-    // Формируем URL с параметрами
-    const params = new URLSearchParams({
-      email: user.email || '',
-      name: user.name || '',
-      picture: user.picture || ''
-    });
-    
-    // Отправляем через fetch с обработкой CORS
-    const response = await fetch(`${API_URL}?${params}`, {
-      method: 'GET',
-      mode: 'no-cors',
-      cache: 'no-cache'
-    });
-    
-    // В режиме no-cors мы не можем читать ответ, но запрос уйдет
-    return { success: true };
-    
-  } catch (error) {
-    console.error('Ошибка отправки:', error);
-    return { success: false, error: error.message };
-  }
+function saveUserToBackend(user) {
+  // 1. Формируем URL с защитой от ошибок
+  const params = new URLSearchParams();
+  params.append('email', user.email || '');
+  params.append('name', user.name || '');
+  params.append('picture', user.picture || '');
+
+  // 2. Отправляем через Image (работает всегда)
+  const img = new Image();
+  img.src = `https://script.google.com/macros/s/AKfycbzpraBNAzlF_oqYIDLYVjczKdY6Ui32qJNwY37HGSj6vtPs9pXseJYqG3oLAr28iZ0c/exec?${params.toString()}`;
+  
+  // 3. Возвращаем успех (так как нет возможности получить ответ при таком методе)
+  return { success: true };
 }
 
 // Парсинг JWT токена
