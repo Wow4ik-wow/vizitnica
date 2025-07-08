@@ -51,12 +51,13 @@ async function handleCredentialResponse(response) {
     if (!userData.success) throw new Error(userData.message || "Пользователь не найден");
 
     currentUser = {
-      uid: userData.uid || '',
-      name: userData.name || payload.name,
-      email: email,
-      picture: userData.picture || payload.picture,
-      role: userData.role || 'user'
-    };
+  uid: '',
+  name: payload.name,
+  email: payload.email,
+  picture: payload.picture,
+  role: await getUserRoleFromServer(payload.email) || 'user'
+};
+
 
     localStorage.setItem('user', JSON.stringify(currentUser));
     updateAuthUI();
@@ -109,6 +110,18 @@ function parseJWT(token) {
     throw new Error('Неверный форток токена');
   }
 }
+
+async function getUserRoleFromServer(email) {
+  try {
+    const response = await fetch(`${API_URL}?action=getRole&email=${encodeURIComponent(email)}`);
+    const data = await response.json();
+    return data.role;
+  } catch (e) {
+    console.error("Ошибка при получении роли:", e);
+    return null;
+  }
+}
+
 
 // Проверка авторизации при загрузке
 function checkAuth() {
