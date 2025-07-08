@@ -147,7 +147,7 @@ function updateAuthUI() {
   searchBtn.classList.add("hidden");
   greeting.textContent = '';
 }
-
+}
 
 // Выход из системы
 function logout() {
