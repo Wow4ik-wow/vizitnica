@@ -17,6 +17,10 @@ window.onload = () => {
 
   document.getElementById("logoutBtn").onclick = logout;
 
+  document.getElementById("googleSignInBtn").onclick = () => {
+  google.accounts.id.prompt(); // показывает окно входа вручную
+};
+
 };
 
 function initGoogleAuth() {
@@ -26,20 +30,9 @@ function initGoogleAuth() {
     auto_select: false
   });
   
-  renderGoogleButton();
 }
 
-function renderGoogleButton() {
-  google.accounts.id.renderButton(
-    document.getElementById("googleSignInBtn"),
-    { 
-      theme: "filled_blue",
-      size: "large",
-      text: "signin_with",
-      shape: "rectangular"
-    }
-  );
-}
+
 
 async function handleCredentialResponse(response) {
   try {
