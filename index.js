@@ -35,15 +35,18 @@ function initGoogleAuth() {
     auto_select: false
   });
 
-  // Рендерим скрытую кнопку
+  // Рендерим "официальную" Google-кнопку (она работает всегда)
   google.accounts.id.renderButton(
-    document.getElementById("googleBtnContainer"),
+    document.getElementById("googleSignInBtn"),
     {
-      theme: "outline",
-      size: "large"
+      theme: "filled_blue",
+      size: "large",
+      text: "signin_with", // можно поменять на "continue_with" или "signup_with"
+      shape: "rectangular"
     }
   );
 }
+
 
 
 
