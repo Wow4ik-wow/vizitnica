@@ -43,29 +43,31 @@ function renderGoogleButton() {
 async function handleCredentialResponse(response) {
   try {
     const payload = parseJWT(response.credential);
+    const email = payload.email;
+
+    // Получаем данные из таблицы по email
+    const userData = await fetchUserFromBackend(email);
+
+    if (!userData.success) throw new Error(userData.message || "Пользователь не найден");
+
     currentUser = {
-      uid: '',
-      name: payload.name,
-      email: payload.email,
-      picture: payload.picture,
-      role: 'user'
+      uid: userData.uid || '',
+      name: userData.name || payload.name,
+      email: email,
+      picture: userData.picture || payload.picture,
+      role: userData.role || 'user'
     };
-    
-    const result = await saveUserToBackend(currentUser);
-    console.log('Backend response:', result);
-    
-    if (!result.success) throw new Error(result.error || 'Ошибка сервера');
-    
-    currentUser.uid = result.uid;
+
     localStorage.setItem('user', JSON.stringify(currentUser));
     updateAuthUI();
-    
+
   } catch (error) {
     console.error('Auth error:', error);
     alert('Ошибка авторизации: ' + error.message);
     logout();
   }
 }
+
 
 async function saveUserToBackend(user) {
   try {
@@ -168,4 +170,15 @@ function logout() {
   localStorage.removeItem('user');
   updateAuthUI();
   location.reload();
+}
+
+async function fetchUserFromBackend(email) {
+  try {
+    const response = await fetch(`${API_URL}?getUserByEmail=${encodeURIComponent(email)}`);
+    const json = await response.json();
+    return json;
+  } catch (error) {
+    console.error('Ошибка запроса пользователя:', error);
+    return { success: false, message: error.message };
+  }
 }
