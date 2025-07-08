@@ -1,7 +1,8 @@
 const apiUrl =
   "https://script.google.com/macros/s/AKfycbw27eyw53gPs8tgLexDkiYmjMJ70HpB0fkDFuCu6gRK0Hz997jDzw3TAMh-rQD_mqoTDA/exec";
 
-const API_USER_URL = "https://script.google.com/macros/s/AKfycbzpraBNAzlF_oqYIDLYVjczKdY6Ui32qJNwY37HGSj6vtPs9pXseJYqG3oLAr28iZ0c/exec";
+const API_USER_URL =
+  "https://script.google.com/macros/s/AKfycbzpraBNAzlF_oqYIDLYVjczKdY6Ui32qJNwY37HGSj6vtPs9pXseJYqG3oLAr28iZ0c/exec";
 let currentUser = null;
 
 let allServices = [];
@@ -264,7 +265,10 @@ function applyFilters() {
 function populateAllLists() {
   populateList("listProfile", allServices, "Профиль деятельности");
   populateDatalist("listRegion", getUniqueValues(allServices, "Область"));
-  populateDatalist("listType", getUniqueValues(allServices, "Вид деятельности"));
+  populateDatalist(
+    "listType",
+    getUniqueValues(allServices, "Вид деятельности")
+  );
   populateDatalist("listDistrict", getUniqueValues(allServices, "Район"));
   populateList("listName", allServices, "Имя", true);
   populateDependentLists(allServices);
@@ -681,9 +685,8 @@ window.onload = () => {
   restoreRegionCity();
   loadServices();
   document.getElementById("logoutBtn").onclick = () => {
-  logout();
-};
-
+    logout();
+  };
 
   const storedUser = localStorage.getItem("user");
   if (storedUser) {
@@ -696,34 +699,29 @@ window.onload = () => {
 
   initGoogleAuth();
   updateAuthUI();
-    if (currentUser?.role !== "admin") {
+  if (currentUser?.role !== "admin") {
     const adminBtn = document.getElementById("goToAdmin");
     if (adminBtn) adminBtn.style.display = "none";
   }
-
 
   document.getElementById("addServiceBtn").onclick = () => {
     window.location.href = "add.html";
   };
 };
 
-
 function initGoogleAuth() {
   google.accounts.id.initialize({
-    client_id: '1060687932793-sk24egn7c7r0h6t6i1dedk4u6hrgdotc.apps.googleusercontent.com',
+    client_id:
+      "1060687932793-sk24egn7c7r0h6t6i1dedk4u6hrgdotc.apps.googleusercontent.com",
     callback: handleCredentialResponse,
-    auto_select: false
+    auto_select: false,
   });
 
-  google.accounts.id.renderButton(
-  document.getElementById("googleAuthBtn"),
-  {
+  google.accounts.id.renderButton(document.getElementById("googleAuthBtn"), {
     theme: "outline",
     size: "large",
-    type: "standard"
-  }
-);
-
+    type: "standard",
+  });
 }
 
 async function handleCredentialResponse(response) {
@@ -736,14 +734,13 @@ async function handleCredentialResponse(response) {
       name: payload.name,
       email: payload.email,
       picture: payload.picture,
-      role: await getUserRoleFromServer(payload.email) || "user",
+      role: (await getUserRoleFromServer(payload.email)) || "user",
     };
 
     await saveUserToBackend(user);
     currentUser = user;
     localStorage.setItem("user", JSON.stringify(currentUser));
     updateAuthUI();
-
   } catch (error) {
     console.error("Ошибка авторизации:", error);
     alert("Ошибка авторизации: " + error.message);
@@ -753,11 +750,16 @@ async function handleCredentialResponse(response) {
 
 function parseJWT(token) {
   try {
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => {
-      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(''));
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split("")
+        .map((c) => {
+          return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+        })
+        .join("")
+    );
     return JSON.parse(jsonPayload);
   } catch (e) {
     throw new Error("Невалидный токен");
@@ -766,7 +768,9 @@ function parseJWT(token) {
 
 async function getUserRoleFromServer(email) {
   try {
-    const response = await fetch(`${API_USER_URL}?action=getRole&email=${encodeURIComponent(email)}`);
+    const response = await fetch(
+      `${API_USER_URL}?action=getRole&email=${encodeURIComponent(email)}`
+    );
     const data = await response.json();
     return data.role;
   } catch (e) {
@@ -778,20 +782,20 @@ async function getUserRoleFromServer(email) {
 async function saveUserToBackend(user) {
   try {
     const params = new URLSearchParams({
-      email: user.email || '',
-      name: user.name || '',
-      picture: user.picture || ''
+      email: user.email || "",
+      name: user.name || "",
+      picture: user.picture || "",
     });
 
     await fetch(`${API_USER_URL}?${params}`, {
-      method: 'GET',
-      mode: 'no-cors',
-      cache: 'no-cache'
+      method: "GET",
+      mode: "no-cors",
+      cache: "no-cache",
     });
 
     return { success: true };
   } catch (error) {
-    console.error('Ошибка отправки:', error);
+    console.error("Ошибка отправки:", error);
     return { success: false, error: error.message };
   }
 }
@@ -845,4 +849,3 @@ function updateAuthUI() {
     roleInfo.innerText = "Вы не авторизованы";
   }
 }
-
