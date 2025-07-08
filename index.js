@@ -156,6 +156,16 @@ function renderCards(services) {
   </div>
 
   ${userRole === 'admin' ? `
+    <div class="card-buttons" style="margin-top: 8px; color: #888; justify-content: space-between; align-items: center;">
+      <div style="font-weight: bold; user-select: none;">
+        ОЦЕНИ &nbsp;
+        <span style="font-size: 20px; cursor: default;">☆ ☆ ☆ ☆ ☆</span>
+      </div>
+      <button class="btn small" style="background-color: #ddd; color: #555; cursor: default; border: none;">ОТЗЫВЫ</button>
+    </div>
+  ` : ''}
+
+  ${userRole === 'admin' ? `
     <div class="card-buttons" style="margin-top: 8px;">
       <button class="btn small" onclick="console.log('Редактировать: ${id}')">РЕДАКТИРОВАТЬ</button>
       <button class="btn small" onclick="console.log('Опубликовать: ${id}')">ОПУБЛИКОВАТЬ</button>
@@ -164,6 +174,7 @@ function renderCards(services) {
 
   <div style="text-align: right; font-size: 11px; color: red; margin-top: 4px;">ID: ${id}</div>
 </div>`;
+
 
 
 
