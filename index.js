@@ -4,7 +4,6 @@ const apiUrl =
 const API_USER_URL =
   "https://script.google.com/macros/s/AKfycbzpraBNAzlF_oqYIDLYVjczKdY6Ui32qJNwY37HGSj6vtPs9pXseJYqG3oLAr28iZ0c/exec";
 let currentUser = null;
-let userRole = "user"; // по умолчанию
 
 
 let allServices = [];
@@ -152,20 +151,21 @@ function renderCards(services) {
     contentHTML += `
   <div class="card-buttons">
     <button class="btn small" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">НАЗАД К ПОИСКУ</button>
-    ${userRole === 'admin' ? `<button class="btn small" onclick="console.log('Добавить в избранное: ${id}')">В ИЗБРАННОЕ</button>` : ''}
+    ${currentUser?.role === 'admin'
+ ? `<button class="btn small" onclick="console.log('Добавить в избранное: ${id}')">В ИЗБРАННОЕ</button>` : ''}
   </div>
 
-  ${userRole === 'admin' ? `
+  ${currentUser?.role === 'admin' ? `
     <div class="card-buttons" style="margin-top: 8px; color: #888; justify-content: space-between; align-items: center;">
       <div style="font-weight: bold; user-select: none;">
         ОЦЕНИ &nbsp;
         <span style="font-size: 20px; cursor: default;">☆ ☆ ☆ ☆ ☆</span>
       </div>
-      <button class="btn small" style="background-color:rgb(124, 177, 238); color: #3b82f6; cursor: default; border: none;">ОТЗЫВЫ</button>
+      <button class="btn small" style="background-color:rgb(149, 191, 238); color:rgb(5, 29, 68); cursor: default; border: none;">ОТЗЫВЫ</button>
     </div>
   ` : ''}
 
-  ${userRole === 'admin' ? `
+  ${currentUser?.role === 'admin' ? `
     <div class="card-buttons" style="margin-top: 8px;">
       <button class="btn small" onclick="console.log('Редактировать: ${id}')">РЕДАКТИРОВАТЬ</button>
       <button class="btn small" onclick="console.log('Опубликовать: ${id}')">ОПУБЛИКОВАТЬ</button>
@@ -758,7 +758,7 @@ async function handleCredentialResponse(response) {
 
     await saveUserToBackend(user);
     currentUser = user;
-    userRole = user.role || "user";
+    currentUser?.role = user.role || "user";
     localStorage.setItem("user", JSON.stringify(currentUser));
     updateAuthUI();
   } catch (error) {
