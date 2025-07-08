@@ -13,6 +13,9 @@ window.onload = () => {
   document.getElementById("searchBtn").onclick = () => {
     window.location.href = "index2.html";
   };
+
+  document.getElementById("logoutBtn").onclick = logout;
+
 };
 
 function initGoogleAuth() {
@@ -126,43 +129,25 @@ function updateAuthUI() {
   const greeting = document.getElementById("userGreeting");
 
   if (currentUser) {
-    // Для авторизованного пользователя
-    signInBtn.innerHTML = '';
-    google.accounts.id.renderButton(
-      signInBtn,
-      { 
-        type: "icon",
-        theme: "outline", 
-        size: "large",
-        text: "signout"
-      }
-    );
-    signInBtn.onclick = logout;
-    
-    searchBtn.classList.remove("hidden");
-    greeting.innerHTML = `
-      Добро пожаловать, ${currentUser.name}!<br>
-      <img src="${currentUser.picture}" 
-           style="border-radius:50%; width:40px; margin-top:10px;">
-    `;
-  } else {
-    // Для неавторизованного
-    signInBtn.innerHTML = '';
-    google.accounts.id.renderButton(
-      signInBtn,
-      { 
-        type: "standard",
-        theme: "filled_blue", 
-        size: "large",
-        text: "signin_with",
-        shape: "rectangular"
-      }
-    );
-    signInBtn.onclick = null;
-    searchBtn.classList.add("hidden");
-    greeting.textContent = '';
-  }
+  // Показываем кнопку "Выйти", прячем "Войти"
+  document.getElementById("googleSignInBtn").classList.add("hidden");
+  document.getElementById("logoutBtn").classList.remove("hidden");
+
+  searchBtn.classList.remove("hidden");
+  greeting.innerHTML = `
+    Добро пожаловать, ${currentUser.name}!<br>
+    <img src="${currentUser.picture}" 
+         style="border-radius:50%; width:40px; margin-top:10px;">
+  `;
+} else {
+  // Показываем "Войти", прячем "Выйти"
+  document.getElementById("googleSignInBtn").classList.remove("hidden");
+  document.getElementById("logoutBtn").classList.add("hidden");
+
+  searchBtn.classList.add("hidden");
+  greeting.textContent = '';
 }
+
 
 // Выход из системы
 function logout() {
