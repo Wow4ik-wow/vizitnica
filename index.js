@@ -148,15 +148,21 @@ function renderCards(services) {
     contentHTML += geoHTML;
 
     contentHTML += `
-            <div style="margin-top: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
-        <div class="card-buttons">
-  <button class="btn small" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">НАЗАД К ПОИСКУ</button>
-  <button class="btn small" onclick="addToFavorites('${id}')">В ИЗБРАННОЕ</button>
-</div>
+  <div class="card-buttons">
+    <button class="btn small" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">НАЗАД К ПОИСКУ</button>
+    ${userRole === 'admin' ? `<button class="btn small" onclick="console.log('Добавить в избранное: ${id}')">В ИЗБРАННОЕ</button>` : ''}
+  </div>
 
-      </div>
-      <div style="text-align: right; font-size: 11px; color: red; margin-top: 4px;">ID: ${id}</div>
-    </div>`;
+  ${userRole === 'admin' ? `
+    <div class="card-buttons" style="margin-top: 8px;">
+      <button class="btn small" onclick="console.log('Редактировать: ${id}')">РЕДАКТИРОВАТЬ</button>
+      <button class="btn small" onclick="console.log('Опубликовать: ${id}')">ОПУБЛИКОВАТЬ</button>
+    </div>
+  ` : ''}
+
+  <div style="text-align: right; font-size: 11px; color: red; margin-top: 4px;">ID: ${id}</div>
+</div>`;
+
 
 
     card.innerHTML = contentHTML;
