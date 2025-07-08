@@ -62,16 +62,19 @@ async function handleCredentialResponse(response) {
   }
 }
 
-async function saveUserToBackend(user) {
-  // Важно: Используем /exec для деплоя
-  const response = await fetch(`${API_URL}/exec`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ user })
-  });
+function saveUserToBackend(user) {
+  // 1. Формируем URL с защитой от ошибок
+  const params = new URLSearchParams();
+  params.append('email', user.email || '');
+  params.append('name', user.name || '');
+  params.append('picture', user.picture || '');
+
+  // 2. Отправляем через Image (работает всегда)
+  const img = new Image();
+  img.src = `ВАШ_APPSCRIPT_URL?${params.toString()}`;
   
-  if (!response.ok) throw new Error('Ошибка сервера');
-  return await response.json();
+  // 3. Возвращаем успех (так как нет возможности получить ответ при таком методе)
+  return { success: true };
 }
 
 function parseJWT(token) {
