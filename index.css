@@ -57,10 +57,3 @@ body {
   border: 2px solid #fff;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
-
-/* Обёртка для красивой Google-кнопки */
-.google-btn-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
