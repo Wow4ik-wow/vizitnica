@@ -149,10 +149,11 @@ function renderCards(services) {
 
     contentHTML += `
             <div style="margin-top: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
-        <div>
-          <button onclick="window.scrollTo({ top: 0, behavior: 'smooth' })" style="padding: 6px 10px;">НАЗАД К ПОИСКУ</button>
-          <button onclick="addToFavorites('${id}')" style="padding: 6px 10px;">В ИЗБРАННОЕ</button>
-        </div>
+        <div class="card-buttons">
+  <button class="btn small" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">НАЗАД К ПОИСКУ</button>
+  <button class="btn small" onclick="addToFavorites('${id}')">В ИЗБРАННОЕ</button>
+</div>
+
       </div>
       <div style="text-align: right; font-size: 11px; color: red; margin-top: 4px;">ID: ${id}</div>
     </div>`;
