@@ -161,7 +161,7 @@ function renderCards(services) {
         ОЦЕНИ &nbsp;
         <span style="font-size: 20px; cursor: default;">☆ ☆ ☆ ☆ ☆</span>
       </div>
-      <button class="btn small" style="background-color: #ddd; color: #555; cursor: default; border: none;">ОТЗЫВЫ</button>
+      <button class="btn small" style="background-color:rgb(124, 177, 238); color: #3b82f6; cursor: default; border: none;">ОТЗЫВЫ</button>
     </div>
   ` : ''}
 
