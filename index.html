@@ -1,4 +1,4 @@
-версия 105
+версия 106
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -8,14 +8,17 @@
   <link rel="stylesheet" href="index.css" media="not (max-width: 768px)" />
   <script>
     // Проверяем User-Agent на мобильные устройства
-    const isMobile = /android|iphone|ipad|ipod|blackberry|windows phone/i.test(navigator.userAgent);
-    if (isMobile) {
-      const linkMobile = document.createElement("link");
-      linkMobile.rel = "stylesheet";
-      linkMobile.href = "indexmobile.css"; // Подключаем дополнительные стили для мобильных
-      document.head.appendChild(linkMobile);
-    }
-  </script>
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+if(isMobile) {
+  // Добавляем класс к body
+  document.documentElement.classList.add('mobile-device');
+  // Подключаем мобильный CSS
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = 'indexmobile.css';
+  document.head.appendChild(link);
+}
+</script>
 </head>
 <body>
   <div id="mainContainer">
