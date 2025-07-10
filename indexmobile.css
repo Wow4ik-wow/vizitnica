@@ -1,7 +1,7 @@
-/* === indexmobile.css - ГОТОВОЕ РЕШЕНИЕ === */
-/* Просто скопируйте ВЕСЬ этот код и замените им текущий файл */
+/* === indexmobile.css - ФИНАЛЬНАЯ ВЕРСИЯ === */
+/* Полностью заменяет текущий файл */
 
-/* Базовые настройки */
+/* 1. Базовый сброс */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -9,29 +9,74 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+/* 2. Основные стили */
 body {
   font-family: Arial, sans-serif;
   background: #f0f4f8;
   padding: 10px;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
-/* Шапка */
+/* 3. Центральный контейнер (фиксирует ширину) */
+#mainContainer {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0;
+}
+
+/* 4. Шапка */
 .header {
+  width: 100%;
   padding: 0 10px;
   margin-bottom: 15px;
 }
 
-.page-title {
-  font-size: 1.5rem;
-  margin-bottom: 10px;
+/* 5. Поля поиска (теперь строго по центру) */
+.filters-container {
+  width: 100%;
+  max-width: 100%;
+  padding: 0 10px;
+  margin: 0 auto 20px;
 }
 
-/* Кнопки (2 в ряд) */
-.auth-buttons {
+/* 6. Карточки (идентичная ширина с полями) */
+#cards {
+  width: 100%;
+  padding: 0 10px; /* Совпадает с полями поиска */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.card {
+  background: white;
+  width: 100%;
+  max-width: 100%;
+  padding: 15px;
+  border-radius: 6px;
+  box-shadow: 0 0 5px #ccc;
+}
+
+/* 7. Горизонтальная ориентация */
+@media (orientation: landscape) {
+  #cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    align-items: start;
+  }
+}
+
+/* 8. Кнопки (2 в ряд) */
+.auth-buttons, .card-buttons {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-bottom: 10px;
+  width: 100%;
 }
 
 .btn {
@@ -45,82 +90,15 @@ body {
   text-align: center;
 }
 
-/* Поля поиска */
-.filters-container {
-  padding: 0 10px;
-  margin-bottom: 20px;
-}
-
-input, .search-btn {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
-
-/* Карточки (вертикальный режим) */
-#cards {
-  padding: 0 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.card {
-  background: white;
-  padding: 15px;
-  border-radius: 6px;
-  box-shadow: 0 0 5px #ccc;
-  width: 100%;
-}
-
-.card img {
-  width: 100%;
-  border-radius: 8px;
-  margin: 10px 0;
-}
-
-/* Горизонтальный режим (2 колонки) */
-@media (orientation: landscape) {
-  #cards {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
-  }
-}
-
-/* Кнопки в карточках */
-.card-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 10px;
-}
-
-.card-buttons .btn {
-  width: calc(50% - 4px);
-  padding: 8px;
-}
-
-/* Уведомления */
-.notification {
-  position: fixed;
-  top: 10px;
-  left: 10px;
-  right: 10px;
-  background: rgba(240, 147, 147, 0.9);
-  color: black;
-  padding: 10px;
-  border-radius: 6px;
-  text-align: center;
-  display: none;
-}
-
-/* Адаптация для очень маленьких экранов */
+/* 9. Фикс для очень узких экранов */
 @media (max-width: 350px) {
-  .btn {
-    font-size: 14px;
-    padding: 8px;
-  }
+  .btn { font-size: 14px; }
+  .card { padding: 12px; }
+}
+
+/* 10. Запрет горизонтального скролла */
+html, body {
+  overflow-x: hidden;
+  position: relative;
+  width: 100%;
 }
