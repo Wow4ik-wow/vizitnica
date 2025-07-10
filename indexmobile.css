@@ -1,12 +1,5 @@
 /* indexmobile.css */
 
-/* Принудительно не даём элементам вылазить за края */
-* {
-  box-sizing: border-box;
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
 /* Общие настройки для мобильных устройств */
 body {
   font-family: Arial, sans-serif;
@@ -62,11 +55,10 @@ body {
 }
 
 /* Поля ввода */
-.filters-container input[type="text"] {
-  padding: 12px; /* 👉 Внутренние отступы в полях */
-  font-size: 18px; /* 👉 Размер текста в полях */
-  width: 100%;
-  box-sizing: border-box;
+.filters-container input {
+  width: 100%; /* На всю ширину родителя */
+  margin-bottom: 10px; /* Отступ снизу между полями */
+  font-size: 18px; /* Увеличенный шрифт */
 }
 
 /* Кнопка поиска */
