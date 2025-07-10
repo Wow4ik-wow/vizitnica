@@ -1,4 +1,4 @@
-/* Базовый сброс стилей для мобильных устройств */
+/* ===== БАЗОВЫЕ СТИЛИ ===== */
 *,
 *::before,
 *::after {
@@ -6,20 +6,21 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Основные стили для body */
 body {
   font-family: Arial, sans-serif;
+  margin: 0;
   padding: 10px;
   background: #f0f4f8;
   -webkit-text-size-adjust: 100%;
 }
 
-/* Заголовок и кнопки входа */
+/* ===== ШАПКА И КНОПКИ ===== */
 .header {
   display: flex;
   flex-direction: column;
   gap: 10px;
   margin-bottom: 15px;
+  padding: 0 10px; /* Синхронизация с полями поиска */
 }
 
 .page-title {
@@ -27,120 +28,99 @@ body {
   font-size: 1.5rem;
 }
 
-/* Контейнеры кнопок - 2 в строку */
+/* Контейнеры кнопок (2 в строку) */
 .auth-container,
-.auth-buttons,
-.card-buttons,
-.rating-review-container {
+.auth-buttons {
   display: flex;
-  flex-direction: row;
   flex-wrap: wrap;
   gap: 8px;
   width: 100%;
 }
 
-/* Общие стили кнопок */
+/* Общий стиль кнопок */
 .btn {
   padding: 10px 16px;
   font-size: 16px;
-  cursor: pointer;
   background: #3b82f6;
   color: white;
   border: none;
   border-radius: 6px;
   width: calc(50% - 4px); /* 2 кнопки в строку */
-  max-width: 100%;
-  white-space: nowrap;
   -webkit-appearance: none;
   appearance: none;
+  cursor: pointer;
 }
 
-.btn:hover {
-  background: #2563eb;
-}
-
-/* Контейнер с фильтрами */
+/* ===== ПОЛЯ ПОИСКА ===== */
 .filters-container {
+  width: 100%;
+  padding: 0 10px; /* Важно: такие же отступы, как у карточек */
+  margin: 0 auto 20px;
+  box-sizing: border-box;
+}
+
+.filter-row {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  width: 100%;
-  margin: 0 auto 20px auto;
-  padding: 0;
 }
 
-/* Поля ввода */
 input {
-  padding: 10px;
-  font-size: 16px;
   width: 100%;
+  padding: 10px;
   border: 1px solid #ccc;
   border-radius: 6px;
-  -webkit-appearance: none;
-  appearance: none;
+  font-size: 16px;
 }
 
-/* Основной контейнер */
+.search-btn {
+  width: 100%;
+  padding: 12px;
+  font-weight: bold;
+}
+
+/* ===== КАРТОЧКИ (ОСНОВНОЙ КОНТЕЙНЕР) ===== */
 #mainContainer {
   width: 100%;
-  max-width: 100%;
-  padding: 0 10px;
+  padding: 0 10px; /* Синхронизация с полями поиска */
   box-sizing: border-box;
-  margin: 0;
 }
 
-/* Вертикальная ориентация (по умолчанию) */
+/* Вертикальная ориентация (1 колонка) */
 #cards {
   display: flex;
   flex-direction: column;
   gap: 12px;
   width: 100%;
   padding: 0;
+  margin: 0 auto;
 }
 
-/* Стили карточек */
+/* Стиль карточки */
 .card {
   background: white;
   border-radius: 6px;
-  padding: 12px;
+  padding: 15px;
   box-shadow: 0 0 5px #ccc;
   width: 100%;
-  max-width: 100%;
   box-sizing: border-box;
-}
-
-.card h3 {
-  margin: 0 0 8px 0;
-  font-size: 1.2rem;
-}
-
-.card p {
-  margin: 6px 0;
 }
 
 .card img {
   width: 100%;
-  max-width: 100%;
-  height: auto;
   border-radius: 8px;
-  margin: 8px 0;
+  margin: 10px 0;
 }
 
-/* Мелкие кнопки в карточках */
-.card-buttons .btn.small {
-  padding: 8px 12px;
-  font-size: 14px;
-}
-
-/* Горизонтальная ориентация - 2 колонки */
-@media screen and (orientation: landscape) {
+/* ===== ГОРИЗОНТАЛЬНАЯ ОРИЕНТАЦИЯ (2 КОЛОНКИ) ===== */
+@media (orientation: landscape) {
   #cards {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
   }
-  
-  /* Оптимизация для узких экранов */
+
+  /* Защита для узких экранов */
   @media (max-width: 700px) {
     #cards {
       grid-template-columns: 1fr;
@@ -148,6 +128,21 @@ input {
   }
 }
 
+/* ===== КНОПКИ В КАРТОЧКАХ ===== */
+.card-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.card-buttons .btn {
+  width: calc(50% - 4px);
+  padding: 8px 12px;
+  font-size: 14px;
+}
+
+/* ===== ДОПОЛНИТЕЛЬНЫЕ ПРАВКИ ===== */
 /* Уведомления */
 .notification {
   position: fixed;
@@ -155,27 +150,21 @@ input {
   left: 10px;
   right: 10px;
   background: rgba(240, 147, 147, 0.9);
-  color: #0f0c0c;
+  color: #000;
   padding: 12px;
   border-radius: 6px;
+  z-index: 100;
+  text-align: center;
   display: none;
-  z-index: 9999;
-  max-width: calc(100% - 20px);
 }
 
-/* Адаптация для очень маленьких экранов */
-@media screen and (max-width: 360px) {
-  .btn {
-    font-size: 14px;
-    padding: 8px 10px;
-  }
-  
-  .card h3 {
-    font-size: 1.1rem;
-  }
+/* Адаптация для мелких экранов */
+@media (max-width: 360px) {
+  .btn { padding: 8px 10px; font-size: 14px; }
+  .card { padding: 12px; }
 }
 
-/* Поддержка safe-area для современных устройств */
+/* Поддержка safe-areas (для iPhone с "челкой") */
 @supports (padding: max(0px)) {
   body {
     padding:
