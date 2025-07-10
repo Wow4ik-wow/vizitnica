@@ -1,71 +1,125 @@
-/* === indexmobile.css === */
-/* 1. Сброс десктопных стилей */
+/* ===== indexmobile.css - ФИНАЛЬНАЯ ВЕРСИЯ ===== */
+/* 1. Полный сброс десктопных стилей */
+body,
 #mainContainer,
 .filters-container,
 #cards,
 .card {
-  all: initial !important; /* Жесткий сброс */
+  all: unset;
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-/* 2. Базовые стили */
+/* 2. Базовые параметры страницы */
 body {
   font-family: Arial, sans-serif;
-  padding: 10px !important;
   background: #f0f4f8;
-  width: 100vw !important;
-  overflow-x: hidden !important;
-}
-
-/* 3. Главный контейнер */
-#mainContainer {
-  width: 100% !important;
-  max-width: 100% !important;
-  padding: 0 10px !important;
-  margin: 0 !important;
-}
-
-/* 4. Карточки (вертикальный режим) */
-#cards {
-  display: flex !important;
+  padding: 10px;
+  width: 100vw;
+  min-height: 100vh;
+  overflow-x: hidden;
+  display: flex;
   flex-direction: column;
+}
+
+/* 3. Главный контейнер (строгая ширина) */
+#mainContainer {
+  width: 100%;
+  max-width: 100%;
+  padding: 0 10px;
+  margin: 0 auto;
+}
+
+/* 4. Шапка */
+.header {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+/* 5. Поля поиска (полная ширина) */
+.filters-container {
+  width: 100%;
+  padding: 0 10px;
+  margin: 0 auto 20px;
+}
+
+.filter-row {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+/* 6. Карточки (адаптивные) */
+#cards {
+  width: 100%;
+  padding: 0 10px;
+  display: grid;
+  grid-template-columns: 1fr;
   gap: 15px;
-  width: 100% !important;
-  padding: 0 10px !important;
 }
 
 .card {
   background: white;
-  width: 100% !important;
-  min-width: 0 !important;
-  max-width: 100% !important;
+  width: 100%;
   padding: 15px;
   border-radius: 6px;
-  box-shadow: 0 0 5px #ccc;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
-/* 5. Горизонтальный режим */
+/* 7. Альбомный режим (2 колонки) */
 @media (orientation: landscape) {
   #cards {
-    display: grid !important;
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  
+  /* Оптимизация для узких ландшафтных экранов */
+  @media (max-width: 700px) {
+    #cards {
+      grid-template-columns: 1fr;
+    }
   }
 }
 
-/* 6. Поля поиска */
-.filters-container {
-  width: 100% !important;
-  padding: 0 10px !important;
-  margin: 0 auto 20px !important;
+/* 8. Кнопки (2 в ряд) */
+.auth-buttons,
+.card-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: 100%;
 }
 
-.filter-row {
-  flex-direction: column !important;
-  gap: 10px !important;
-}
-
-/* 7. Кнопки */
 .btn {
-  width: calc(50% - 4px) !important;
-  max-width: none !important;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px;
+  width: calc(50% - 4px);
+  text-align: center;
+  font-size: 16px;
+}
+
+/* 9. Защита от переопределения стилей */
+#mainContainer * {
+  max-width: 100% !important;
+  min-width: 0 !important;
+}
+
+/* 10. Оптимизация для маленьких экранов */
+@media (max-width: 360px) {
+  .btn { font-size: 14px; }
+  .card { padding: 12px; }
 }
