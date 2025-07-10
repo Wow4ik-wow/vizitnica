@@ -1,38 +1,54 @@
-/* ========= ОБЩИЕ НАСТРОЙКИ ========= */
-body {
+/* =================== ОБЩИЕ НАСТРОЙКИ =================== */
+body, html {
   margin: 0;
   padding: 0;
-  font-size: 18px; /* 📌 Общий шрифт — увеличен для мобильных */
-  font-family: sans-serif;
-  background-color: #f9f9f9;
-  color: #333;
   box-sizing: border-box;
+  font-size: 18px; /* Увеличить/уменьшить шрифт всей страницы */
+  font-family: sans-serif;
+  background-color: #f5f5f5;
+  overflow-x: hidden; /* Убираем горизонтальный скролл */
+}
+
+/* Контейнер для всей страницы */
+#mainContainer {
+  padding: 10px;
   max-width: 100vw;
   overflow-x: hidden;
 }
 
-/* Основной контейнер */
-#mainContainer {
-  padding: 10px;
-}
-
-/* ========= ЗАГОЛОВОК ========= */
-.page-title {
-  font-size: 24px; /* 📌 Размер заголовка */
+/* =================== ЗАГОЛОВОК =================== */
+.header {
   text-align: center;
   margin-bottom: 20px;
 }
 
-/* ========= КНОПКИ ========= */
-.btn {
-  font-size: 18px;
-  padding: 10px 12px;
-  margin: 5px 0;
-  width: 100%; /* 📌 Кнопки на всю ширину */
-  box-sizing: border-box;
+.page-title {
+  font-size: 24px; /* Размер заголовка */
 }
 
-/* ========= ФИЛЬТРЫ ========= */
+/* =================== АВТОРИЗАЦИЯ И КНОПКИ =================== */
+.auth-container,
+.auth-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.btn {
+  padding: 12px 20px;
+  font-size: 16px; /* Размер текста кнопок */
+  width: 100%;
+  max-width: 300px;
+  border-radius: 8px;
+  border: none;
+  background-color: #3498db;
+  color: white;
+  cursor: pointer;
+}
+
+/* =================== ФИЛЬТРЫ =================== */
 .filters-container {
   display: flex;
   flex-direction: column;
@@ -40,86 +56,71 @@ body {
   margin-bottom: 20px;
 }
 
-/* Каждый ряд фильтров */
+/* Каждый ряд фильтров по 1 на строку */
 .filter-row {
   display: flex;
-  flex-direction: column; /* 📌 Один под другим */
-  gap: 8px;
+  flex-direction: column;
+  gap: 10px;
 }
 
-/* Поля ввода */
 .filters-container input {
   padding: 10px;
-  font-size: 18px;
+  font-size: 16px; /* Размер текста в полях */
   width: 100%;
-  box-sizing: border-box;
+  border-radius: 5px;
+  border: 1px solid #ccc;
 }
 
 /* Кнопка поиска */
 .search-btn {
-  background-color: #3498db;
-  color: white;
-  border: none;
-  cursor: pointer;
+  margin-top: 10px;
+  background-color: #27ae60;
 }
 
-/* ========= КАРТОЧКИ ========= */
+/* =================== КОЛИЧЕСТВО НАЙДЕННЫХ =================== */
+.search-count {
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-align: center;
+  font-size: 18px;
+}
+
+/* =================== КАРТОЧКИ =================== */
 #cards {
   display: grid;
-  grid-template-columns: 1fr; /* 📌 По умолчанию один столбик */
-  gap: 12px;
-  padding: 10px 0;
-  max-width: 100vw;
-  overflow-x: hidden;
+  grid-template-columns: 1fr; /* по умолчанию 1 колонка (портрет) */
+  gap: 15px;
 }
 
-/* Одна карточка */
+/* Карточка */
 .card {
   background-color: white;
   padding: 15px;
   border-radius: 10px;
-  box-shadow: 0 0 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  font-size: 16px; /* Размер текста в карточке */
   width: 100%;
   box-sizing: border-box;
-  font-size: 18px;
 }
 
-/* Заголовок в карточке */
-.card h3 {
-  margin: 0 0 8px;
-  font-size: 20px;
-}
+/* =================== ОРИЕНТАЦИЯ =================== */
 
-/* Описание в карточке */
-.card p {
-  margin: 5px 0;
-  font-size: 16px;
-}
-
-/* ========= КОЛ-ВО РЕЗУЛЬТАТОВ ========= */
-.search-count {
-  font-size: 16px;
-  margin-bottom: 10px;
-}
-
-/* ========= УВЕДОМЛЕНИЯ ========= */
-.notification {
-  position: fixed;
-  bottom: 20px;
-  left: 10px;
-  right: 10px;
-  padding: 15px;
-  background-color: #ffefc2;
-  border: 1px solid #e0c17d;
-  border-radius: 8px;
-  text-align: center;
-  font-size: 16px;
-  display: none;
-}
-
-/* ========= ОРИЕНТАЦИЯ: АЛЬБОМНАЯ ========= */
+/* Альбомная ориентация — 2 колонки */
 @media screen and (orientation: landscape) {
   #cards {
-    grid-template-columns: 1fr 1fr; /* 📌 Два столбика в альбомной ориентации */
+    grid-template-columns: 1fr 1fr;
   }
+}
+
+/* =================== УВЕДОМЛЕНИЯ =================== */
+.notification {
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #f1c40f;
+  color: #000;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 14px;
 }
