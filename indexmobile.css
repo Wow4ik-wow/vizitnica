@@ -1,51 +1,156 @@
-/* === ТОЛЬКО ДЛЯ МОБИЛЬНЫХ УСТРОЙСТВ === */
-
-/* 1. Жесткий сброс стилей */
-body.mobile-device,
-body.mobile-device #mainContainer,
-body.mobile-device .card {
+/* ===== indexmobile.css - ФИНАЛЬНАЯ ВЕРСИЯ ===== */
+/* 1. Полный сброс десктопных стилей */
+body,
+#mainContainer,
+.filters-container,
+#cards,
+.card {
   all: unset;
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-/* 2. Базовые стили ТОЛЬКО для мобильных */
-body.mobile-device {
+/* 2. Базовые параметры страницы */
+body {
   font-family: Arial, sans-serif;
   background: #f0f4f8;
   padding: 10px;
   width: 100vw;
+  min-height: 100vh;
   overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
-/* 3. Главный контейнер */
-body.mobile-device #mainContainer {
+/* 3. Главный контейнер (строгая ширина) */
+#mainContainer {
+  width: 100%;
+  max-width: 100%;
+  padding: 0 10px;
+  margin: 0 auto;
+}
+
+/* 4. Шапка */
+.header {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+/* 5. Поля поиска (полная ширина) */
+.filters-container {
   width: 100%;
   padding: 0 10px;
+  margin: 0 auto 20px;
 }
 
-/* 4. Карточки */
-body.mobile-device #cards {
+.filter-row {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+/* 6. Карточки (адаптивные) */
+#cards {
+  width: 100%;
+  padding: 0 10px;
   display: grid;
   grid-template-columns: 1fr;
-  gap: 12px;
-  width: 100%;
+  gap: 15px;
 }
 
-/* 5. Горизонтальная ориентация (только для мобильных!) */
-@media (orientation: landscape) and (max-width: 1024px) {
-  body.mobile-device #cards {
-    grid-template-columns: repeat(2, 1fr);
+.card {
+  background: white;
+  width: 100%;
+  padding: 15px;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* 7. Альбомный режим (2 колонки) */
+@media (orientation: landscape) {
+  #cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  
+  /* Оптимизация для узких ландшафтных экранов */
+  @media (max-width: 700px) {
+    #cards {
+      grid-template-columns: 1fr;
+    }
   }
 }
 
-/* 6. Компактные кнопки */
-body.mobile-device .card-buttons .btn {
-  padding: 5px 8px !important;
-  font-size: 13px !important;
+/* 8. Кнопки (2 в ряд) */
+.auth-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: 100%;
 }
 
-/* 7. Оценки/отзывы в одну строку */
-body.mobile-device .rating-review-container {
+.btn {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px;
+  width: calc(50% - 4px);
+  text-align: center;
+  font-size: 16px;
+}
+
+/* ===== КНОПКИ В КАРТОЧКАХ ===== */
+.card-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px; /* Уменьшенный промежуток */
+  margin-top: 8px;
+}
+
+/* Основные кнопки */
+.card-buttons .btn {
+  padding: 6px 8px; /* Уменьшенный padding */
+  font-size: 13px; /* Меньший размер шрифта */
+  height: auto; /* Автоматическая высота */
+  line-height: 1.2; /* Плотнее межстрочный интервал */
+  min-height: 0; /* Убираем мин. высоту */
+}
+
+/* Контейнер для оценок/отзывов */
+.rating-review-container {
   display: flex;
   gap: 6px;
+  width: 100%;
+  margin-top: 6px;
+}
+
+/* Кнопки оценок/отзывов */
+.rating-review-container .btn {
+  flex: 1; /* Равномерно растягиваются */
+  padding: 5px 6px;
+  font-size: 12px;
+}
+
+/* 9. Защита от переопределения стилей */
+#mainContainer * {
+  max-width: 100% !important;
+  min-width: 0 !important;
+}
+
+/* 10. Оптимизация для маленьких экранов */
+@media (max-width: 360px) {
+  .btn { font-size: 14px; }
+  .card { padding: 12px; }
 }
