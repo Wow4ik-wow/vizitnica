@@ -1,45 +1,38 @@
-/* indexmobile.css */
-
-/* Общие настройки для мобильных устройств */
+/* ========= ОБЩИЕ НАСТРОЙКИ ========= */
 body {
-  font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  font-size: 18px; /* 👉 Увеличить/уменьшить базовый шрифт всей страницы */
+  font-size: 18px; /* 📌 Общий шрифт — увеличен для мобильных */
+  font-family: sans-serif;
   background-color: #f9f9f9;
+  color: #333;
+  box-sizing: border-box;
+  max-width: 100vw;
+  overflow-x: hidden;
 }
 
-/* Контейнер всей страницы */
+/* Основной контейнер */
 #mainContainer {
   padding: 10px;
 }
 
-/* Заголовок страницы */
+/* ========= ЗАГОЛОВОК ========= */
 .page-title {
-  font-size: 26px; /* 👉 Размер заголовка */
+  font-size: 24px; /* 📌 Размер заголовка */
   text-align: center;
   margin-bottom: 20px;
 }
 
-/* Блок авторизации и кнопок */
-.auth-container,
-.auth-buttons {
-  display: flex;
-  flex-direction: column; /* 👉 Кнопки в столбик */
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-/* Все кнопки */
+/* ========= КНОПКИ ========= */
 .btn {
-  padding: 14px 20px; /* 👉 Размер кнопок */
-  font-size: 18px; /* 👉 Размер текста кнопок */
-  width: 100%; /* 👉 Растянуть кнопку на ширину экрана */
+  font-size: 18px;
+  padding: 10px 12px;
+  margin: 5px 0;
+  width: 100%; /* 📌 Кнопки на всю ширину */
   box-sizing: border-box;
 }
 
-/* Фильтры — поля поиска */
+/* ========= ФИЛЬТРЫ ========= */
 .filters-container {
   display: flex;
   flex-direction: column;
@@ -47,18 +40,19 @@ body {
   margin-bottom: 20px;
 }
 
-/* Каждая строка фильтра (переводим в столбик) */
+/* Каждый ряд фильтров */
 .filter-row {
   display: flex;
-  flex-direction: column; /* 👉 В один столбик на мобильных */
-  gap: 10px;
+  flex-direction: column; /* 📌 Один под другим */
+  gap: 8px;
 }
 
 /* Поля ввода */
 .filters-container input {
-  width: 100%; /* На всю ширину родителя */
-  margin-bottom: 10px; /* Отступ снизу между полями */
-  font-size: 18px; /* Увеличенный шрифт */
+  padding: 10px;
+  font-size: 18px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* Кнопка поиска */
@@ -66,61 +60,66 @@ body {
   background-color: #3498db;
   color: white;
   border: none;
-  margin-top: 10px;
+  cursor: pointer;
 }
 
-/* Счётчик найденных карточек */
-.search-count {
-  text-align: center;
-  font-size: 18px;
-  margin-bottom: 15px;
-  font-weight: bold;
-}
-
-/* Контейнер с карточками */
+/* ========= КАРТОЧКИ ========= */
 #cards {
   display: grid;
-  grid-template-columns: 1fr; /* 👉 По умолчанию — один столбик */
-  gap: 16px;
+  grid-template-columns: 1fr; /* 📌 По умолчанию один столбик */
+  gap: 12px;
+  padding: 10px 0;
+  max-width: 100vw;
+  overflow-x: hidden;
 }
 
-/* Горизонтальная ориентация — два столбца */
-@media (orientation: landscape) {
-  #cards {
-    grid-template-columns: 1fr 1fr; /* 👉 Два столбца при альбомной ориентации */
-  }
-}
-
-/* Карточка услуги */
+/* Одна карточка */
 .card {
   background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 16px;
-  font-size: 18px; /* 👉 Размер текста внутри карточки */
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 0 6px rgba(0,0,0,0.1);
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 18px;
 }
 
-/* Заголовок карточки */
+/* Заголовок в карточке */
 .card h3 {
-  font-size: 20px; /* 👉 Заголовок карточки */
+  margin: 0 0 8px;
+  font-size: 20px;
+}
+
+/* Описание в карточке */
+.card p {
+  margin: 5px 0;
+  font-size: 16px;
+}
+
+/* ========= КОЛ-ВО РЕЗУЛЬТАТОВ ========= */
+.search-count {
+  font-size: 16px;
   margin-bottom: 10px;
 }
 
-/* Уведомления */
+/* ========= УВЕДОМЛЕНИЯ ========= */
 .notification {
   position: fixed;
-  bottom: 15px;
+  bottom: 20px;
   left: 10px;
   right: 10px;
-  background-color: #e74c3c;
-  color: white;
-  padding: 14px;
-  font-size: 18px;
-  border-radius: 10px;
+  padding: 15px;
+  background-color: #ffefc2;
+  border: 1px solid #e0c17d;
+  border-radius: 8px;
   text-align: center;
+  font-size: 16px;
+  display: none;
 }
 
-/* Скрытие элементов по умолчанию */
-.hidden {
-  display: none;
+/* ========= ОРИЕНТАЦИЯ: АЛЬБОМНАЯ ========= */
+@media screen and (orientation: landscape) {
+  #cards {
+    grid-template-columns: 1fr 1fr; /* 📌 Два столбика в альбомной ориентации */
+  }
 }
