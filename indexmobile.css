@@ -1,122 +1,127 @@
-/* indexmobile.css — мобильная адаптация */
+/* indexmobile.css */
 
-/* Основная область фильтров — вертикальное расположение */
-.filters-container {
-  display: flex;
-  flex-direction: column !important; /* строго столбик */
-  gap: 12px;
-  padding: 10px 8px;
+/* Общие настройки для мобильных устройств */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  font-size: 18px; /* 👉 Увеличить/уменьшить базовый шрифт всей страницы */
+  background-color: #f9f9f9;
 }
 
-/* Каждая filter-row — теперь блок с одним элементом */
+/* Контейнер всей страницы */
+#mainContainer {
+  padding: 10px;
+}
+
+/* Заголовок страницы */
+.page-title {
+  font-size: 26px; /* 👉 Размер заголовка */
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Блок авторизации и кнопок */
+.auth-container,
+.auth-buttons {
+  display: flex;
+  flex-direction: column; /* 👉 Кнопки в столбик */
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+/* Все кнопки */
+.btn {
+  padding: 14px 20px; /* 👉 Размер кнопок */
+  font-size: 18px; /* 👉 Размер текста кнопок */
+  width: 100%; /* 👉 Растянуть кнопку на ширину экрана */
+  box-sizing: border-box;
+}
+
+/* Фильтры — поля поиска */
+.filters-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+/* Каждая строка фильтра (переводим в столбик) */
 .filter-row {
-  display: flex !important;
-  flex-direction: column !important; /* поля одно под другим */
-  gap: 8px;
-  width: 100%;
+  display: flex;
+  flex-direction: column; /* 👉 В один столбик на мобильных */
+  gap: 10px;
 }
 
 /* Поля ввода */
-.filter-row input[type="text"] {
-  width: 100% !important;
+.filters-container input[type="text"] {
+  padding: 12px; /* 👉 Внутренние отступы в полях */
+  font-size: 18px; /* 👉 Размер текста в полях */
+  width: 100%;
   box-sizing: border-box;
-  padding: 8px 12px;
-  font-size: 16px;
 }
 
 /* Кнопка поиска */
 .search-btn {
-  width: 100% !important;
-  padding: 12px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  margin-top: 10px;
+}
+
+/* Счётчик найденных карточек */
+.search-count {
+  text-align: center;
   font-size: 18px;
-  margin-top: 12px;
-  cursor: pointer;
+  margin-bottom: 15px;
+  font-weight: bold;
 }
 
-/* Основные стили для тела и контейнера */
-body {
-  font-size: 16px;
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden; /* без горизонтального скролла */
+/* Контейнер с карточками */
+#cards {
+  display: grid;
+  grid-template-columns: 1fr; /* 👉 По умолчанию — один столбик */
+  gap: 16px;
 }
 
-#mainContainer {
-  padding: 0 12px;
-}
-
-.page-title {
-  font-size: 24px;
-  margin-bottom: 12px;
-}
-
-/* Кнопки */
-.btn {
-  font-size: 16px;
-  padding: 10px 14px;
-  margin: 6px 0;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.auth-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 10px;
-}
-
-.notification {
-  font-size: 14px;
-  padding: 10px;
-  margin-top: 10px;
-}
-
-/* Карточки результатов */
-/* Вертикальная ориентация — один столбик */
-@media (orientation: portrait) {
-  #cards {
-    display: grid !important;
-    grid-template-columns: 1fr !important;
-  }
-}
-
-/* Горизонтальная ориентация — два столбика */
+/* Горизонтальная ориентация — два столбца */
 @media (orientation: landscape) {
   #cards {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
+    grid-template-columns: 1fr 1fr; /* 👉 Два столбца при альбомной ориентации */
   }
 }
 
-
-/* Вертикальная ориентация — один столбик */
-@media (orientation: portrait) {
-  #cards {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Горизонтальная ориентация — два столбика */
-@media (orientation: landscape) {
-  #cards {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-/* Увеличенный шрифт на мобильных */
-body,
-input,
-button,
-.card,
-.card * {
-  font-size: 5px !important;
-  line-height: 1.4;
-}
-
+/* Карточка услуги */
 .card {
-  width: 95% !important;
-  max-width: 95% !important;
-  margin: 10px auto !important;
-  box-sizing: border-box;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  font-size: 18px; /* 👉 Размер текста внутри карточки */
+}
+
+/* Заголовок карточки */
+.card h3 {
+  font-size: 20px; /* 👉 Заголовок карточки */
+  margin-bottom: 10px;
+}
+
+/* Уведомления */
+.notification {
+  position: fixed;
+  bottom: 15px;
+  left: 10px;
+  right: 10px;
+  background-color: #e74c3c;
+  color: white;
+  padding: 14px;
+  font-size: 18px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+/* Скрытие элементов по умолчанию */
+.hidden {
+  display: none;
 }
