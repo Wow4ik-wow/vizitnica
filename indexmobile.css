@@ -1,109 +1,78 @@
-/* ===== БАЗОВЫЕ СТИЛИ ===== */
-*,
-*::before,
-*::after {
+/* === indexmobile.css - ГОТОВОЕ РЕШЕНИЕ === */
+/* Просто скопируйте ВЕСЬ этот код и замените им текущий файл */
+
+/* Базовые настройки */
+* {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
   -webkit-tap-highlight-color: transparent;
 }
 
 body {
   font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 10px;
   background: #f0f4f8;
-  -webkit-text-size-adjust: 100%;
+  padding: 10px;
 }
 
-/* ===== ШАПКА И КНОПКИ ===== */
+/* Шапка */
 .header {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  padding: 0 10px;
   margin-bottom: 15px;
-  padding: 0 10px; /* Синхронизация с полями поиска */
 }
 
 .page-title {
-  margin: 0;
   font-size: 1.5rem;
+  margin-bottom: 10px;
 }
 
-/* Контейнеры кнопок (2 в строку) */
-.auth-container,
+/* Кнопки (2 в ряд) */
 .auth-buttons {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  width: 100%;
+  margin-bottom: 10px;
 }
 
-/* Общий стиль кнопок */
 .btn {
-  padding: 10px 16px;
-  font-size: 16px;
   background: #3b82f6;
   color: white;
   border: none;
   border-radius: 6px;
-  width: calc(50% - 4px); /* 2 кнопки в строку */
-  -webkit-appearance: none;
-  appearance: none;
-  cursor: pointer;
+  padding: 10px;
+  font-size: 16px;
+  width: calc(50% - 4px);
+  text-align: center;
 }
 
-/* ===== ПОЛЯ ПОИСКА ===== */
+/* Поля поиска */
 .filters-container {
-  width: 100%;
-  padding: 0 10px; /* Важно: такие же отступы, как у карточек */
-  margin: 0 auto 20px;
-  box-sizing: border-box;
+  padding: 0 10px;
+  margin-bottom: 20px;
 }
 
-.filter-row {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-input {
+input, .search-btn {
   width: 100%;
   padding: 10px;
+  margin-bottom: 10px;
   border: 1px solid #ccc;
   border-radius: 6px;
-  font-size: 16px;
 }
 
-.search-btn {
-  width: 100%;
-  padding: 12px;
-  font-weight: bold;
-}
-
-/* ===== КАРТОЧКИ (ОСНОВНОЙ КОНТЕЙНЕР) ===== */
-#mainContainer {
-  width: 100%;
-  padding: 0 10px; /* Синхронизация с полями поиска */
-  box-sizing: border-box;
-}
-
-/* Вертикальная ориентация (1 колонка) */
+/* Карточки (вертикальный режим) */
 #cards {
+  padding: 0 10px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  width: 100%;
-  padding: 0;
-  margin: 0 auto;
+  gap: 15px;
 }
 
-/* Стиль карточки */
 .card {
   background: white;
-  border-radius: 6px;
   padding: 15px;
+  border-radius: 6px;
   box-shadow: 0 0 5px #ccc;
   width: 100%;
-  box-sizing: border-box;
 }
 
 .card img {
@@ -112,23 +81,16 @@ input {
   margin: 10px 0;
 }
 
-/* ===== ГОРИЗОНТАЛЬНАЯ ОРИЕНТАЦИЯ (2 КОЛОНКИ) ===== */
+/* Горизонтальный режим (2 колонки) */
 @media (orientation: landscape) {
   #cards {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-  }
-
-  /* Защита для узких экранов */
-  @media (max-width: 700px) {
-    #cards {
-      grid-template-columns: 1fr;
-    }
+    gap: 15px;
   }
 }
 
-/* ===== КНОПКИ В КАРТОЧКАХ ===== */
+/* Кнопки в карточках */
 .card-buttons {
   display: flex;
   flex-wrap: wrap;
@@ -138,11 +100,9 @@ input {
 
 .card-buttons .btn {
   width: calc(50% - 4px);
-  padding: 8px 12px;
-  font-size: 14px;
+  padding: 8px;
 }
 
-/* ===== ДОПОЛНИТЕЛЬНЫЕ ПРАВКИ ===== */
 /* Уведомления */
 .notification {
   position: fixed;
@@ -150,27 +110,17 @@ input {
   left: 10px;
   right: 10px;
   background: rgba(240, 147, 147, 0.9);
-  color: #000;
-  padding: 12px;
+  color: black;
+  padding: 10px;
   border-radius: 6px;
-  z-index: 100;
   text-align: center;
   display: none;
 }
 
-/* Адаптация для мелких экранов */
-@media (max-width: 360px) {
-  .btn { padding: 8px 10px; font-size: 14px; }
-  .card { padding: 12px; }
-}
-
-/* Поддержка safe-areas (для iPhone с "челкой") */
-@supports (padding: max(0px)) {
-  body {
-    padding:
-      max(10px, env(safe-area-inset-top))
-      max(10px, env(safe-area-inset-right))
-      max(10px, env(safe-area-inset-bottom))
-      max(10px, env(safe-area-inset-left));
+/* Адаптация для очень маленьких экранов */
+@media (max-width: 350px) {
+  .btn {
+    font-size: 14px;
+    padding: 8px;
   }
 }
