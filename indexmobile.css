@@ -81,7 +81,7 @@ input {
 /* 7. Альбомный режим (2 колонки) */
 @media (orientation: landscape) {
   #cards {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   
   /* Оптимизация для узких ландшафтных экранов */
@@ -93,8 +93,7 @@ input {
 }
 
 /* 8. Кнопки (2 в ряд) */
-.auth-buttons,
-.card-buttons {
+.auth-buttons {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
@@ -110,6 +109,38 @@ input {
   width: calc(50% - 4px);
   text-align: center;
   font-size: 16px;
+}
+
+/* ===== КНОПКИ В КАРТОЧКАХ ===== */
+.card-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px; /* Уменьшенный промежуток */
+  margin-top: 8px;
+}
+
+/* Основные кнопки */
+.card-buttons .btn {
+  padding: 6px 8px; /* Уменьшенный padding */
+  font-size: 13px; /* Меньший размер шрифта */
+  height: auto; /* Автоматическая высота */
+  line-height: 1.2; /* Плотнее межстрочный интервал */
+  min-height: 0; /* Убираем мин. высоту */
+}
+
+/* Контейнер для оценок/отзывов */
+.rating-review-container {
+  display: flex;
+  gap: 6px;
+  width: 100%;
+  margin-top: 6px;
+}
+
+/* Кнопки оценок/отзывов */
+.rating-review-container .btn {
+  flex: 1; /* Равномерно растягиваются */
+  padding: 5px 6px;
+  font-size: 12px;
 }
 
 /* 9. Защита от переопределения стилей */
