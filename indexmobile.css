@@ -103,3 +103,20 @@ body {
     grid-template-columns: 1fr 1fr;
   }
 }
+
+/* Увеличенный шрифт на мобильных */
+body,
+input,
+button,
+.card,
+.card * {
+  font-size: 24px !important;
+  line-height: 1.4;
+}
+
+.card {
+  width: 95% !important;
+  max-width: 95% !important;
+  margin: 10px auto !important;
+  box-sizing: border-box;
+}
