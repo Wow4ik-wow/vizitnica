@@ -1,89 +1,219 @@
+/* Базовый сброс стилей для мобильных устройств */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent; /* Убирает подсветку при тапе на мобильных */
+}
 
-/* Общие настройки */
+/* Основные стили для body */
 body {
   font-family: Arial, sans-serif;
-  background-color: #f5f6fa;
+  padding: 10px; /* Уменьшенный padding для мобильных */
+  background: #f0f4f8;
+  -webkit-text-size-adjust: 100%; /* Предотвращает автоматическое масштабирование текста */
+}
+
+/* Заголовок и кнопки входа - мобильная версия */
+.header {
+  display: flex;
+  flex-direction: column; /* Элементы в столбик на мобильных */
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.page-title {
   margin: 0;
-  padding: 0;
-  font-size: 18px; /* Увеличенный шрифт */
-  box-sizing: border-box;
+  font-size: 1.5rem; /* Уменьшенный размер шрифта для заголовка */
 }
 
-/* Центровка всего контейнера */
-#mainContainer {
+.auth-container {
+  display: flex;
+  flex-direction: column; /* Кнопки авторизации в столбик */
+  gap: 8px;
+  width: 100%;
+}
+
+.auth-buttons {
+  display: flex;
+  flex-direction: column; /* Кнопки действий в столбик */
+  gap: 8px;
+  width: 100%;
+}
+
+/* Стили для кнопок на мобильных */
+.btn {
+  padding: 10px 16px; /* Увеличенный padding для удобства нажатия */
+  font-size: 16px; /* Увеличенный размер шрифта */
+  cursor: pointer;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  width: 100%; /* Кнопки занимают всю ширину */
   max-width: 100%;
-  padding: 10px;
-  box-sizing: border-box;
+  white-space: nowrap;
+  -webkit-appearance: none; /* Убирает стилизацию по умолчанию на iOS */
 }
 
-/* Поля поиска — один столбик */
+.btn:hover {
+  background: #2563eb;
+}
+
+/* Контейнер с фильтрами - мобильная версия */
 .filters-container {
   display: flex;
-  flex-direction: column;
+  flex-direction: column; /* Все поля ввода в столбик */
   gap: 10px;
+  width: 100%;
+  margin: 0 auto 20px auto;
+  padding: 0; /* Убираем padding для полного использования ширины */
 }
 
+/* Ряды фильтров - теперь каждый input на отдельной строке */
 .filter-row {
   display: flex;
-  flex-direction: column;
+  flex-direction: column; /* Элементы в столбик */
   gap: 10px;
-}
-
-/* Инпуты на всю ширину */
-.filters-container input {
+  margin-bottom: 10px;
   width: 100%;
-  padding: 12px;
-  font-size: 18px;
-  box-sizing: border-box;
 }
 
-/* Кнопка поиска */
+/* Стили для полей ввода на мобильных */
+input {
+  padding: 10px; /* Увеличенный padding для удобства */
+  font-size: 16px; /* Увеличенный размер шрифта */
+  width: 100%; /* Занимают всю доступную ширину */
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  -webkit-appearance: none; /* Убирает стилизацию по умолчанию на iOS */
+}
+
+/* Кнопка поиска - занимает всю ширину */
 .search-btn {
   width: 100%;
-  padding: 12px;
-  font-size: 18px;
+  font-weight: bold;
+  font-size: 16px;
+  padding: 12px; /* Увеличенный padding для удобства нажатия */
 }
 
-/* Карточки — в один столбик (портрет), два — в альбом */
+/* Стили для карточек на мобильных */
 #cards {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 20px;
-  margin-top: 20px;
+  display: flex;
+  flex-direction: column; /* По умолчанию карточки в один столбик */
+  gap: 12px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0; /* Убираем padding для полного использования ширины */
 }
 
-@media (orientation: landscape) {
+/* Медиа-запрос для горизонтальной ориентации */
+@media screen and (orientation: landscape) {
   #cards {
-    grid-template-columns: 1fr 1fr;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* В две колонки в горизонтальной ориентации */
+    gap: 12px;
   }
 }
 
-/* Сами карточки — по центру и с адаптивной шириной */
+/* Стили для каждой карточки на мобильных */
 .card {
-  background-color: white;
-  padding: 16px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  max-width: 90%;
-  box-sizing: border-box;
-  margin: 0 auto; /* Центровка */
-}
-
-/* Текст в карточках */
-.card * {
-  font-size: 18px;
-}
-
-/* Кнопки в карточках */
-.card button {
-  padding: 10px;
+  background: white;
+  border-radius: 6px;
+  padding: 12px;
+  box-shadow: 0 0 5px #ccc;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  overflow: hidden;
   font-size: 16px;
-  width: 100%;
-  margin-top: 5px;
+  width: 100%; /* Карточка занимает всю ширину */
+  max-width: 100%; /* Максимальная ширина - 100% */
+  min-width: 0; /* Убираем фиксированную минимальную ширину */
+  margin: 0;
 }
 
-/* Контейнер уведомлений */
+/* Заголовки карточек */
+.card h3 {
+  margin: 0 0 8px 0;
+  font-size: 1.2rem; /* Увеличенный размер шрифта для удобства чтения */
+}
+
+/* Текст карточки */
+.card p {
+  margin: 6px 0; /* Увеличенные отступы */
+  font-size: 1rem;
+}
+
+/* Картинка в карточке */
+.card img {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 8px auto;
+  border-radius: 8px;
+}
+
+/* Кнопки в карточке - мобильная версия */
+.card-buttons {
+  display: flex;
+  flex-direction: column; /* Кнопки в столбик */
+  gap: 8px;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.card-buttons .btn.small {
+  padding: 10px; /* Увеличенный padding для удобства */
+  font-size: 14px;
+  width: 100%; /* Кнопки занимают всю ширину */
+}
+
+/* Уведомление - адаптация для мобильных */
 .notification {
-  font-size: 18px;
-  padding: 10px;
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  transform: none; /* Убираем transform, так как теперь используем left/right */
+  background: rgba(240, 147, 147, 0.9);
+  color: rgb(15, 12, 12);
+  padding: 12px;
+  border-radius: 6px;
+  display: none;
+  z-index: 9999;
+  font-size: 14px;
+  text-align: center;
+  max-width: calc(100% - 20px); /* Учитываем отступы слева/справа */
+}
+
+/* Скрытые элементы */
+.hidden {
+  display: none;
+}
+
+/* Дополнительные медиа-запросы для очень маленьких экранов */
+@media screen and (max-width: 360px) {
+  .page-title {
+    font-size: 1.3rem;
+  }
+  
+  .btn {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+  
+  input {
+    font-size: 14px;
+  }
+}
+
+/* Оптимизация для устройств с "дырой" в экране (камерой) */
+@supports (padding: max(0px)) {
+  body {
+    padding-left: max(10px, env(safe-area-inset-left));
+    padding-right: max(10px, env(safe-area-inset-right));
+    padding-top: max(10px, env(safe-area-inset-top));
+    padding-bottom: max(10px, env(safe-area-inset-bottom));
+  }
 }
