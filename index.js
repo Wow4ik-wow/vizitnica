@@ -859,7 +859,7 @@ function updateAuthUI() {
       cabinetBtn.classList.add("hidden");
       adminBtn.classList.add("hidden");
       addServiceBtn.classList.add("hidden");
-      roleInfo.innerText = "Вы сейчас юзер";
+      roleInfo.innerText = "Вы сегодня молодец!";
     }
   } else {
     googleAuthBtn.style.display = "block";

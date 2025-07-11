@@ -92,24 +92,36 @@ input {
   }
 }
 
-/* 8. Кнопки (2 в ряд) */
-.auth-buttons,
+/* 8. ===== КНОПКИ В КАРТОЧКАХ ===== */
 .card-buttons {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  width: 100%;
+  gap: 6px; /* Уменьшенный промежуток между кнопками */
+  margin-top: 8px;
 }
 
-.btn {
-  background: #3b82f6;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 10px;
-  width: calc(50% - 4px);
-  text-align: center;
-  font-size: 16px;
+/* Основные кнопки */
+.card-buttons .btn {
+  padding: 5px 8px !important;    /* Уменьшаем отступы (было 10px) */
+  font-size: 13px !important;     /* Меньший размер текста */
+  height: auto !important;        /* Автоматическая высота */
+  line-height: 1.2 !important;    /* Более плотный интервал */
+  min-height: 0 !important;       /* Убираем минимальную высоту */
+}
+
+/* Контейнер для оценок/отзывов */
+.rating-review-container {
+  display: flex !important;       /* Гарантируем строку */
+  gap: 6px !important;           /* Промежуток между кнопками */
+  width: 100% !important;
+  margin-top: 6px !important;
+}
+
+/* Кнопки оценок/отзывов */
+.rating-review-container .btn {
+  padding: 4px 6px !important;    /* Ещё компактнее */
+  font-size: 12px !important;     /* Меньший текст */
+  flex: 1 !important;             /* Равномерное распределение */
 }
 
 /* 9. Защита от переопределения стилей */
