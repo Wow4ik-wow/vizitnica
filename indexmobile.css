@@ -45,11 +45,29 @@ body {
   margin-bottom: 10px;
 }
 
+/* Стили для всех текстовых полей */
 input {
   width: 100%;
   padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  border: 1px solid #a0a0a0; /* Граница */
+  border-radius: 8px; /* Чуть больше скругление */
+  background: #f3afaf; /* Фон */
+  color: #222; /* Текст */
+  font-size: 15px;
+  transition: all 0.3s; /* Плавные изменения */
+}
+
+/* Стиль при фокусе */
+input:focus {
+  border-color: #3b82f6;
+  background: #f78585;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Стиль для плейсхолдера */
+input::placeholder {
+  color: #888;
+  opacity: 1;
 }
 
 /* 5. Карточки */
