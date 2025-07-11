@@ -4,11 +4,13 @@
 /* 1. Базовые стили */
 body {
   font-family: Arial, sans-serif;
-  background: #eccfb7;
+  background: #f0f4f8;
   padding: 10px;
   margin: 0;
   min-height: 100vh;
-  overflow-x: hidden;
+  overflow-x: hidden; /* Главное исправление */
+  width: 100%;
+  position: relative;
 }
 
 /* 2. Контейнеры */
@@ -17,6 +19,7 @@ body {
   max-width: 100%;
   padding: 0 10px;
   margin: 0 auto;
+  box-sizing: border-box; /* Важно! */
 }
 
 /* 3. Шапка */
@@ -52,19 +55,35 @@ input {
 /* 5. Карточки */
 #cards {
   width: 100%;
+  max-width: 100%;
   padding: 0 10px;
   display: grid;
   grid-template-columns: 1fr;
   gap: 15px;
+  box-sizing: border-box;
 }
 
 .card {
-  background: rgb(245, 209, 180);
+  background: rgb(235, 214, 196);
   width: 100%;
+  max-width: 100%;
   padding: 15px;
   border-radius: 6px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  box-sizing: border-box; /* Важно! */
   margin: 0 auto;
+}
+
+/* Жесткое ограничение для всех элементов */
+body * {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Дополнительная защита */
+html {
+  overflow-x: hidden;
+  width: 100%;
 }
 
 /* 6. Альбомный режим */
