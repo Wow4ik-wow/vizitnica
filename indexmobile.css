@@ -75,7 +75,7 @@ input {
   width: 100%;
   padding: 15px;
   border-radius: 6px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 /* 7. Альбомный режим (2 колонки) */
@@ -83,7 +83,7 @@ input {
   #cards {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  
+
   /* Оптимизация для узких ландшафтных экранов */
   @media (max-width: 700px) {
     #cards {
@@ -94,34 +94,38 @@ input {
 
 /* 8. ===== КНОПКИ В КАРТОЧКАХ ===== */
 .card-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px; /* Уменьшенный промежуток между кнопками */
-  margin-top: 8px;
+  padding: 3px 6px !important; /* Внутренние отступы контейнера (3px сверху/снизу, 6px слева/справа) */
+  font-size: 12px !important; /* Размер шрифта для всех элементов внутри контейнера */
+  border-top: 1px dashed #eee; /* Верхняя граница в виде пунктирной линии светло-серого цвета */
+  padding-top: 8px; /* Дополнительный верхний отступ (8px) - дублирует padding-top из общего padding */
+  display: flex; /* Flex-контейнер для выравнивания кнопок */
+  flex-wrap: wrap; /* Перенос кнопок на новую строку при нехватке места */
+  gap: 6px; /* Расстояние между кнопками (6px по горизонтари и вертикали) */
+  margin-top: 8px; /* Внешний отступ сверху (8px) - отделяет блок кнопок от контента карточки */
 }
 
 /* Основные кнопки */
 .card-buttons .btn {
-  padding: 5px 8px !important;    /* Уменьшаем отступы (было 10px) */
-  font-size: 13px !important;     /* Меньший размер текста */
-  height: auto !important;        /* Автоматическая высота */
-  line-height: 1.2 !important;    /* Более плотный интервал */
-  min-height: 0 !important;       /* Убираем минимальную высоту */
+  padding: 5px 8px !important; /* Уменьшаем отступы (было 10px) */
+  font-size: 13px !important; /* Меньший размер текста */
+  height: auto !important; /* Автоматическая высота */
+  line-height: 1.2 !important; /* Более плотный интервал */
+  min-height: 0 !important; /* Убираем минимальную высоту */
 }
 
 /* Контейнер для оценок/отзывов */
 .rating-review-container {
-  display: flex !important;       /* Гарантируем строку */
-  gap: 6px !important;           /* Промежуток между кнопками */
+  display: flex !important; /* Гарантируем строку */
+  gap: 6px !important; /* Промежуток между кнопками */
   width: 100% !important;
   margin-top: 6px !important;
 }
 
 /* Кнопки оценок/отзывов */
 .rating-review-container .btn {
-  padding: 4px 6px !important;    /* Ещё компактнее */
-  font-size: 12px !important;     /* Меньший текст */
-  flex: 1 !important;             /* Равномерное распределение */
+  padding: 4px 6px !important; /* Ещё компактнее */
+  font-size: 12px !important; /* Меньший текст */
+  flex: 1 !important; /* Равномерное распределение */
 }
 
 /* 9. Защита от переопределения стилей */
@@ -132,6 +136,10 @@ input {
 
 /* 10. Оптимизация для маленьких экранов */
 @media (max-width: 360px) {
-  .btn { font-size: 14px; }
-  .card { padding: 12px; }
+  .btn {
+    font-size: 14px;
+  }
+  .card {
+    padding: 12px;
+  }
 }
