@@ -51,7 +51,7 @@ input {
   padding: 10px;
   border: 1px solid #a0a0a0; /* Граница */
   border-radius: 8px; /* Чуть больше скругление */
-  background: #f3afaf; /* Фон */
+  background: #eec0c0; /* Фон */
   color: #222; /* Текст */
   font-size: 15px;
   transition: all 0.3s; /* Плавные изменения */
@@ -66,7 +66,7 @@ input:focus {
 
 /* Стиль для плейсхолдера */
 input::placeholder {
-  color: #888;
+  color: #494848;
   opacity: 1;
 }
 
