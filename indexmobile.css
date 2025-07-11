@@ -1,29 +1,17 @@
-/* ===== indexmobile.css - ФИНАЛЬНАЯ ВЕРСИЯ ===== */
-/* 1. Полный сброс десктопных стилей */
-body,
-#mainContainer,
-.filters-container,
-#cards,
-.card {
-  all: unset;
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+/* ===== indexmobile.css - ПОЛНАЯ ВЕРСИЯ ===== */
+/* Сохраняет ВСЕ стили + добавляет мобильные правки */
 
-/* 2. Базовые параметры страницы */
+/* 1. Базовые стили */
 body {
   font-family: Arial, sans-serif;
   background: #f0f4f8;
   padding: 10px;
-  width: 100vw;
+  margin: 0;
   min-height: 100vh;
   overflow-x: hidden;
-  display: flex;
-  flex-direction: column;
 }
 
-/* 3. Главный контейнер (строгая ширина) */
+/* 2. Контейнеры */
 #mainContainer {
   width: 100%;
   max-width: 100%;
@@ -31,7 +19,7 @@ body {
   margin: 0 auto;
 }
 
-/* 4. Шапка */
+/* 3. Шапка */
 .header {
   width: 100%;
   display: flex;
@@ -40,7 +28,7 @@ body {
   margin-bottom: 15px;
 }
 
-/* 5. Поля поиска (полная ширина) */
+/* 4. Поля поиска */
 .filters-container {
   width: 100%;
   padding: 0 10px;
@@ -61,7 +49,7 @@ input {
   border-radius: 6px;
 }
 
-/* 6. Карточки (адаптивные) */
+/* 5. Карточки */
 #cards {
   width: 100%;
   padding: 0 10px;
@@ -71,20 +59,20 @@ input {
 }
 
 .card {
-  background: white;
+  background: rgb(233, 155, 92);
   width: 100%;
   padding: 15px;
   border-radius: 6px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  margin: 0 auto;
 }
 
-/* 7. Альбомный режим (2 колонки) */
+/* 6. Альбомный режим */
 @media (orientation: landscape) {
   #cards {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-
-  /* Оптимизация для узких ландшафтных экранов */
+  
   @media (max-width: 700px) {
     #cards {
       grid-template-columns: 1fr;
@@ -92,54 +80,82 @@ input {
   }
 }
 
-/* 8. ===== КНОПКИ В КАРТОЧКАХ ===== */
+/* 7. Основные кнопки */
+.btn {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  width: auto;
+  max-width: 100%;
+  white-space: nowrap;
+}
+
+.btn:hover {
+  background: #2563eb;
+}
+
+/* 8. Кнопки в карточках - ТОЧЕЧНЫЕ ПРАВКИ */
 .card-buttons {
-  padding: 3px 6px !important; /* Внутренние отступы контейнера (3px сверху/снизу, 6px слева/справа) */
-  font-size: 12px !important; /* Размер шрифта для всех элементов внутри контейнера */
-  border-top: 1px dashed #eee; /* Верхняя граница в виде пунктирной линии светло-серого цвета */
-  padding-top: 8px; /* Дополнительный верхний отступ (8px) - дублирует padding-top из общего padding */
-  display: flex; /* Flex-контейнер для выравнивания кнопок */
-  flex-wrap: wrap; /* Перенос кнопок на новую строку при нехватке места */
-  gap: 6px; /* Расстояние между кнопками (6px по горизонтари и вертикали) */
-  margin-top: 8px; /* Внешний отступ сверху (8px) - отделяет блок кнопок от контента карточки */
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px dashed rgba(0,0,0,0.1);
 }
 
-/* Основные кнопки */
 .card-buttons .btn {
-  padding: 5px 8px !important; /* Уменьшаем отступы (было 10px) */
-  font-size: 13px !important; /* Меньший размер текста */
-  height: auto !important; /* Автоматическая высота */
-  line-height: 1.2 !important; /* Более плотный интервал */
-  min-height: 0 !important; /* Убираем минимальную высоту */
+  padding: 5px 10px !important; /* Более компактные */
+  font-size: 13px !important;
+  line-height: 1.2;
+  height: auto;
 }
 
-/* Контейнер для оценок/отзывов */
+/* 9. Оценки/отзывы в строку */
 .rating-review-container {
-  display: flex !important; /* Гарантируем строку */
-  gap: 6px !important; /* Промежуток между кнопками */
-  width: 100% !important;
-  margin-top: 6px !important;
+  display: flex !important;
+  gap: 6px;
+  width: 100%;
+  margin-top: 8px;
 }
 
-/* Кнопки оценок/отзывов */
 .rating-review-container .btn {
-  padding: 4px 6px !important; /* Ещё компактнее */
-  font-size: 12px !important; /* Меньший текст */
-  flex: 1 !important; /* Равномерное распределение */
+  flex: 1;
+  padding: 4px 6px !important;
+  font-size: 12px !important;
 }
 
-/* 9. Защита от переопределения стилей */
-#mainContainer * {
-  max-width: 100% !important;
-  min-width: 0 !important;
-}
-
-/* 10. Оптимизация для маленьких экранов */
+/* 10. Адаптация */
 @media (max-width: 360px) {
-  .btn {
-    font-size: 14px;
-  }
   .card {
     padding: 12px;
   }
+  
+  .card-buttons {
+    gap: 6px;
+    margin-top: 8px;
+  }
+}
+
+/* 11. Сохраненные оригинальные стили */
+.hidden {
+  display: none;
+}
+
+.notification {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(240, 147, 147, 0.75);
+  color: rgb(15, 12, 12);
+  padding: 10px 20px;
+  border-radius: 6px;
+  display: none;
+  z-index: 9999;
+  font-size: 14px;
 }
