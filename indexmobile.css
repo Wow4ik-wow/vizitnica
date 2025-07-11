@@ -4,7 +4,7 @@
 /* 1. Базовые стили */
 body {
   font-family: Arial, sans-serif;
-  background: #f0f4f8;
+  background: #eccfb7;
   padding: 10px;
   margin: 0;
   min-height: 100vh;
@@ -59,7 +59,7 @@ input {
 }
 
 .card {
-  background: rgb(233, 155, 92);
+  background: rgb(245, 209, 180);
   width: 100%;
   padding: 15px;
   border-radius: 6px;
