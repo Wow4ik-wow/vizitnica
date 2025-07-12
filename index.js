@@ -145,8 +145,56 @@ function renderCards(services) {
     if (district)
       contentHTML += `<div><strong>Район:</strong> ${district}</div>`;
 
-    contentHTML += socialButtonsHTML;
-    contentHTML += geoHTML;
+    const address = (service["Адрес"] || "").trim();
+if (address) {
+  contentHTML += `<div><strong>Адрес:</strong> ${address.replace(/\n/g, "<br>")}</div>`;
+}
+
+
+
+   // 1. Парсим соцсети из столбца "Ссылки"
+const socialLinksText = service["Ссылки"] || "";
+const parsedSocialLinks = [];
+const regex = /\[([^\]]+)\]\(([^)]+)\)/g;
+let match;
+while ((match = regex.exec(socialLinksText)) !== null) {
+  parsedSocialLinks.push({ 
+    name: match[1].trim(), 
+    url: match[2].trim() 
+  });
+}
+
+// 2. Объединяем с существующими соцсетями (socialButtonsHTML)
+const allSocialLinks = [
+  ...socials.filter(s => s.url), // Из текущего socialButtonsHTML
+  ...parsedSocialLinks           // Из нового парсинга
+];
+
+// 3. Генерируем HTML для всех соцсетей
+if (allSocialLinks.length > 0) {
+  contentHTML += `
+    <div style="margin: 10px 0; display: flex; flex-wrap: wrap; gap: 6px;">
+      ${allSocialLinks.map(link => `
+        <a href="${link.url}" target="_blank" style="text-decoration: none;">
+          <button style="
+            background: #4a6fa5;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            cursor: pointer;
+          ">
+            ${link.name}
+          </button>
+        </a>
+      `).join('')}
+    </div>
+  `;
+}
+
+// 4. Добавляем геолокацию (geoHTML)
+contentHTML += geoHTML;
 
     contentHTML += `
   <div class="card-buttons">
