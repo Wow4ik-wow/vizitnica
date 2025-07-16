@@ -1,0 +1,204 @@
+/* === Общие настройки === */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  background: #f0f4f8;
+  color: #333;
+}
+
+/* === Заголовок === */
+h1 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+/* === Форма и элементы === */
+form {
+  max-width: 800px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+  margin-bottom: 20px;
+  position: relative; /* важно для абсолютных подсказок */
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #aaa;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+input[type="checkbox"] {
+  width: auto;
+}
+
+textarea {
+  resize: vertical;
+}
+
+/* === Кнопки === */
+button {
+  padding: 10px 20px;
+  border: none;
+  background: #1976d2;
+  color: white;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+button:hover {
+  background: #145ca3;
+}
+
+/* === Обязательные поля === */
+.required {
+  color: red;
+}
+
+/* === Выбранные значения (города, виды, телефоны) === */
+.selected-item,
+.phone-item {
+  display: inline-block;
+  background: #e0e0e0;
+  padding: 5px 10px;
+  margin: 5px 5px 0 0;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.phone-item {
+  background: #d1e7dd;
+}
+
+/* === Выпадающие подсказки === */
+.suggestions {
+  position: absolute;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  max-height: 150px;
+  overflow-y: auto;
+  z-index: 1000;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  top: 100%;
+  left: 0;
+  border-radius: 8px;
+}
+
+.suggestions li {
+  padding: 10px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.suggestions li:hover {
+  background-color: #f0f0f0;
+}
+
+/* === Ссылки === */
+.links-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 10px;
+}
+
+.links-row label {
+  font-weight: normal;
+}
+
+/* === Сообщение об успехе / ошибке === */
+#messageBox {
+  text-align: center;
+  padding: 15px;
+  margin-top: 20px;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+#messageBox.success {
+  background: #d1e7dd;
+  color: #0f5132;
+}
+
+#messageBox.error {
+  background: #f8d7da;
+  color: #842029;
+}
+
+.hidden {
+  display: none;
+}
+
+/* === Кнопки внизу === */
+.buttons-row {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.selected-item {
+  display: inline-block;
+  background-color: #cce5ff;
+  padding: 3px 8px;
+  margin: 3px 5px 3px 0;
+  border-radius: 12px;
+  font-size: 0.9em;
+  user-select: none;
+}
+.selected-item:hover {
+  background-color: #99ccff;
+  cursor: pointer;
+}
+#messageBox {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #323232;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+  z-index: 9999;
+  max-width: 90%;
+  text-align: center;
+}
+
+#messageBox.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#messageBox.hidden {
+  opacity: 0;
+  pointer-events: none;
+}

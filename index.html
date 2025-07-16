@@ -1,0 +1,155 @@
+версия 138
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Визитница — Главная</title>
+
+    <!-- Десктопные стили по умолчанию -->
+    <link rel="stylesheet" href="index.css" id="main-css" />
+
+    <script>
+      // Определение мобильного устройства
+      const isMobile =
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+          navigator.userAgent
+        );
+
+      if (isMobile) {
+        // Полная замена CSS на мобильную версию
+        document.getElementById("main-css").href = "indexmobile.css";
+        document.documentElement.classList.add("mobile-device");
+      }
+    </script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-MSBJNF664Y"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "G-MSBJNF664Y"); // Замените G-НОВЫЙ_ID на ваш код
+    </script>
+  </head>
+  <body>
+    <div id="mainContainer">
+      <div class="header">
+        <h1 class="page-title">Нужен ас? - Смотри у нас!</h1>
+        <!-- Google Вход — ВНЕ блока authButtons -->
+
+        <!-- Остальные кнопки -->
+        <div class="auth-container">
+          <div id="googleAuthBtn"></div>
+          <!-- Вход (через Google) -->
+          <button id="logoutBtn" class="btn hidden">ВЫХОД</button>
+          <button id="adminBtn" class="btn hidden">Админка</button>
+        </div>
+
+        <div id="actionButtons" class="auth-buttons">
+          <button id="addServiceBtn" class="btn">Добавить услугу</button>
+          <button id="cabinetBtn" class="btn hidden">Личный кабинет</button>
+        </div>
+
+        <div
+          id="roleInfo"
+          style="margin-top: 10px; font-weight: bold; color: #2c3e50"
+        ></div>
+      </div>
+    </div>
+
+    <div class="filters-container">
+      <div class="filter-row">
+        <input
+          type="text"
+          id="filterRegion"
+          list="listRegion"
+          placeholder="Область"
+          autocomplete="off"
+        />
+        <datalist id="listRegion"></datalist>
+
+        <input
+          type="text"
+          id="filterCity"
+          list="listCity"
+          placeholder="Населённый пункт"
+          autocomplete="off"
+        />
+        <datalist id="listCity"></datalist>
+      </div>
+
+      <div class="filter-row">
+        <input
+          type="text"
+          id="filterProfile"
+          list="listProfile"
+          placeholder="Профиль"
+          autocomplete="off"
+        />
+        <datalist id="listProfile"></datalist>
+
+        <input
+          type="text"
+          id="filterType"
+          list="listType"
+          placeholder="Вид деятельности"
+          autocomplete="off"
+        />
+        <datalist id="listType"></datalist>
+      </div>
+
+      <div class="filter-row">
+        <input
+          type="text"
+          id="filterDistrict"
+          list="listDistrict"
+          placeholder="Район"
+          autocomplete="off"
+        />
+        <datalist id="listDistrict"></datalist>
+
+        <input
+          type="text"
+          id="filterName"
+          list="listName"
+          placeholder="Имя или Компания"
+          autocomplete="off"
+        />
+        <datalist id="listName"></datalist>
+      </div>
+
+      <button onclick="applyFilters()" class="btn search-btn">Поиск</button>
+    </div>
+
+    <p id="searchCount" class="search-count"></p>
+
+    <!-- Якорь для прокрутки (добавьте эту строку) -->
+    <div id="scrollTarget" style="position: relative; top: -5px; height: 1px;"></div>
+
+    <!-- Здесь БУДЕТ ваш блок с картинками под рекламу (пока его нет) -->
+    <div class="image-block"
+      <!-- Позже добавите картинки -->
+    </div>
+
+    <div id="cards"></div>
+
+    <!-- Новый контейнер для кнопки "Наверх" -->
+    <div
+      id="backToTopContainer"
+      style="width: 100%; text-align: center; margin-top: 20px"
+    ></div>
+    <p id="searchCount" class="search-count"></p>
+    <div id="notification" class="notification"></div>
+
+    <div id="notification" class="notification"></div>
+
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="index.js"></script>
+  </body>
+</html>

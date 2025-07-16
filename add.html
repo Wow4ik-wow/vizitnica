@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Визитница — Добавление услуги</title>
+    <link rel="stylesheet" href="add.css" />
+  </head>
+  <body>
+    <h1>Добавление услуги</h1>
+    <form id="serviceForm" novalidate>
+      <!-- 2. Область -->
+      <div class="form-group">
+        <label for="regionSelect"
+          >Область <span class="required">*</span></label
+        >
+        <select id="regionSelect" name="regionSelect" required>
+          <option value="">-- Выберите область --</option>
+        </select>
+        <input
+          type="text"
+          id="regionCustom"
+          placeholder="Или введите свою область"
+        />
+      </div>
+
+      <!-- 3. Населённый пункт (множественный, до 10, автоподбор) -->
+      <div class="form-group">
+        <label for="townSelect"
+          >Населённые пункты <span class="required">*</span></label
+        >
+        <select id="townSelect" name="townSelect" required>
+          <option value="">-- Выберите из списка --</option>
+        </select>
+
+        <div id="selectedTownsContainer" class="selected-items-container"></div>
+
+        <input
+          type="text"
+          id="townCustom"
+          placeholder="Или введите свой, если нет нужного в списке"
+        />
+      </div>
+
+      <!-- 4. Район города -->
+      <div class="form-group">
+        <label for="cityDistrict">Район города</label>
+        <input type="text" id="cityDistrict" maxlength="200" placeholder="Можете указать при желании" />
+      </div>
+
+      <!-- 5. Профиль деятельности -->
+      <div class="form-group">
+        <label for="profileSelect"
+          >Профиль деятельности <span class="required">*</span></label
+        >
+        <select id="profileSelect" name="profileSelect" required>
+          <option value="">-- Выберите профиль --</option>
+        </select>
+      </div>
+
+      <!-- 6. Вид деятельности (множественный, до 10, зависит от профиля) -->
+      <div class="form-group">
+        <label>Вид деятельности <span class="required">*</span></label>
+
+        <select id="kindSelect" disabled>
+          <option value="">-- Выберите вид --</option>
+        </select>
+
+        <div id="selectedKindsContainer"></div>
+
+        <input
+          type="text"
+          id="kindCustom"
+          placeholder="Или введите свой вид деятельности"
+        />
+      </div>
+
+      <!-- 7. Имя -->
+      <div class="form-group">
+        <label for="nameInput"
+          >Имя <span class="required">*</span></label
+        >
+        <input type="text" id="nameInput" maxlength="20" placeholder="Заполнить обязательно хотя бы одно из полей ИМЯ/КОМПАНИЯ (можно оба)" />
+      </div>
+
+      <!-- 8. Компания -->
+      <div class="form-group">
+        <label for="companyInput"
+          >Компания (или Имя) <span class="required">*</span></label
+        >
+        <input type="text" id="companyInput" maxlength="30" placeholder="Заполнить обязательно хотя бы одно из полей ИМЯ/КОМПАНИЯ (можно оба)" />
+      </div>
+
+      <!-- 9. Описание (до 75 символов) -->
+      <div class="form-group">
+        <label for="descShort"
+          >Описание (до 75 символов) <span class="required">*</span></label
+        >
+        <input type="text" id="descShort" maxlength="75" placeholder="Краткое описание для карточки" required />
+      </div>
+
+      <!-- 10. Описание (до 700 символов) -->
+      <div class="form-group">
+        <label for="descLong"
+          >Описание (до 700 символов) <span class="required">*</span></label
+        >
+        <textarea id="descLong" maxlength="700" placeholder="Полное описание" required></textarea>
+      </div>
+
+      <!-- 11. Адрес -->
+      <div class="form-group">
+        <label for="addressInput">Адрес</label>
+        <input type="text" id="addressInput" maxlength="200" />
+      </div>
+
+      <!-- 12. Телефоны (до 10, формат 380xxxxxxxxx) -->
+      <div class="form-group">
+        <label>Телефоны <span class="required">*</span></label>
+        <div id="phonesContainer"></div>
+        <input type="text" id="phoneInput" placeholder="380xxxxxxxxx" />
+        <button type="button" id="addPhoneBtn">Добавить телефон</button>
+      </div>
+
+      <!-- 13. Ссылки (Сайт, Email, Instagram, Telegram, Viber, Facebook) -->
+      <div class="form-group">
+        <label>Ссылки</label>
+        <div class="links-row">
+          <label
+            ><input type="checkbox" class="link-checkbox" data-type="site" />
+            Сайт</label
+          >
+          <label
+            ><input type="checkbox" class="link-checkbox" data-type="email" />
+            Email</label
+          >
+          <label
+            ><input
+              type="checkbox"
+              class="link-checkbox"
+              data-type="instagram"
+            />
+            Instagram</label
+          >
+          <label
+            ><input
+              type="checkbox"
+              class="link-checkbox"
+              data-type="telegram"
+            />
+            Telegram</label
+          >
+          <label
+            ><input type="checkbox" class="link-checkbox" data-type="viber" />
+            Viber</label
+          >
+          <label
+            ><input
+              type="checkbox"
+              class="link-checkbox"
+              data-type="facebook"
+            />
+            Facebook</label
+          >
+        </div>
+        <div id="linksInputsContainer"></div>
+      </div>
+
+      <!-- 14. Фотка подтверждение - резерв -->
+      <div class="form-group">
+        <label for="photoConfirmation">Фотка подтверждение (резерв)</label>
+        <input type="file" id="photoConfirmation" disabled />
+      </div>
+
+      <!-- 15. Геолокация -->
+      <div class="form-group">
+        <label for="geoLocation">Геолокация</label>
+        <input type="text" id="geoLocation" />
+      </div>
+
+      <!-- 16-26 - Автозаполняемые / резервные (пустые) -->
+      <input type="hidden" id="orderNumber" />
+      <input type="hidden" id="idNumber" />
+      <input type="hidden" id="image" />
+      <input type="hidden" id="imageName" />
+      <input type="hidden" id="publicationStatus" />
+      <input type="hidden" id="cardImageName" />
+      <input type="hidden" id="telegramImageName" />
+      <input type="hidden" id="oldImage" />
+      <input type="hidden" id="imageLink" />
+      <input type="hidden" id="wordResult" />
+      <input type="hidden" id="nameCompanyKind" />
+
+      <div class="buttons-row">
+        <button type="submit">Добавить услугу</button>
+        <button type="reset" id="resetBtn">Сбросить</button>
+      </div>
+    </form>
+
+    <div id="messageBox" class="hidden"></div>
+
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="add.js"></script>
+  </body>
+</html>

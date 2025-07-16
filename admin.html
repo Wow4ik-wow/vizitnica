@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Администрирование</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      h1 {
+        color: #2c3e50;
+      }
+      button {
+        margin: 5px 0;
+        padding: 10px 20px;
+        font-size: 16px;
+      }
+      #status {
+        margin-top: 20px;
+      }
+      #cardsList {
+        margin-top: 20px;
+      }
+      .cardItem {
+        border: 1px solid #ddd;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Администрирование карточек услуг</h1>
+    <button id="btnLoadCards">Загрузить все карточки услуг</button>
+    <div id="status"></div>
+    <div id="cardsList"></div>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+      import {
+        getFirestore,
+        collection,
+        getDocs,
+        deleteDoc,
+        doc,
+      } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+      import {
+        getAuth,
+        onAuthStateChanged,
+        signOut,
+      } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+
+      // Твой firebaseConfig из проекта:
+      const firebaseConfig = {
+        apiKey: "AIzaSyAaaeG9EOsw3xvFOOEVqoxv04fV3hMKjRY",
+        authDomain: "vizitnica-b2bfd.firebaseapp.com",
+        projectId: "vizitnica-b2bfd",
+        storageBucket: "vizitnica-b2bfd.appspot.com",
+        messagingSenderId: "241506848653",
+        appId: "1:241506848653:web:3bc940e119d3dfd1b4c223",
+        measurementId: "G-RG07G4L7HR",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+      const auth = getAuth(app);
+
+      const statusDiv = document.getElementById("status");
+      const cardsListDiv = document.getElementById("cardsList");
+      const btnLoadCards = document.getElementById("btnLoadCards");
+
+      // Проверка авторизации и админства
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          // Проверяем, есть ли пользователь в коллекции admins
+          checkAdmin(user.uid).then((isAdmin) => {
+            if (!isAdmin) {
+              statusDiv.textContent = "Доступ запрещён. Вы не администратор.";
+              btnLoadCards.disabled = true;
+            } else {
+              statusDiv.textContent = `Добро пожаловать, администратор! (${user.email})`;
+              btnLoadCards.disabled = false;
+            }
+          });
+        } else {
+          statusDiv.textContent =
+            "Пожалуйста, войдите в систему, чтобы получить доступ.";
+          btnLoadCards.disabled = true;
+        }
+      });
+
+      async function checkAdmin(uid) {
+        try {
+          const adminsRef = collection(db, "admins");
+          const adminsSnap = await getDocs(adminsRef);
+          for (const adminDoc of adminsSnap.docs) {
+            if (adminDoc.id === uid) {
+              return true;
+            }
+          }
+          return false;
+        } catch (error) {
+          console.error("Ошибка проверки админа:", error);
+          return false;
+        }
+      }
+
+      btnLoadCards.onclick = async () => {
+        statusDiv.textContent = "Загрузка карточек...";
+        cardsListDiv.innerHTML = "";
+        try {
+          const cardsCol = collection(db, "services");
+          const snapshot = await getDocs(cardsCol);
+          if (snapshot.empty) {
+            cardsListDiv.textContent = "Карточек услуг не найдено.";
+            statusDiv.textContent = "Готово.";
+            return;
+          }
+          snapshot.forEach((docSnap) => {
+            const data = docSnap.data();
+            const div = document.createElement("div");
+            div.className = "cardItem";
+            div.innerHTML = `
+            <strong>${data.name || "Без имени"}</strong><br/>
+            Компания: ${data.company || "-"}<br/>
+            Город(а): ${
+              Array.isArray(data.cities) ? data.cities.join(", ") : "-"
+            }<br/>
+            Краткое описание: ${data.shortDescription || "-"}<br/>
+            <button data-id="${docSnap.id}">Удалить</button>
+          `;
+            const btnDelete = div.querySelector("button");
+            btnDelete.onclick = () => deleteCard(docSnap.id);
+            cardsListDiv.appendChild(div);
+          });
+          statusDiv.textContent = "Карточки загружены.";
+        } catch (error) {
+          console.error("Ошибка загрузки карточек:", error);
+          statusDiv.textContent = "Ошибка загрузки карточек.";
+        }
+      };
+
+      async function deleteCard(id) {
+        if (!confirm("Вы уверены, что хотите удалить эту карточку?")) return;
+        try {
+          await deleteDoc(doc(db, "services", id));
+          statusDiv.textContent = "Карточка удалена.";
+          // Обновим список
+          btnLoadCards.click();
+        } catch (error) {
+          console.error("Ошибка удаления карточки:", error);
+          statusDiv.textContent = "Ошибка удаления карточки.";
+        }
+      }
+    </script>
+  </body>
+</html>
