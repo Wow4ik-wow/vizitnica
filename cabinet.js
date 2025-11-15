@@ -79,4 +79,3 @@ function deleteUserCard(cardId, userEmail) {
     alert("Ошибка при удалении карточки");
   });
 }
-

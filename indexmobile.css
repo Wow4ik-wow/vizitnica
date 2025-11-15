@@ -1,15 +1,23 @@
-html.mobile-device {
-  overflow-x: hidden !important;
-  width: 100% !important;
+/* =========================
+   MOBILE ONLY BASE / RESET
+   ========================= */
+
+html.mobile-device,
+html.mobile-device body {
   margin: 0 !important;
   padding: 0 !important;
-  background: #f0cda6;
+  width: 100% !important;
+  min-height: 100% !important;
+  overflow-x: hidden !important;
+  background: #f0cda6 url("main-bg.webp") repeat-y center top !important;
+  background-size: 1920px auto !important;
+  box-sizing: border-box !important;
 }
 
-html.mobile-device body {
-  position: relative;
-  min-height: 100vh;
-  background: #f0cda6;
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 img {
@@ -18,161 +26,390 @@ img {
   display: block !important;
 }
 
-#mainContainer {
-  width: 100%;
-  max-width: 100%;
-  padding: 0 10px;
-  margin: 0 auto;
-  box-sizing: border-box;
+/* Глобальные переменные мобильной сетки */
+html.mobile-device {
+  --pad-x: 10px;
+  --pad-y: 10px;
+  --gap-x: 8px;
+  --gap-y: 8px;
+  --row-h: 48px;
+  --ad-h: 170px;
+  --radius: 8px;
+  --btn-bg: #3b82f6;
+  --btn-bg-hover: #2563eb;
+  --input-bg: #eec0c0;
+  --input-bg-focus: #f78585;
+  --text: #222;
 }
 
-.header {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 15px;
+/* =========================
+   HEADER GRID (TOP LAYOUT)
+   ========================= */
+
+html.mobile-device .header,
+html.mobile-device .header * {
+  position: static !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  transform: none !important;
 }
 
-.filters-container {
-  width: 100%;
-  padding: 0 10px;
-  margin: 0 auto 20px;
+html.mobile-device .header {
+  width: 100% !important;
+  padding: var(--pad-y) var(--pad-x) !important;
+  display: grid !important;
+  grid-template-columns: 2fr 1fr !important;
+  grid-auto-rows: auto !important;
+  grid-column-gap: var(--gap-x) !important;
+  grid-row-gap: 2px !important;
+  background-image: none !important;
+  background-repeat: no-repeat !important;
+  background-size: auto !important;
+  background-position: top left !important;
 }
 
-.filter-row {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 10px;
+html.mobile-device .filters-container,
+html.mobile-device .filters-container .filter-row,
+html.mobile-device .auth-container {
+  display: contents !important;
 }
 
-input {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #a0a0a0;
-  border-radius: 8px;
-  background: #eec0c0;
-  color: #222;
-  font-size: 15px;
-  transition: all 0.3s;
+html.mobile-device .pageTitle,
+html.mobile-device .pageSubtitle {
+  display: none !important;
+  position: absolute !important;
+  left: -9999px !important;
+  top: -9999px !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  z-index: -9999 !important;
 }
 
-input:focus {
-  border-color: #3b82f6;
-  background: #f78585;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+html.mobile-device .mobile-only-image {
+  display: block !important;
+  grid-column: 1 / 3 !important;
+  grid-row: 8 !important;
+  width: 100% !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  object-fit: contain !important;
+  align-self: start !important;
 }
 
-input::placeholder {
-  color: #646363;
-  opacity: 1;
+html.mobile-device .input-wrapper-dt {
+  display: block !important;
+  width: 100% !important;
+  position: relative !important;
 }
 
-#cards {
-  width: 100%;
-  max-width: 100%;
-  padding: 0 10px;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 15px;
-  box-sizing: border-box;
+html.mobile-device .input-wrapper-dt input {
+  width: 100% !important;
+  height: var(--row-h) !important;
+  padding: 10px !important;
+  border: 1px solid #a0a0a0 !important;
+  border-radius: var(--radius) !important;
+  background: var(--input-bg) !important;
+  color: var(--text) !important;
+  font-size: 15px !important;
 }
 
-.card {
-  background: rgb(235, 214, 196);
-  width: 100%;
-  max-width: 100%;
-  padding: 15px;
-  border-radius: 6px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  box-sizing: border-box;
-  margin: 0 auto;
+html.mobile-device .input-wrapper-dt input:focus {
+  border-color: var(--btn-bg) !important;
+  background: var(--input-bg-focus) !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12) !important;
 }
 
-body * {
-  max-width: 100% !important;
-  box-sizing: border-box !important;
+html.mobile-device .input-wrapper-dt input::placeholder {
+  color: #646363 !important;
+  opacity: 1 !important;
 }
 
-.btn {
-  background: #3b82f6;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 8px 16px;
-  font-size: 14px;
-  cursor: pointer;
-  width: auto;
-  max-width: 100%;
-  white-space: nowrap;
+html.mobile-device .input-wrapper-dt .input-clear-desktop {
+  position: absolute !important;
+  right: 10px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  background: none !important;
+  border: none !important;
+  font-size: 20px !important;
+  color: #555 !important;
+  cursor: pointer !important;
+  display: none !important;
+  z-index: 10 !important;
 }
 
-.btn:hover {
-  background: #2563eb;
+html.mobile-device .input-wrapper-dt input:focus + .input-clear-desktop,
+html.mobile-device .input-wrapper-dt input:not(:placeholder-shown) + .input-clear-desktop {
+  display: block !important;
 }
 
-.card-buttons {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-top: 12px;
-  padding-top: 8px;
-  border-top: 1px dashed rgba(0, 0, 0, 0.1);
+/* === РАСКЛАДКА: левая колонка (6 полей), правая колонка (кнопки) === */
+html.mobile-device .input-wrapper-dt:has(#filterRegion) {
+  grid-column: 1 !important;
+  grid-row: 2 !important;
+}
+html.mobile-device .input-wrapper-dt:has(#filterCity) {
+  grid-column: 1 !important;
+  grid-row: 3 !important;
+}
+html.mobile-device .input-wrapper-dt:has(#filterProfile) {
+  grid-column: 1 !important;
+  grid-row: 4 !important;
+}
+html.mobile-device .input-wrapper-dt:has(#filterType) {
+  grid-column: 1 !important;
+  grid-row: 5 !important;
+}
+html.mobile-device .input-wrapper-dt:has(#filterDistrict) {
+  grid-column: 1 !important;
+  grid-row: 6 !important;
+}
+html.mobile-device .input-wrapper-dt:has(#filterName) {
+  grid-column: 1 !important;
+  grid-row: 7 !important;
 }
 
-.card-buttons .btn {
-  padding: 5px 10px !important;
-  font-size: 13px !important;
-  line-height: 1.2;
-  height: auto;
+html.mobile-device .auth-login-wrapper {
+  grid-column: 2 !important;
+  grid-row: 2 !important;
+}
+html.mobile-device #logoutBtn {
+  grid-column: 2 !important;
+  grid-row: 2 !important;
 }
 
-.rating-review-container {
+html.mobile-device #adminBtn {
+  grid-column: 2 !important;
+  grid-row: 3 !important;
+}
+html.mobile-device #addServiceBtn {
+  grid-column: 2 !important;
+  grid-row: 4 !important;
+}
+html.mobile-device #cabinetBtn {
+  grid-column: 2 !important;
+  grid-row: 5 !important;
+}
+
+html.mobile-device .searchBtn {
+  grid-column: 2 !important;
+  grid-row: 7 !important;
+}
+
+html.mobile-device .btn,
+html.mobile-device #logoutBtn {
+  width: 100% !important;
+  height: var(--row-h) !important;
+  padding: 8px 12px !important;
+  border: none !important;
+  border-radius: var(--radius) !important;
+  background: var(--btn-bg) !important;
+  color: #fff !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  white-space: nowrap !important;
+}
+
+html.mobile-device .btn:hover,
+html.mobile-device #logoutBtn:hover {
+  background: var(--btn-bg-hover) !important;
+}
+
+html.mobile-device .auth-login-wrapper {
+  width: 100% !important;
+  height: var(--row-h) !important;
+}
+
+html.mobile-device #googleAuthBtn,
+html.mobile-device #googleAuthBtn > div,
+html.mobile-device #googleAuthBtn iframe {
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  border: none !important;
+}
+
+html.mobile-device #sideBlockLeft,
+html.mobile-device #sideBlockRight,
+html.mobile-device #bottomBlock1,
+html.mobile-device #bottomBlock2,
+html.mobile-device #bottomBlock3,
+html.mobile-device #bottomBlock4 {
+  width: 100% !important;
+  height: var(--ad-h) !important;
+  min-height: var(--ad-h) !important;
+  border-radius: var(--radius) !important;
+  background: rgba(0, 0, 0, 0.08) !important;
+  border: 1px solid rgba(0, 0, 0, 0.15) !important;
   display: flex !important;
-  gap: 6px;
-  width: 100%;
-  margin-top: 8px;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  color: #333 !important;
+  font-size: 14px !important;
+  cursor: pointer !important;
+  transition: transform 0.25s ease, box-shadow 0.25s ease !important;
+  overflow: hidden !important;
+  z-index: auto !important;
 }
 
-.rating-review-container .btn {
-  flex: 1;
-  padding: 4px 6px !important;
-  font-size: 12px !important;
+html.mobile-device #sideBlockLeft:hover,
+html.mobile-device #sideBlockRight:hover,
+html.mobile-device #bottomBlock1:hover,
+html.mobile-device #bottomBlock2:hover,
+html.mobile-device #bottomBlock3:hover,
+html.mobile-device #bottomBlock4:hover {
+  transform: scale(1.03) !important;
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.35) !important;
 }
 
-@media (max-width: 360px) {
-  .card {
-    padding: 12px;
-  }
-  .card-buttons {
-    gap: 6px;
-    margin-top: 8px;
-  }
+html.mobile-device .info-card {
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: calc(var(--radius) + 1px) !important;
+  border: 9px solid #5e2c03 !important;
+  box-shadow: 0 4px 12px rgba(15, 9, 1, 0.25) !important;
+  overflow: hidden !important;
 }
 
-.hidden {
-  display: none;
+html.mobile-device .info-card img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  transition: transform 0.3s ease !important;
 }
 
-.notification {
-  position: fixed;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(240, 147, 147, 0.75);
-  color: rgb(15, 12, 12);
-  padding: 10px 20px;
-  border-radius: 6px;
-  display: none;
-  z-index: 9999;
-  font-size: 14px;
+html.mobile-device .info-card:hover img {
+  transform: scale(1.04) !important;
+}
+
+/* =========================
+   ДРОПДАУНЫ / ФУЛЛСКРИН
+   ========================= */
+
+html.mobile-device .dropdown-common-style {
+  position: fixed !important;
+  top: 60px !important;
+  left: 10px !important;
+  right: 10px !important;
+  max-height: 60vh !important;
+  background: #fff !important;
+  border: 1px solid #ddd !important;
+  border-radius: 8px !important;
+  overflow-y: auto !important;
+  z-index: 10001 !important;
+  padding: 6px 0 !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15) !important;
+}
+
+html.mobile-device .dropdown-common-style div,
+html.mobile-device #customTypeDropdown div {
+  padding: 12px 16px !important;
+  font-size: 15px !important;
+  border-bottom: 1px solid #f0f0f0 !important;
+  cursor: pointer !important;
+}
+
+html.mobile-device .dropdown-common-style div:hover,
+html.mobile-device #customTypeDropdown div:hover {
+  background: #f5f5f5 !important;
+}
+
+html.mobile-device .input-fixed-absolute {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 10000 !important;
+  background: #f0cda6 !important;
+  padding: 14px var(--pad-x) !important;
+  margin: 0 !important;
+  width: 100% !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Крестик для закрытия фуллскрина */
+html.mobile-device .input-clear-mobile {
+  position: absolute !important;
+  right: 5px !important;
+  bottom: 15px !important;
+  width: 32px !important;
+  height: 32px !important;
+  line-height: 32px !important;
+  text-align: center !important;
+  font-size: 36px !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  color: #666 !important;
+  cursor: pointer !important;
+  display: none !important;
+  z-index: 100 !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  font-weight: bold !important;
+}
+
+html.mobile-device .input-wrapper-dt input:focus ~ .input-clear-mobile {
+  display: block !important;
+}
+
+html.mobile-device .input-fixed-absolute ~ .input-clear-mobile {
+  position: fixed !important;
+  right: 18px !important;
+  top: 12px !important;
+  z-index: 10001 !important;
+  display: block !important;
+}
+
+html.mobile-device .mobile-suggestions-container {
+  position: fixed !important;
+  top: 60px !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  overflow-y: auto !important;
+  background: #fff !important;
+  z-index: 9999 !important;
+  padding: var(--pad-x) !important;
+  -webkit-overflow-scrolling: touch !important;
+  transform: translateZ(0) !important;
+}
+
+/* =========================
+   КАРТОЧКИ СПИСКА / ПРОЧЕЕ
+   ========================= */
+
+html.mobile-device #scrollTarget {
+  height: 1px !important;
+}
+
+html.mobile-device .search-count {
+  text-align: center !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  color: #2c3e50 !important;
+  margin: 10px auto !important;
+  padding: 8px !important;
+  background: rgba(235, 214, 196, 0.85) !important;
+  border-radius: var(--radius) !important;
+  max-width: 92% !important;
 }
 
 html.mobile-device #cards {
+  width: 100% !important;
+  padding: 0 var(--pad-x) !important;
+  display: grid !important;
   grid-template-columns: 1fr !important;
-  gap: 15px !important;
-  padding: 0 10px !important;
+  gap: 14px !important;
+  box-sizing: border-box !important;
 }
 
 @media (orientation: landscape) {
@@ -181,9 +418,232 @@ html.mobile-device #cards {
   }
 }
 
-.back-to-top {
-  width: calc(100% - 40px); /* Отступы по бокам */
-  margin: 20px auto;
-  position: sticky;
-  bottom: 20px;
+html.mobile-device .card {
+  width: 100% !important;
+  background: #ebd6c4 !important;
+  padding: 14px !important;
+  border-radius: var(--radius) !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15) !important;
+  margin: 0 auto !important;
+  font-size: 16px !important;
+}
+
+html.mobile-device .card-buttons {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 8px !important;
+  margin-top: 10px !important;
+  padding-top: 8px !important;
+  border-top: 1px dashed rgba(0, 0, 0, 0.12) !important;
+}
+
+html.mobile-device .card-buttons .btn {
+  padding: 8px 6px !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  border: none !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+  min-width: 0 !important;
+  height: auto !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+  transition: all 0.2s ease !important;
+}
+
+html.mobile-device .back-to-search,
+html.mobile-device .edit-btn {
+  background: #4f46e5 !important;
+  color: white !important;
+}
+
+html.mobile-device .add-to-favorites,
+html.mobile-device .publish-btn {
+  background: #059669 !important;
+  color: white !important;
+}
+
+html.mobile-device .reviews-btn {
+  background: #3b82f6 !important;
+  color: white !important;
+  padding: 6px 8px !important;
+  font-size: 11px !important;
+  white-space: nowrap !important;
+}
+
+html.mobile-device .back-to-search:hover,
+html.mobile-device .edit-btn:hover {
+  background: #4338ca !important;
+  transform: translateY(-1px) !important;
+}
+
+html.mobile-device .add-to-favorites:hover,
+html.mobile-device .publish-btn:hover {
+  background: #047857 !important;
+  transform: translateY(-1px) !important;
+}
+
+html.mobile-device .reviews-btn:hover {
+  background: #2563eb !important;
+  transform: translateY(-1px) !important;
+}
+
+html.mobile-device .card-buttons .btn[style*="background-color:rgb(176, 204, 236)"] {
+  background: #b0ccec !important;
+  color: rgb(5, 29, 68) !important;
+  cursor: default !important;
+}
+
+html.mobile-device .card-rating-block {
+  display: grid !important;
+  grid-template-columns: 1fr auto !important;
+  align-items: center !important;
+  gap: 6px !important;
+  margin-top: 8px !important;
+  padding-top: 8px !important;
+  border-top: 1px dashed rgba(0, 0, 0, 0.12) !important;
+}
+
+html.mobile-device .rating-container {
+  display: contents !important;
+}
+
+html.mobile-device .rating-text {
+  font-size: 14px !important;
+  font-weight: bold !important;
+  text-align: left !important;
+  color: #e73939 !important;
+}
+
+html.mobile-device .rating-stars {
+  font-size: 17px !important;
+  margin-right: 4px !important;
+  color: #f59e0b !important;
+}
+
+html.mobile-device .back-to-top {
+  width: calc(100% - 2 * var(--pad-x)) !important;
+  margin: 20px auto !important;
+  position: sticky !important;
+  bottom: 20px !important;
+}
+
+html.mobile-device .notification {
+  position: fixed !important;
+  top: 20px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  background: rgba(240, 147, 147, 0.75) !important;
+  color: #0f0c0c !important;
+  padding: 10px 20px !important;
+  border-radius: var(--radius) !important;
+  display: none !important;
+  z-index: 9999 !important;
+  font-size: 14px !important;
+}
+
+.card-id {
+  text-align: right !important;
+  font-size: 11px !important;
+  color: red !important;
+  margin-top: 4px !important;
+  width: 100% !important;
+}
+
+html.mobile-device .hidden {
+  display: none !important;
+}
+
+html.mobile-device #window-size {
+  position: fixed !important;
+  top: 10px !important;
+  right: 10px !important;
+  background: rgba(0, 0, 0, 0.6) !important;
+  color: #fff !important;
+  font-size: 13px !important;
+  padding: 5px 8px !important;
+  border-radius: 6px !important;
+  font-family: monospace !important;
+  z-index: 9999 !important;
+  pointer-events: none !important;
+}
+
+@media (max-width: 360px) {
+  html.mobile-device {
+    --row-h: 44px;
+    --ad-h: 150px;
+  }
+}
+
+html.mobile-device .pageTitle,
+html.mobile-device .pageSubtitle {
+  display: none !important;
+  grid-row: unset !important;
+  grid-column: unset !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+html.mobile-device .header {
+  grid-auto-rows: min-content !important;
+  align-items: start !important;
+}
+
+/* =========================
+   НОВАЯ СЕТКА ДЛЯ РЕКЛАМЫ (3 В РЯД)
+   ========================= */
+
+html.mobile-device #sideBlockLeft {
+  grid-area: 1 / 1 / 2 / 2 !important;
+}
+
+html.mobile-device #bottomBlock1 {
+  grid-area: 1 / 2 / 2 / 3 !important;
+}
+
+html.mobile-device #sideBlockRight {
+  grid-area: 1 / 3 / 2 / 4 !important;
+}
+
+html.mobile-device #bottomBlock2 {
+  grid-area: 2 / 1 / 3 / 2 !important;
+}
+
+html.mobile-device #bottomBlock3 {
+  grid-area: 2 / 2 / 3 / 3 !important;
+}
+
+html.mobile-device #bottomBlock4 {
+  grid-area: 2 / 3 / 3 / 4 !important;
+}
+
+html.mobile-device #sideBlockLeft,
+html.mobile-device #sideBlockRight,
+html.mobile-device #bottomBlock1,
+html.mobile-device #bottomBlock2,
+html.mobile-device #bottomBlock3,
+html.mobile-device #bottomBlock4 {
+  width: 100% !important;
+  aspect-ratio: 1 / 1 !important;
+  position: relative !important;
+  height: auto !important;
+  min-height: auto !important;
+}
+
+html.mobile-device .mobile-ad-container,
+html.mobile-device .mobile-ad-container-second {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 8px !important;
+  width: 100% !important;
+}
+
+html.mobile-device .mobile-ad-container > div,
+html.mobile-device .mobile-ad-container-second > div {
+  width: 100% !important;
+  aspect-ratio: 1 / 1 !important;
+  position: relative !important;
 }

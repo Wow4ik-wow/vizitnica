@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title> </title>
+    <style>
+      /* ФОН КАК НА ГЛАВНОЙ СТРАНИЦЕ */
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-image: url("main-bg.webp");
+        background-repeat: repeat-y;
+        background-size: 1920px auto;
+        background-position: center top;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        overflow-x: hidden;
+      }
+
+      /* КАРТОЧКА 600px С РАМКОЙ */
+      .offer-container {
+        background: linear-gradient(135deg, #f3ac7d 0%, #dfd4bc 100%);
+        border-radius: 16px;
+        padding: 40px;
+        max-width: 600px;
+        width: 90%;
+        text-align: center;
+        border: 4px solid #3b82f6;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+        position: relative;
+        z-index: 20;
+      }
+
+      .image-container {
+        width: 100%;
+        margin: 0 auto 30px;
+        position: relative;
+        overflow: hidden;
+        border-radius: 12px;
+        background: transparent;
+        border: 2px solid #e2e8f0;
+      }
+
+      .image-slider {
+        display: flex;
+        transition: transform 0.5s ease-in-out;
+        width: 100%;
+      }
+
+      .slide {
+        flex: 0 0 auto;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .slide-image {
+        width: 100%;
+        height: auto;
+        max-height: 400px;
+        object-fit: contain;
+        display: block;
+      }
+
+      .slider-controls {
+        display: flex;
+        justify-content: center;
+        margin-top: 15px;
+        gap: 10px;
+      }
+
+      .slider-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: #cbd5e1;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      .slider-dot.active {
+        background-color: #3b82f6;
+      }
+
+      .slider-arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255, 255, 255, 0.8);
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+        font-weight: bold;
+        color: #3b82f6;
+        cursor: pointer;
+        z-index: 20;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      }
+
+      .slider-arrow:hover {
+        background: rgba(255, 255, 255, 1);
+      }
+
+      .slider-arrow.prev {
+        left: 10px;
+      }
+
+      .slider-arrow.next {
+        right: 10px;
+      }
+
+      .offer-title {
+        font-size: 28px;
+        font-weight: bold;
+        color: #2c3e50;
+        margin-bottom: 20px;
+      }
+
+      .offer-description {
+        font-size: 20px;
+        font-weight: bold;
+        color: #2c3e50;
+        line-height: 1.6;
+        margin-bottom: 25px;
+        background: linear-gradient(135deg, #fff3eb 0%, #f3b874 100%);
+        padding: 20px;
+        border-radius: 12px;
+        border-left: 15px solid #1c60cc;
+        text-align: left;
+        white-space: pre-line;
+      }
+
+      .offer-details {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 8px 5px;
+    margin-bottom: 25px;
+    font-size: 16px;
+    color: #4b5563;
+    align-items: start;
+}
+
+.detail-item {
+    display: contents;
+}
+
+.detail-label {
+    font-weight: bold;
+    text-align: right;
+    white-space: nowrap;
+    color: #2c3e50;
+    justify-self: end;
+}
+
+.detail-label::after {
+    content: ":";
+}
+
+.detail-item span:last-child {
+    text-align: left;
+    word-break: break-word;
+}
+
+      .social-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+        margin-bottom: 30px;
+      }
+
+      .social-button {
+        background: #8230e0;
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+        text-decoration: none;
+        display: inline-block;
+        transition: background 0.3s;
+        white-space: nowrap;
+      }
+
+      .social-button:hover {
+        background: #450570;
+      }
+
+      .close-button {
+        background: #3b82f6;
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 18px;
+        font-weight: bold;
+      }
+
+      .close-button:hover {
+        background: #2563eb;
+      }
+
+      /* Декоративные муравьи */
+      .decoration {
+        position: fixed;
+        z-index: 5;
+        width: 250px;
+        height: 250px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        pointer-events: none;
+        transition: none;
+      }
+
+      /* Отзеркаливание правого муравья */
+      .decoration.right {
+        transform: scaleX(-1);
+      }
+
+      /* Сообщения об ошибках */
+      .error-message {
+        font-size: 24px;
+        color: #ef4444;
+        text-align: center;
+        padding: 40px;
+      }
+
+      /* Адаптивность для муравьев */
+      @media (max-width: 900px) {
+        .decoration {
+          display: none;
+        }
+      }
+
+/* Мобильные стили */
+.mobile-device .offer-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 5px;
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0;
+}
+
+.mobile-device .slide-image {
+    max-height: 300px;
+}
+
+/* Подложки для текстовых блоков */
+.mobile-device .offer-title,
+.mobile-device .offer-description,
+.mobile-device .offer-details,
+.mobile-device .name-company-block {
+    background: rgba(241, 227, 209, 0.8);
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.mobile-device .offer-description {
+    font-size: 16px;
+}
+
+.mobile-device .social-links {
+    flex-direction: column;
+    gap: 6px;
+    margin-left: -5px;
+    margin-right: -5px;
+}
+
+.mobile-device .social-button {
+    width: auto !important;
+    min-width: 140px;
+    text-align: center;
+    background: #10b981;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 10px 20px;
+    font-size: 14px;
+    margin: 0 auto;
+    display: block;
+}
+
+.mobile-device .close-button {
+    width: 100%;
+}
+
+/* Скрываем муравьев на мобильных */
+.mobile-device .decoration {
+    display: none !important;
+    animation: none !important;
+    transition: none !important;
+    visibility: hidden !important;
+}
+
+/* Адаптивные детали */
+.mobile-device .offer-details {
+    grid-template-columns: 1fr;
+    gap: 5px;
+}
+
+.mobile-device .detail-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.mobile-device .detail-label {
+    text-align: left;
+    min-width: auto;
+    margin-right: 0;
+    margin-bottom: 2px;
+}
+
+/* Сброс отступов body */
+.mobile-device body {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+    </style>
+  </head>
+  <body>
+    <div class="decoration left"></div>
+    <div class="decoration right"></div>
+
+    <div class="offer-container">
+      <div id="content">
+        <!-- Контент будет загружен через JavaScript -->
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderId = urlParams.get("id");
+        const contentDiv = document.getElementById("content");
+
+        if (!orderId) {
+          contentDiv.innerHTML =
+            '<div class="error-message">ID предложения не указан в URL.</div>';
+          return;
+        }
+
+        // Функция для загрузки JSON
+        function loadJSON(url, callback) {
+          fetch(url)
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Ошибка сети");
+              }
+              return response.json();
+            })
+            .then((data) => callback(null, data))
+            .catch((error) => callback(error, null));
+        }
+
+        // Загружаем JSON
+        loadJSON(
+          "https://raw.githubusercontent.com/Wow4ik-wow/vizitnica/master/reclama.json",
+          function (error, jsonData) {
+            if (error) {
+              contentDiv.innerHTML =
+                '<div class="error-message">Ошибка загрузки данных.</div>';
+              console.error("Ошибка загрузки JSON:", error);
+              return;
+            }
+
+            // Ищем заказ по ID в нескольких массивах
+            let order = jsonData.orders.find(
+              (item) => item["ID заказа"] == orderId
+            );
+            if (!order)
+              order = jsonData.fallback.find(
+                (item) => item["ID заказа"] == orderId
+              );
+
+            if (!order) {
+              contentDiv.innerHTML =
+                '<div class="error-message">Предложение не найдено.</div>';
+              return;
+            }
+
+            // Настраиваем декоративные элементы из массива ants
+            if (jsonData.ants && jsonData.ants.length >= 2) {
+              setupDecorations(jsonData.ants);
+            }
+
+            // Рендерим основное содержимое
+            renderOrderContent(order);
+          }
+        );
+
+        // Настройка декоративных элементов
+        function setupDecorations(antsData) {
+          const leftDecor = document.querySelector(".decoration.left");
+          const rightDecor = document.querySelector(".decoration.right");
+
+          // Выбираем двух случайных муравьев
+          const randomAnts = [...antsData]
+            .sort(() => 0.5 - Math.random())
+            .slice(0, 2);
+
+          if (randomAnts[0] && randomAnts[0]["Костюм мураша"]) {
+            leftDecor.style.backgroundImage = `url('${extractDirectImageLink(
+              randomAnts[0]["Костюм мураша"]
+            )}')`;
+          }
+
+          if (randomAnts[1] && randomAnts[1]["Костюм мураша"]) {
+            rightDecor.style.backgroundImage = `url('${extractDirectImageLink(
+              randomAnts[1]["Костюм мураша"]
+            )}')`;
+          }
+        }
+
+        // Преобразование ссылки Google Drive в прямую
+        function extractDirectImageLink(link) {
+          if (!link) return "";
+
+          // Для Google Drive (формат /file/d/)
+          const fileMatch = link.match(/\/file\/d\/([^\/]+)/);
+          if (fileMatch) {
+            return `https://drive.google.com/thumbnail?id=${fileMatch[1]}&sz=w1000`;
+          }
+
+          // Для Google Drive (формат uc?id=)
+          const ucMatch = link.match(/uc\?id=([^&]+)/);
+          if (ucMatch) {
+            return `https://drive.google.com/thumbnail?id=${ucMatch[1]}&sz=w1000`;
+          }
+
+          return link;
+        }
+
+        // Рендеринг содержимого заказа
+        function renderOrderContent(order) {
+          let html = "";
+
+          // Заголовок
+          if (order["Название"]) {
+            document.title = order["Название"];
+          }
+
+          // Слайдер с изображениями
+          const images = order["Ссылки на фото"]
+            ? order["Ссылки на фото"]
+                .split(",")
+                .map((url) => url.trim())
+                .filter((url) => url)
+            : [];
+
+          if (images.length > 0) {
+            html += `<div class="image-container">`;
+            html += `<div class="image-slider" id="imageSlider">`;
+
+            images.forEach((imgUrl, index) => {
+              const directUrl = extractDirectImageLink(imgUrl);
+              html += `<div class="slide"><img src="${directUrl}" alt="Изображение ${
+                index + 1
+              }" class="slide-image" onerror="this.style.display='none'"></div>`;
+            });
+
+            html += `</div>`;
+
+            // Стрелки только если больше 1 изображения
+            if (images.length > 1) {
+              html += `<button class="slider-arrow prev" onclick="moveSlide(-1)">❮</button>`;
+              html += `<button class="slider-arrow next" onclick="moveSlide(1)">❯</button>`;
+            }
+
+            html += `</div>`;
+
+            // Точки навигации
+            if (images.length > 1) {
+              html += `<div class="slider-controls" id="sliderDots">`;
+              for (let i = 0; i < images.length; i++) {
+                html += `<div class="slider-dot ${
+                  i === 0 ? "active" : ""
+                }" onclick="showSlide(${i})"></div>`;
+              }
+              html += `</div>`;
+            }
+          }
+
+          // Блок Имя и Компания (под картинкой)
+          if (order["Имя"] || order["Компания"]) {
+            let nameCompany = "";
+            if (order["Имя"] && order["Компания"]) {
+              nameCompany = `${order["Имя"]} «${order["Компания"]}»`;
+            } else if (order["Имя"]) {
+              nameCompany = order["Имя"];
+            } else if (order["Компания"]) {
+              nameCompany = `«${order["Компания"]}»`;
+            }
+
+            html += `<div class="name-company-block" style="font-size: 20px; font-weight: bold; color: #2c3e50; margin-bottom: 20px; text-align: center;">`;
+            html += nameCompany;
+            html += `</div>`;
+          }
+
+          // Описание
+          let description = order["Описание (до 700 симв)"] || order["Описание"];
+if (description) {
+  html += `<div class="offer-description">${description}</div>`;
+}
+
+          // Дополнительная информация
+          const detailFields = [
+            "Телефоны",
+            "Адрес",
+            "Область",
+            "Населённый пункт",
+            "Район города",
+          ];
+
+          let hasDetails = false;
+          let detailsHtml = "";
+
+          detailFields.forEach((field) => {
+            if (order[field]) {
+              hasDetails = true;
+
+              let value = order[field];
+
+              // Особенная обработка для телефонов
+              if (field === "Телефоны") {
+                const phones = value.split(",").map((phone) => phone.trim());
+                value = phones
+                  .map((phone) => {
+                    return `<a href="tel:${phone}" style="color: #3b82f6; text-decoration: none;">${phone}</a>`;
+                  })
+                  .join(", ");
+              }
+
+              detailsHtml += `
+    <div class="detail-item">
+        <span class="detail-label">${field}</span>
+        <span>${value}</span>
+    </div>
+`;
+            }
+          });
+
+          if (hasDetails) {
+            html += `<div class="offer-details">${detailsHtml}</div>`;
+          }
+
+          // Социальные ссылки
+          if (order["Ссылки"]) {
+            const socialLinks = parseSocialLinks(order["Ссылки"]);
+
+            if (socialLinks.length > 0) {
+              html += `<div class="social-links">`;
+              socialLinks.forEach((link) => {
+                html += `<a href="${link.url}" target="_blank" class="social-button">${link.text}</a>`;
+              });
+              html += `</div>`;
+            }
+          }
+
+          // Кнопка закрытия
+          html += `<button class="close-button" onclick="window.close()">ЗАКРЫТЬ</button>`;
+
+          contentDiv.innerHTML = html;
+
+          // Инициализация слайдера
+          if (images.length > 1) {
+            initSlider();
+          }
+        }
+
+        // Парсинг социальных ссылок
+        function parseSocialLinks(linksText) {
+          const result = [];
+
+          // Ищем ссылки в формате [Текст](URL)
+          const markdownRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+          let match;
+
+          while ((match = markdownRegex.exec(linksText)) !== null) {
+            result.push({
+              text: match[1],
+              url: match[2],
+            });
+          }
+
+          // Ищем email адреса
+          const emailRegex =
+            /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g;
+          const emails = linksText.match(emailRegex);
+
+          if (emails) {
+            emails.forEach((email) => {
+              result.push({
+                text: `Email: ${email}`,
+                url: `mailto:${email}`,
+              });
+            });
+          }
+
+          return result;
+        }
+
+        // Логика слайдера
+        let currentSlide = 0;
+
+        window.moveSlide = function (direction) {
+          const slides = document.querySelectorAll(".slide");
+          const dots = document.querySelectorAll(".slider-dot");
+
+          currentSlide =
+            (currentSlide + direction + slides.length) % slides.length;
+
+          const slider = document.getElementById("imageSlider");
+          slider.style.transform = `translateX(-${currentSlide * 100}%)`;
+
+          dots.forEach((dot, index) => {
+            dot.classList.toggle("active", index === currentSlide);
+          });
+        };
+
+        window.showSlide = function (index) {
+          const slides = document.querySelectorAll(".slide");
+          const dots = document.querySelectorAll(".slider-dot");
+
+          if (index >= 0 && index < slides.length) {
+            currentSlide = index;
+
+            const slider = document.getElementById("imageSlider");
+            slider.style.transform = `translateX(-${currentSlide * 100}%)`;
+
+            dots.forEach((dot, i) => {
+              dot.classList.toggle("active", i === currentSlide);
+            });
+          }
+        };
+
+        function initSlider() {
+          let slideInterval;
+
+          // Функция для запуска автопрокрутки
+          const startSlideShow = () => {
+            slideInterval = setInterval(() => {
+              window.moveSlide(1);
+            }, 10000);
+          };
+
+          // Запускаем автопрокрутку
+          startSlideShow();
+
+          // Сбрасываем таймер при клике на стрелки
+          document.querySelectorAll(".slider-arrow").forEach((arrow) => {
+            arrow.addEventListener("click", () => {
+              clearInterval(slideInterval);
+              startSlideShow();
+            });
+          });
+
+          // Сбрасываем таймер при клике на точки
+          document.querySelectorAll(".slider-dot").forEach((dot) => {
+            dot.addEventListener("click", () => {
+              clearInterval(slideInterval);
+              startSlideShow();
+            });
+          });
+        }
+
+        // Хаотичное движение муравьев
+        function initAntsAnimation() {
+    // Отключаем анимацию на мобильных
+    if (document.body.classList.contains('mobile-device')) {
+        return; // полностью выходим из функции
+    }
+          const leftAnt = document.querySelector(".decoration.left");
+          const rightAnt = document.querySelector(".decoration.right");
+
+          if (!leftAnt || !rightAnt) return;
+
+          // Размеры зон для движения
+          const getMovementZone = (isLeft) => {
+            const cardRect = document
+              .querySelector(".offer-container")
+              .getBoundingClientRect();
+            const screenWidth = window.innerWidth;
+
+            if (isLeft) {
+              return {
+                minX: 20,
+                maxX: cardRect.left - 150,
+                minY: 20,
+                maxY: window.innerHeight - 170,
+              };
+            } else {
+              return {
+                minX: cardRect.right + 20,
+                maxX: screenWidth - 170,
+                minY: 20,
+                maxY: window.innerHeight - 170,
+              };
+            }
+          };
+
+          // Генерация случайной точки в зоне
+          const getRandomPoint = (zone) => ({
+            x: Math.random() * (zone.maxX - zone.minX) + zone.minX,
+            y: Math.random() * (zone.maxY - zone.minY) + zone.minY,
+          });
+
+          // Плавное движение к точке
+          const moveAnt = (ant, targetX, targetY, duration = 4000) => {
+            const startX = parseInt(ant.style.left || ant.offsetLeft);
+            const startY = parseInt(ant.style.top || ant.offsetTop);
+            const startTime = performance.now();
+
+            function animate(currentTime) {
+              const elapsed = currentTime - startTime;
+              const progress = Math.min(elapsed / duration, 1);
+
+              const ease =
+                progress < 0.5
+                  ? 4 * progress * progress * progress
+                  : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+
+              const currentX = startX + (targetX - startX) * ease;
+              const currentY = startY + (targetY - startY) * ease;
+
+              ant.style.left = currentX + "px";
+              ant.style.top = currentY + "px";
+
+              if (progress < 1) {
+                requestAnimationFrame(animate);
+              } else {
+                const zone = ant.classList.contains("left")
+                  ? getMovementZone(true)
+                  : getMovementZone(false);
+                const newTarget = getRandomPoint(zone);
+                moveAnt(
+                  ant,
+                  newTarget.x,
+                  newTarget.y,
+                  3000 + Math.random() * 3000
+                );
+              }
+            }
+
+            requestAnimationFrame(animate);
+          };
+
+          // Запуск анимации
+          const leftZone = getMovementZone(true);
+          const rightZone = getMovementZone(false);
+
+          moveAnt(leftAnt, leftZone.minX + 100, leftZone.minY + 100);
+          moveAnt(rightAnt, rightZone.minX + 100, rightZone.minY + 100);
+
+          // Перерасчет при изменении размера окна
+          window.addEventListener("resize", () => {
+            const leftZone = getMovementZone(true);
+            const rightZone = getMovementZone(false);
+
+            moveAnt(leftAnt, leftAnt.offsetLeft, leftAnt.offsetTop, 1000);
+            moveAnt(rightAnt, rightAnt.offsetLeft, rightAnt.offsetTop, 1000);
+          });
+        }
+
+        // Запуск после загрузки
+        setTimeout(initAntsAnimation, 1000);
+      });
+    </script>
+
+<script>
+    // Определение мобильного устройства
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    if (isMobile) {
+        document.body.classList.add('mobile-device');
+    }
+</script>
+
+  </body>
+</html>
