@@ -231,7 +231,7 @@ function renderCards(services) {
     const name = (service["Имя"] || "").trim();
     const company = (service["Компания"] || "").trim();
     const profile = (service["Профиль деятельности"] || "").trim();
-    const description = (service["Описание (до 700 симв)"] || "").trim();
+    const description = (service["Описание (до 1000 симв)"] || "").trim();
     const phones = ("" + (service["Телефоны"] ?? "")).trim();
     const city = (service["Населённый пункт"] || "").trim();
     const district = (service["Район города"] || "").trim();
