@@ -1,7 +1,9 @@
 const apiUrl =
   "https://raw.githubusercontent.com/Wow4ik-wow/vizitnica/master/data.json";
-const API_USER_URL = "https://script.google.com/macros/s/AKfycbzpraBNAzlF_oqYIDLYVjczKdY6Ui32qJNwY37HGSj6vtPs9pXseJYqG3oLAr28iZ0c/exec";
-const API_TG_URL = "https://script.google.com/macros/s/AKfycbxjECFiBLd5Y2X760SVngkL5vPDAlQ8-5SJofbdKWofhmAD3zxzwSrw_Lm01Z4wDmA/exec";
+const API_USER_URL =
+  "https://script.google.com/macros/s/AKfycbzpraBNAzlF_oqYIDLYVjczKdY6Ui32qJNwY37HGSj6vtPs9pXseJYqG3oLAr28iZ0c/exec";
+const API_TG_URL =
+  "https://script.google.com/macros/s/AKfycbxjECFiBLd5Y2X760SVngkL5vPDAlQ8-5SJofbdKWofhmAD3zxzwSrw_Lm01Z4wDmA/exec";
 let currentUser = null;
 
 // TG логика
@@ -23,25 +25,30 @@ if (isReallyTelegramWebApp()) {
   try {
     tgUser = Telegram.WebApp.initDataUnsafe?.user || null;
     if (tgUser) {
-  currentUser = {
-    id: "tg_" + tgUser.id,
-    name: tgUser.first_name + (tgUser.last_name ? " " + tgUser.last_name : ""),
-    username: tgUser.username || "",
-    role: "user",
-    source: "telegram",
-  };
-  localStorage.setItem("user", JSON.stringify(currentUser));
-  console.log("Авторизация через Telegram:", currentUser);
-  
-  handleTelegramUser(tgUser).then(tgUserData => {
-    if (tgUserData && tgUserData.role && tgUserData.role !== currentUser.role) {
-      currentUser.role = tgUserData.role;
+      currentUser = {
+        id: "tg_" + tgUser.id,
+        name:
+          tgUser.first_name + (tgUser.last_name ? " " + tgUser.last_name : ""),
+        username: tgUser.username || "",
+        role: "user",
+        source: "telegram",
+      };
       localStorage.setItem("user", JSON.stringify(currentUser));
-      updateAuthUI();
-      updateRolesVisibility();
-    }
-  });
-} else {
+      console.log("Авторизация через Telegram:", currentUser);
+
+      handleTelegramUser(tgUser).then((tgUserData) => {
+        if (
+          tgUserData &&
+          tgUserData.role &&
+          tgUserData.role !== currentUser.role
+        ) {
+          currentUser.role = tgUserData.role;
+          localStorage.setItem("user", JSON.stringify(currentUser));
+          updateAuthUI();
+          updateRolesVisibility();
+        }
+      });
+    } else {
       console.warn("Telegram WebApp не вернул данных пользователя");
     }
   } catch (e) {
@@ -62,7 +69,7 @@ function updateAuthUI() {
     const logoutBtn = document.getElementById("logoutBtn");
     const authLoginWrapper = document.querySelector(".auth-login-wrapper");
     const roleInfo = document.getElementById("roleInfo");
-    
+
     if (googleAuthBtn) googleAuthBtn.style.display = "none";
     if (logoutBtn) {
       logoutBtn.style.display = "none";
@@ -72,7 +79,7 @@ function updateAuthUI() {
       logoutBtn.style.left = "-9999px";
     }
     if (authLoginWrapper) authLoginWrapper.style.display = "none";
-    
+
     // НЕ скрываем информацию о роли в Telegram
     if (roleInfo && currentUser) {
       if (currentUser.role === "admin") {
@@ -230,12 +237,10 @@ function renderCards(services) {
 
     const name = (service["Имя"] || "").trim();
     const company = (service["Компания"] || "").trim();
-    const profile = (service["Профиль деятельности"] || "").trim();
     const description = (service["Описание (до 1000 симв)"] || "").trim();
     const phones = ("" + (service["Телефоны"] ?? "")).trim();
     const city = (service["Населённый пункт"] || "").trim();
-    const district = (service["Район города"] || "").trim();
-    const type = (service["Вид деятельности"] || "").trim();
+    const district = (service["Район"] || "").trim();
     const geo = (service["Геолокация"] || "").trim();
 
     const nameCompanyLine =
@@ -271,33 +276,51 @@ function renderCards(services) {
       ? `<div><strong>Геолокация:</strong> <a href="${geo}" target="_blank" style="color: #2c3e50;">Открыть на карте</a></div>`
       : "";
 
+    // ⭐⭐ ВАЖНОЕ ИСПРАВЛЕНИЕ: Получаем типы из нового формата Услуг
+    const услуги = service["Услуги"] || {};
+    const typesSet = new Set();
+
+    // Собираем ВСЕ типы из всех профилей
+    Object.values(услуги).forEach((typesArray) => {
+      if (Array.isArray(typesArray)) {
+        typesArray.forEach((typeItem) => {
+          if (typeItem && typeItem.trim()) {
+            typesSet.add(typeItem.trim());
+          }
+        });
+      }
+    });
+
+    // Преобразуем Set в массив уникальных значений
+    const allTypes = Array.from(typesSet);
+    const typesString = allTypes.join(", ");
+
     let contentHTML = `
       <img src="${imageUrl}" alt="Превью" style="width: 95%; margin: 8px auto; display: block; cursor: pointer; border-radius: 6px; object-fit: contain;" />
 
       <div class="card-text" style="display:none; font-size: 16px; text-align: left; padding: 0 12px; margin: 0 auto; width: 100%; box-sizing: border-box;">
 `;
 
-    if (type) {
-      contentHTML += `<div style="font-weight: bold; font-size: 18px; margin-bottom: 6px;">${type}</div>`;
+    // ⭐⭐ ИСПРАВЛЕНО: Вместо несуществующей переменной type используем typesString
+    if (typesString) {
+      contentHTML += `<div style="font-weight: bold; font-size: 18px; margin-bottom: 6px;">${typesString}</div>`;
     }
 
     if (nameCompanyLine) {
       contentHTML += `<div style="font-size: 13px; margin-bottom: 6px;">${nameCompanyLine}</div>`;
     }
 
-    if (type || nameCompanyLine) {
+    if (typesString || nameCompanyLine) {
       contentHTML += `<hr style="margin: 8px 0;" />`;
     }
 
-    if (profile)
-      contentHTML += `<div><strong>Профиль деятельности:</strong> ${profile}</div>`;
     if (description)
       contentHTML += `<div><strong>Описание:</strong><br>${description.replace(
         /\n/g,
         "<br>"
       )}</div>`;
 
-    if (profile || description) {
+    if (description) {
       contentHTML += `<hr style="margin: 8px 0;" />`;
     }
 
@@ -337,7 +360,7 @@ function renderCards(services) {
       });
     }
 
-    // 2. Объединяем с существующими соцсетями (socialButtonsHTML)
+    // 2. Объединяем с существующими соцсетями
     const allSocialLinks = [
       ...socials.filter((s) => s.url),
       ...parsedSocialLinks,
@@ -370,7 +393,7 @@ function renderCards(services) {
   `;
     }
 
-    // 4. Добавляем геолокацию (geoHTML)
+    // 4. Добавляем геолокацию
     contentHTML += geoHTML;
 
     // 5. Добавляем ТЕГИ только для админов
@@ -447,6 +470,7 @@ ${
     container.appendChild(card);
     setTimeout(updateRolesVisibility, 100);
   });
+
   // Добавляем кнопку "ВЕРНУТЬСЯ НАВЕРХ" после всех карточек
   const backToTopContainer = document.getElementById("backToTopContainer");
   backToTopContainer.innerHTML = "";
@@ -461,7 +485,6 @@ ${
 }
 
 function applyFilters() {
-  
   const region = document
     .getElementById("filterRegion")
     .value.trim()
@@ -499,16 +522,32 @@ function applyFilters() {
       .toLowerCase()
       .split(",")
       .map((x) => x.trim());
-    const профиль = (service["Профиль деятельности"] || "").toLowerCase();
-    const вид = (service["Вид деятельности"] || "").toLowerCase();
+    const услуги = service["Услуги"] || {};
     const район = (service["Район"] || "").toLowerCase();
     const имя = (service["Имя"] || "").toLowerCase();
     const компания = (service["Компания"] || "").toLowerCase();
 
     const regionMatch = области.some((r) => r.includes(region));
     const cityMatch = города.some((c) => c.includes(city));
-    const profileMatch = !profile || профиль.includes(profile);
-    const typeMatch = !type || вид.includes(type);
+    let profileMatch = true;
+    let typeMatch = true;
+
+    if (profile) {
+      // Проверяем, есть ли такой профиль в ключах объекта "Услуги"
+      profileMatch = Object.keys(услуги).some((p) =>
+        p.toLowerCase().includes(profile)
+      );
+    }
+
+    if (type) {
+      // Проверяем, есть ли такой тип в значениях (массивах) объекта "Услуги"
+      typeMatch = Object.values(услуги).some(
+        (types) =>
+          Array.isArray(types) &&
+          types.some((t) => t.toLowerCase().includes(type))
+      );
+    }
+
     const districtMatch = !district || район.includes(district);
     const nameMatch = !name || (имя + " " + компания).includes(name);
 
@@ -528,7 +567,8 @@ function applyFilters() {
   const countElem = document.getElementById("searchCount");
   countElem.innerText = `Найдено совпадений: ${filtered.length}`;
 
-  populateList("listProfile", filtered, "Профиль деятельности");
+  populateProfilesFromServices(filtered);
+  populateTypesFromServices(filtered);
   populateList("listDistrict", filtered, "Район");
   populateList("listName", filtered, "Имя", true);
 
@@ -548,7 +588,7 @@ function applyFilters() {
 }
 
 function populateAllLists() {
-  populateList("listProfile", allServices, "Профиль деятельности");
+  populateProfilesFromServices(allServices);
   populateDatalist("listRegion", getUniqueValues(allServices, "Область"));
   populateDatalist("listDistrict", getUniqueValues(allServices, "Район"));
   populateList("listName", allServices, "Имя", true);
@@ -593,14 +633,7 @@ function populateList(
 
     if (!valueToAdd) return;
 
-    if (fieldName === "Вид деятельности") {
-      valueToAdd
-        .split(",")
-        .map((s) => s.trim())
-        .filter((s) => s)
-        .forEach((v) => valuesSet.add(useLowerCase ? v.toLowerCase() : v));
-    } else if (fieldName === "Имя" || fieldName === "Компания") {
-    } else {
+    if (valueToAdd) {
       valuesSet.add(
         useLowerCase ? valueToAdd.trim().toLowerCase() : valueToAdd.trim()
       );
@@ -632,11 +665,30 @@ function populateList(
     });
   }
 
-  const sortedValues = Array.from(valuesSet).sort((a, b) =>
-    a.localeCompare(b, "ru")
-  );
+  // Удаляем дубликаты, предпочитая вариант с большой буквы
+  const uniqueMap = new Map();
 
-  sortedValues.forEach((val) => {
+  // Сначала добавляем все варианты с большой буквы
+  Array.from(valuesSet).forEach((val) => {
+    if (val && val.charAt(0) === val.charAt(0).toUpperCase()) {
+      uniqueMap.set(val.toLowerCase(), val);
+    }
+  });
+
+  // Потом добавляем оставшиеся (с маленькой буквы)
+  Array.from(valuesSet).forEach((val) => {
+    if (val && !uniqueMap.has(val.toLowerCase())) {
+      uniqueMap.set(val.toLowerCase(), val);
+    }
+  });
+
+  // Получаем уникальные значения
+  const uniqueValues = Array.from(uniqueMap.values());
+
+  // Сортируем
+  uniqueValues.sort((a, b) => a.localeCompare(b, "ru"));
+
+  uniqueValues.forEach((val) => {
     if (val) {
       const option = document.createElement("option");
       option.value = val;
@@ -681,6 +733,105 @@ function getUniqueNames(arr) {
   });
   return Array.from(set).sort((a, b) => a.localeCompare(b, "ru"));
 }
+
+function populateProfilesFromServices(services) {
+  const datalist = document.getElementById("listProfile");
+  if (!datalist) return;
+
+  datalist.innerHTML = "";
+  const profilesSet = new Set();
+
+  const regionVal = document
+    .getElementById("filterRegion")
+    .value.trim()
+    .toLowerCase();
+  const cityVal = document
+    .getElementById("filterCity")
+    .value.trim()
+    .toLowerCase();
+  const typeVal = document
+    .getElementById("filterType")
+    .value.trim()
+    .toLowerCase();
+
+  services.forEach((service) => {
+    const regions = (service["Область"] || "")
+      .toLowerCase()
+      .split(",")
+      .map((r) => r.trim());
+
+    const cities = (service["Населённый пункт"] || "")
+      .toLowerCase()
+      .split(",")
+      .map((c) => c.trim());
+
+    if (regionVal && !regions.includes(regionVal)) return;
+    if (cityVal && !cities.includes(cityVal)) return;
+
+    const услуги = service["Услуги"];
+    if (!услуги || typeof услуги !== "object") return;
+
+    Object.entries(услуги).forEach(([profile, types]) => {
+      if (!Array.isArray(types)) return;
+
+      // 👉 ЕСЛИ ВИД ВЫБРАН — берём ТОЛЬКО профили, где есть этот вид
+      if (typeVal) {
+        if (types.some((t) => t.toLowerCase().includes(typeVal))) {
+          profilesSet.add(profile);
+        }
+      } else {
+        profilesSet.add(profile);
+      }
+    });
+  });
+
+  Array.from(profilesSet)
+    .sort((a, b) => a.localeCompare(b, "ru"))
+    .forEach((profile) => {
+      const option = document.createElement("option");
+      option.value = profile;
+      datalist.appendChild(option);
+    });
+}
+
+function populateTypesFromServices(services) {
+  const datalist = document.getElementById("listType");
+  if (!datalist) return;
+
+  datalist.innerHTML = "";
+  const typesSet = new Set();
+
+  const selectedProfile = document
+    .getElementById("filterProfile")
+    .value.trim()
+    .toLowerCase();
+
+  if (!selectedProfile) return;
+
+  services.forEach((service) => {
+    const услуги = service["Услуги"];
+    if (!услуги || typeof услуги !== "object") return;
+
+    Object.entries(услуги).forEach(([profile, types]) => {
+      if (profile.toLowerCase() !== selectedProfile) return;
+
+      if (Array.isArray(types)) {
+        types.forEach((type) => {
+          if (type) typesSet.add(type);
+        });
+      }
+    });
+  });
+
+  Array.from(typesSet)
+    .sort((a, b) => a.localeCompare(b, "ru"))
+    .forEach((type) => {
+      const option = document.createElement("option");
+      option.value = type;
+      datalist.appendChild(option);
+    });
+}
+
 // 🔹 Заполнение <select> для поля Профиль
 function populateSelectOptions(selectId, values) {
   const select = document.getElementById(selectId);
@@ -902,51 +1053,51 @@ filterFields.forEach((id) => {
         const regions = (service["Область"] || "")
           .split(",")
           .map((s) => s.trim().toLowerCase());
+
         const cities = (service["Населённый пункт"] || "")
           .split(",")
           .map((s) => s.trim().toLowerCase());
-        const profile = (service["Профиль деятельности"] || "").toLowerCase();
-        const type = (service["Вид деятельности"] || "").toLowerCase();
+
         const district = (service["Район"] || "").toLowerCase();
+
         const name = (
           (service["Имя"] || "") +
           " " +
           (service["Компания"] || "")
         ).toLowerCase();
 
+        const услуги = service["Услуги"] || {};
+
+        // 🔹 проверка профиля и вида
+        let profileMatch = true;
+        let typeMatch = true;
+
+        if (profileVal) {
+          profileMatch = Object.keys(услуги).some(
+            (p) => p.toLowerCase() === profileVal
+          );
+        }
+
+        if (typeVal) {
+          typeMatch = Object.values(услуги).some((types) =>
+            types.some((t) => t.toLowerCase().includes(typeVal))
+          );
+        }
+
         return (
           (!regionVal || regions.includes(regionVal)) &&
           (!cityVal || cities.includes(cityVal)) &&
-          (!profileVal || profile.includes(profileVal)) &&
-          (!typeVal || type.includes(typeVal)) &&
+          profileMatch &&
+          typeMatch &&
           (!districtVal || district.includes(districtVal)) &&
           (!nameVal || name.includes(nameVal))
         );
       });
 
-      if (id === "filterProfile") {
-        populateList("listProfile", filtered, "Профиль деятельности");
+      if (id === "filterProfile" || id === "filterType") {
+        populateProfilesFromServices(filtered);
       } else if (id === "filterType") {
-        const list = document.getElementById("listType");
-        if (!list) return; // Если элемента нет - выходим
-        list.innerHTML = "";
-
-        const valuesSet = new Set();
-        filtered.forEach((service) => {
-          const types = (service["Вид деятельности"] || "")
-            .split(",")
-            .map((t) => t.trim())
-            .filter(Boolean);
-          types.forEach((t) => valuesSet.add(t));
-        });
-
-        Array.from(valuesSet)
-          .sort((a, b) => a.localeCompare(b, "ru"))
-          .forEach((val) => {
-            const option = document.createElement("option");
-            option.value = val;
-            list.appendChild(option);
-          });
+        populateTypesFromServices(filtered);
       } else if (id === "filterDistrict") {
         populateList("listDistrict", filtered, "Район");
       } else if (id === "filterName") {
@@ -966,12 +1117,12 @@ function showNotification(message) {
   if (oldNotification) {
     oldNotification.remove();
   }
-  
+
   // Создаем новое уведомление
   const notification = document.createElement("div");
   notification.id = "notification";
   notification.textContent = message;
-  
+
   // Стили для мобильной версии
   notification.style.position = "fixed";
   notification.style.top = "20px";
@@ -986,10 +1137,10 @@ function showNotification(message) {
   notification.style.zIndex = "99999";
   notification.style.boxShadow = "0 4px 12px rgba(0,0,0,0.3)";
   notification.style.fontWeight = "bold";
-  
+
   // Добавляем в тело документа
   document.body.appendChild(notification);
-  
+
   // Автоскрытие через 5 секунд
   setTimeout(() => {
     if (notification.parentNode) {
@@ -1185,7 +1336,8 @@ function logout() {
 
     allServices.forEach((s) => {
       const tags = (s["Теги"] || "").toLowerCase();
-      const types = (s["Вид деятельности"] || "").split(",");
+      const услуги = s["Услуги"] || {};
+      const types = Object.values(услуги).flat();
 
       const regions = (s["Область"] || "")
         .toLowerCase()
@@ -1195,7 +1347,10 @@ function logout() {
         .toLowerCase()
         .split(",")
         .map((x) => x.trim());
-      const profile = (s["Профиль деятельности"] || "").toLowerCase();
+      const profile = Object.keys(s["Услуги"] || {})
+        .map((p) => p.toLowerCase())
+        .join(" ");
+
       const district = (s["Район"] || "").toLowerCase();
       const name = (
         (s["Имя"] || "") +
@@ -1210,7 +1365,12 @@ function logout() {
         (!districtVal || district.includes(districtVal)) &&
         (!nameVal || name.includes(nameVal));
 
-      if (match && (query === "" || tags.includes(query))) {
+      if (
+        match &&
+        (query === "" ||
+          tags.includes(query) ||
+          types.some((t) => t.toLowerCase().includes(query)))
+      ) {
         types.forEach((t) => {
           const clean = t.trim();
           if (clean) matched.add(clean);
@@ -1343,52 +1503,55 @@ function initCommonDropdown(inputId) {
       if (!input) return;
 
       // Для мобильной версии - простой крестик без обертки
-if (isMobile) {
-  // Удаляем существующий крестик если есть
-  const existingClear = input.nextElementSibling;
-  if (existingClear && existingClear.classList.contains("input-clear-mobile")) {
-    existingClear.remove();
-  }
+      if (isMobile) {
+        // Удаляем существующий крестик если есть
+        const existingClear = input.nextElementSibling;
+        if (
+          existingClear &&
+          existingClear.classList.contains("input-clear-mobile")
+        ) {
+          existingClear.remove();
+        }
 
-  const clearBtn = document.createElement("button");
-  clearBtn.className = "input-clear-mobile";
-  clearBtn.innerHTML = "×";
-  clearBtn.type = "button";
-  clearBtn.style.display = "none"; // Сначала скрыт
-  
-  input.parentNode.insertBefore(clearBtn, input.nextSibling);
+        const clearBtn = document.createElement("button");
+        clearBtn.className = "input-clear-mobile";
+        clearBtn.innerHTML = "×";
+        clearBtn.type = "button";
+        clearBtn.style.display = "none"; // Сначала скрыт
 
-  // Показываем крестик при фокусе
-  input.addEventListener("focus", function() {
-    clearBtn.style.display = "block";
-  });
+        input.parentNode.insertBefore(clearBtn, input.nextSibling);
 
-  // Скрываем крестик при потере фокуса
-  input.addEventListener("blur", function() {
-    setTimeout(() => {
-      clearBtn.style.display = "none";
-    }, 200);
-  });
+        // Показываем крестик при фокусе
+        input.addEventListener("focus", function () {
+          clearBtn.style.display = "block";
+        });
 
-  clearBtn.addEventListener("click", function (e) {
-    e.preventDefault();
-    e.stopPropagation();
-    input.value = "";
-    input.focus();
-    
-    // Скрываем дропдаун если открыт
-    const dropdown = document.querySelector(".dropdown-common-style");
-    if (dropdown) dropdown.style.display = "none";
-    
-    // Скрываем крестик после очистки
-    clearBtn.style.display = "none";
-  });
+        // Скрываем крестик при потере фокуса
+        input.addEventListener("blur", function () {
+          setTimeout(() => {
+            clearBtn.style.display = "none";
+          }, 200);
+        });
 
-  // Показываем крестик если поле не пустое при загрузке
-  if (input.value.trim() !== "") {
-    clearBtn.style.display = "block";
-  }
-}
+        clearBtn.addEventListener("click", function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          input.value = "";
+          input.focus();
+
+          // Скрываем дропдаун если открыт
+          const dropdown = document.querySelector(".dropdown-common-style");
+          if (dropdown) dropdown.style.display = "none";
+
+          // Скрываем крестик после очистки
+          clearBtn.style.display = "none";
+        });
+
+        // Показываем крестик если поле не пустое при загрузке
+        if (input.value.trim() !== "") {
+          clearBtn.style.display = "block";
+        }
+      }
       // Для десктопа - версия с оберткой
       else {
         if (input.parentNode.classList.contains("input-wrapper-dt")) return;
@@ -1428,9 +1591,9 @@ if (isMobile) {
   document.addEventListener("DOMContentLoaded", setupClearButtons);
 }
 
-// Убедимся что функция вызывается после полной загрузки  
-document.addEventListener("DOMContentLoaded", function() {
-  if (typeof setupClearButtons === 'function') {
+// Убедимся что функция вызывается после полной загрузки
+document.addEventListener("DOMContentLoaded", function () {
+  if (typeof setupClearButtons === "function") {
     setupClearButtons();
   }
 });
@@ -1467,14 +1630,16 @@ async function handleTelegramUser(tgUser) {
       id: tgUser.id,
       first_name: tgUser.first_name,
       last_name: tgUser.last_name,
-      username: tgUser.username
+      username: tgUser.username,
     });
-    
-    const url = `https://script.google.com/macros/s/AKfycbxjECFiBLd5Y2X760SVngkL5vPDAlQ8-5SJofbdKWofhmAD3zxzwSrw_Lm01Z4wDmA/exec?tgData=${encodeURIComponent(tgData)}`;
-    
+
+    const url = `https://script.google.com/macros/s/AKfycbxjECFiBLd5Y2X760SVngkL5vPDAlQ8-5SJofbdKWofhmAD3zxzwSrw_Lm01Z4wDmA/exec?tgData=${encodeURIComponent(
+      tgData
+    )}`;
+
     const response = await fetch(url);
     const result = await response.json();
-    
+
     if (result.success) {
       console.log("TG пользователь записан в GAS:", result.user);
       return result.user;
@@ -1489,22 +1654,26 @@ async function handleTelegramUser(tgUser) {
 }
 
 // Принудительный вызов крестиков
-setTimeout(function() {
-  if (typeof setupClearButtons === 'function') {
+setTimeout(function () {
+  if (typeof setupClearButtons === "function") {
     setupClearButtons();
-    console.log('Крестики инициализированы');
+    console.log("Крестики инициализированы");
   } else {
-    console.log('Функция setupClearButtons не найдена');
+    console.log("Функция setupClearButtons не найдена");
   }
 }, 1000);
 
 // Принудительная инициализация крестиков с проверкой мобильности
 function initCrossButtons() {
-  console.log('Инициализация крестиков, мобильный:', isMobile);
-  
+  console.log("Инициализация крестиков, мобильный:", isMobile);
+
   const inputIds = [
-    "filterRegion", "filterCity", "filterProfile", 
-    "filterType", "filterDistrict", "filterName"
+    "filterRegion",
+    "filterCity",
+    "filterProfile",
+    "filterType",
+    "filterDistrict",
+    "filterName",
   ];
 
   inputIds.forEach((id) => {
@@ -1513,7 +1682,7 @@ function initCrossButtons() {
 
     // Удаляем старые крестики
     const oldClear = input.nextElementSibling;
-    if (oldClear && oldClear.classList.contains('input-clear-mobile')) {
+    if (oldClear && oldClear.classList.contains("input-clear-mobile")) {
       oldClear.remove();
     }
 
@@ -1523,23 +1692,23 @@ function initCrossButtons() {
       clearBtn.innerHTML = "×";
       clearBtn.type = "button";
       clearBtn.style.display = "none";
-      
+
       input.parentNode.insertBefore(clearBtn, input.nextSibling);
 
-      input.addEventListener("focus", function() {
-        console.log('Фокус на поле', id);
+      input.addEventListener("focus", function () {
+        console.log("Фокус на поле", id);
         clearBtn.style.display = "block";
-        input.classList.add('input-fixed-absolute');
+        input.classList.add("input-fixed-absolute");
       });
 
-      input.addEventListener("blur", function() {
+      input.addEventListener("blur", function () {
         setTimeout(() => {
           clearBtn.style.display = "none";
-          input.classList.remove('input-fixed-absolute');
+          input.classList.remove("input-fixed-absolute");
         }, 200);
       });
 
-      clearBtn.addEventListener("click", function(e) {
+      clearBtn.addEventListener("click", function (e) {
         e.preventDefault();
         e.stopPropagation();
         input.value = "";
@@ -1556,5 +1725,5 @@ function initCrossButtons() {
 
 // Вызываем при загрузке и при изменении размера
 document.addEventListener("DOMContentLoaded", initCrossButtons);
-window.addEventListener('load', initCrossButtons);
+window.addEventListener("load", initCrossButtons);
 setTimeout(initCrossButtons, 1000);

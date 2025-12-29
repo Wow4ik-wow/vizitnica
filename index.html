@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Визитница — Главная</title>
-    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
 
     <!-- Десктопные стили по умолчанию -->
     <link rel="stylesheet" href="index.css" id="main-css" />
@@ -53,11 +53,7 @@
         <button id="adminBtn" class="btn authAdmin" data-role="admin">
           Админка
         </button>
-        <button
-          id="addServiceBtn"
-          class="btn authAddService"
-          data-role="admin,user,curator"
-        >
+        <button id="addServiceBtn" class="btn authAddService" data-role="admin">
           Добавить услугу
         </button>
         <button id="cabinetBtn" class="btn authProfile" data-role="admin">
@@ -197,12 +193,12 @@
     <script src="index-header-desktop-keys.js"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script>
-      // Динамическая загрузка JS с версией
-      const script = document.createElement("script");
-      script.src = "index.js?v=" + Date.now();
-      document.head.appendChild(script);
-    </script>
+<script>
+// Динамическая загрузка JS с версией
+const script = document.createElement('script');
+script.src = 'index.js?v=' + Date.now();
+document.head.appendChild(script);
+</script>
 
     <script src="reclama.js"></script>
 
@@ -235,5 +231,6 @@
         pointer-events: none; /* чтобы не мешало кликам */
       }
     </style>
+    
   </body>
 </html>
